@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css?family=Work+Sans');
+
+/******global******/
+body {
+    background-color: #2A66D4;
+    font-family: 'Work Sans', sans-serif;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.acdc-img {
+    width: 350px;
+}
+
+.bg-left-img {
+    position: fixed;
+    bottom: 0px;
+    left: 0;
+    width: 60rem;
+    z-index: -1;
+}
+
+.bg-right-img {
+    position: fixed;
+    bottom: 5rem;
+    right: 0;
+    width: 2rem;
+    z-index: -1;
+}
+
+.bg-top-img {
+    position: fixed;
+    top: 0;
+    left: 15%;
+    width: 20rem;
+    z-index: -1;
+}
+
+.text-light {
+    color: white;
+    font-weight: bold;
+}
+
+.text-light:hover {
+    text-decoration: none;
+    color: #80ACFF;
+}
+
+.navbar-light {
+    padding-top: 1.5rem;
+}
+
+.font-weight-normal {
+    color: white;
+    font-weight: bold;
+}
+
+.home-menu-img {
+    width: 3rem;
+    margin-left: 1.5rem;
+}
+
+.btn-primary {
+    background-color: #E52148;
+    border-color: #E52148;
+    color: #fff;
+    border-radius: 100px;
+    width: 10rem;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.open>.dropdown-toggle.btn-primary {
+    background-color: #D1042C;
+    border-color: #D1042C;
+    color: #fff;
+    z-index: -1;
+    box-shadow: 0px 0px 8px 0px #7c7a7a;
+}
+
+h1 {
+    color: white;
+    font-weight: 900;
+}
+
+h6 {
+    color: white;
+}
+
+.github-icon {
+    width: 30px;
+    margin-right: 0.5rem;
+}
+
+.linkedIn-icon {
+    width: 30px;
+    margin-right: 0.5rem;
+}
+
+.text-copyright {
+    color: white;
+    font-size: 12px;
+    margin-top: 0.2rem;
+}
+
+footer {
+    padding-left: 2rem;
+}
