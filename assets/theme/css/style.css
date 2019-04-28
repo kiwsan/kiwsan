@@ -112,3 +112,152 @@ h6 {
 footer {
     padding-left: 2rem;
 }
+
+.bg-light {
+    background-color: #2A66D4!important;
+}
+
+/** Extra small devices (portrait phones, less than 576px) **/
+@media (max-width: 575.98px) {
+    .bg-left-img {
+        display: none;
+    }
+
+    .bg-right-img {
+        display: none;
+    }
+
+    .bg-top-img {
+        display: none;
+    }
+
+    .itme-img {
+        width: 21.5rem;
+    }
+
+    .acdc-img {
+        width: 10rem;
+    }
+
+    footer {
+        position: initial;
+        bottom: 0;
+        width: 100%;
+        margin-top: 1rem;
+        padding-left: 1rem;
+    }
+
+    .container.pt-5 {
+        padding-top: 0rem !important;
+    }
+
+    .col-md-6.align-self-center.pt-4 {
+        padding-top: 4rem !important;
+    }
+
+    div.mt-5 {
+        margin-top: 0rem !important;
+    }
+
+    .home-menu-img {
+        width: 3rem;
+        margin-left: 0rem;
+    }
+}
+
+/** Small devices (landscape phones, 576px and up) **/
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .bg-left-img {
+        display: none;
+    }
+
+    .bg-right-img {
+        display: none;
+    }
+
+    .bg-top-img {
+        display: none;
+    }
+
+    .itme-img {
+        width: 21.5rem;
+    }
+
+    .acdc-img {
+        width: 10rem;
+    }
+
+    footer {
+        position: initial;
+        bottom: 0;
+        width: 100%;
+        margin-top: 1rem;
+        padding-left: 1rem;
+    }
+
+    .container.pt-5 {
+        padding-top: 0rem !important;
+    }
+
+    .col-md-6.align-self-center.pt-4 {
+        padding-top: 4rem !important;
+    }
+
+    div.mt-5 {
+        margin-top: 0rem !important;
+    }
+
+    .home-menu-img {
+        width: 3rem;
+        margin-left: 0rem;
+    }
+}
+
+/** Medium devices (tablets, 768px and up) **/
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .bg-left-img {
+        width: 30rem;
+    }
+
+    .bg-right-img {
+        width: 1rem;
+    }
+
+    .bg-top-img {
+        width: 10rem;
+    }
+
+    .itme-img {
+        width: 30rem;
+    }
+
+    .acdc-img {
+        width: 20rem;
+    }
+}
+
+/** Large devices (desktops, 992px and up) **/
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .bg-left-img {
+        width: 30rem;
+    }
+
+    .bg-right-img {
+        width: 1rem;
+    }
+
+    .bg-top-img {
+        width: 10rem;
+    }
+
+    .itme-img {
+        width: 30rem;
+    }
+
+    .acdc-img {
+        width: 20rem;
+    }
+}
+
+/** Extra large devices (large desktops, 1200px and up) **/
+@media (min-width: 1200px) {}

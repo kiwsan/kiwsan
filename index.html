@@ -20,54 +20,66 @@
 </head>
 
 <body>
-    <div id="container">
-        <section>
-            <div class="navbar navbar-light">
-                <a href="#"><img class="home-menu-img" src="assets/images/Group 43@2x.png"></a>
-                <nav class="my-2 my-md-0 mr-md-3">
-                    <a class="p-2 text-light" href="#">About me</a>
-                    <a class="p-2 text-light" href="#">Work progress</a>
-                    <a class="p-2 text-light" href="#">Third party</a>
-                </nav>
+    <nav class="navbar navbar-dark fixed-top navbar-expand-md bg-light">
+        <div class="container-fluid">
+            <a href="#"><img class="home-menu-img navbar-brand" src="assets/images/Group 43@2x.png"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="p-2 text-light" href="#">About me</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="p-2 text-light" href="#">Work progress</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="p-2 text-light" href="#">Third party</a>
+                    </li>
+                </ul>
             </div>
-        </section>
+        </div>
+    </nav>
 
-        <section class="information" data-anchor="dev">
+    <section class="information" data-anchor="dev">
 
-            <div class="container pt-5">
+        <div class="container pt-5">
 
-                <div class="row">
-                    <div class="col-md-6 align-self-center pt-4">
-                        <div class="mt-5">
-                            <h1>Hi,</h1>
-                            <h1>I'm Plar,</h1>
-                            <h1>Full stack developer.</h1>
-                            <h6>Frontend developer, Backend developer, Docker, Jenkins</h6>
-                            <a href="#" class="btn btn-primary mt-4">Experience</a>
-                        </div>
-                        <div class="float-right mt-5">
-                            <img class="acdc-img" src="assets/images/Group 42@2x.png">
-                        </div>
-                        <div class="clearfix"></div>
+            <div class="row">
+                <div class="col-md-6 align-self-center pt-4">
+                    <div class="mt-5">
+                        <h1>Hi,</h1>
+                        <h1>I'm Plar,</h1>
+                        <h1>Full stack web developer.</h1>
+                        <h6>Frontend developer, Backend developer, Docker, Jenkins</h6>
+                        <a href="#" class="btn btn-primary mt-4">Experience</a>
                     </div>
-                    <div class="col-md-6">
-                        <img src="assets/images/me-690x555.png">
+                    <div class="float-right mt-5">
+                        <img class="acdc-img" src="assets/images/Group 42@2x.png">
                     </div>
+                    <div class="clearfix"></div>
                 </div>
-
-                <img class="bg-left-img" src="assets/images/Path 81@2x_1.png">
-                <img class="bg-right-img" src="assets/images/Path 136@2x_1.png">
-                <img class="bg-top-img" src="assets/images/Path 82@2x_1.png">
+                <div class="col-md-6">
+                    <img class="itme-img" src="assets/images/me-690x555.png">
+                </div>
             </div>
 
-        </section>
+            <img class="bg-left-img" src="assets/images/Path 81@2x_1.png">
+            <img class="bg-right-img" src="assets/images/Path 136@2x_1.png">
+            <img class="bg-top-img" src="assets/images/Path 82@2x_1.png">
+        </div>
 
-        <footer>
-            <a href="https://github.com/kiwsan" target="_blank"><img class="github-icon" src="assets/images/GitHub-Mark-64px.png"></a>
-            <a href="https://www.linkedin.com/in/kiwsan/" target="_blank"><img class="linkedIn-icon" src="assets/images/In-Black-48px-R.png"></a>
-            <p class="text-copyright">© Kiwsan. All rights reserved</p>
-        </footer>
-    </div>
+    </section>
+
+    <footer>
+        <a href="https://github.com/kiwsan" target="_blank"><img class="github-icon"
+                src="assets/images/GitHub-Mark-64px.png"></a>
+        <a href="https://www.linkedin.com/in/kiwsan/" target="_blank"><img class="linkedIn-icon"
+                src="assets/images/In-Black-48px-R.png"></a>
+        <p class="text-copyright">© Kiwsan. All rights reserved</p>
+    </footer>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
