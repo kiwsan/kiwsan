@@ -11,9 +11,7 @@ node {
         /* This builds the actual image; synonymous to
          * docker build on the command line */
          
-        app.inside {
-            sh 'echo "Build passed"'
-        }
+        sh 'echo "Build passed"'
     }
 
     stage('Test image') {
