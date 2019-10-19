@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/kiwsan/io/utils"
+	"io/utils"
 	"net/http"
 	"os"
 	"path"
