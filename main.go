@@ -1,8 +1,8 @@
 package main
 
 import (
-	"io/routes"
-	"io/utils"
+	"github.com/kiwsan/io/routes"
+	"github.com/kiwsan/io/utils"
 	"net/http"
 )
 
