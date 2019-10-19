@@ -115,6 +115,10 @@ footer {
 
 /** Extra small devices (portrait phones, less than 576px) **/
 @media (max-width: 575.98px) {
+    .md__wrapper{
+        height: auto;
+    }
+
     .md__wave-left-img {
         display: none;
     }
@@ -159,6 +163,10 @@ footer {
 
 /** Small devices (landscape phones, 576px and up) **/
 @media (min-width: 576px) and (max-width: 767.98px) {
+    .md__wrapper {
+        height: 93vh;
+    }
+
     .md__wave-left-img {
         display: none;
     }
