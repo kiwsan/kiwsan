@@ -1,8 +1,8 @@
 package main
 
 import (
-	"./utils"
 	"github.com/gorilla/mux"
+	"github.com/kiwsan/io/utils"
 	"net/http"
 	"os"
 	"path"
