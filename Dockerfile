@@ -16,7 +16,7 @@ WORKDIR /io
 
 # Download all dependancies. Dependencies will be cached if the go.mod and go.sum files are not changed
 RUN go get github.com/gorilla/mux
-RUN github.com/kiwsan/io/utils
+RUN go get github.com/kiwsan/io/utils
 
 # Copy the source from the current directory to the Working Directory inside the container
 COPY . .
