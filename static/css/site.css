@@ -1,0 +1,244 @@
+@import url('https://fonts.googleapis.com/css?family=Work+Sans');
+
+/******global******/
+body {
+    background-color: #2A66D4;
+    font-family: 'Work Sans', sans-serif;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.md__circle-line-img {
+    width: 350px;
+}
+
+.md__wave-left-img {
+    position: fixed;
+    bottom: 0px;
+    left: 0;
+    width: 60rem;
+    z-index: -1;
+}
+
+.md__wave-right-img {
+    position: fixed;
+    bottom: 5rem;
+    right: 0;
+    width: 2rem;
+    z-index: -1;
+}
+
+.md__wave-top-img {
+    position: fixed;
+    top: 0;
+    left: 15%;
+    width: 20rem;
+    z-index: -1;
+}
+
+.md__text-light {
+    color: white;
+    font-weight: bold;
+}
+
+.md__text-light:hover {
+    text-decoration: none;
+    color: #80ACFF;
+}
+
+.md__home-menu-img {
+    width: 3rem;
+    margin-left: 1.5rem;
+}
+
+.btn-primary {
+    background-color: #E52148;
+    border-color: #E52148;
+    color: #fff;
+    border-radius: 100px;
+    width: 10rem;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.open > .dropdown-toggle.btn-primary {
+    background-color: #D1042C;
+    border-color: #D1042C;
+    color: #fff;
+    z-index: -1;
+    box-shadow: 0px 0px 8px 0px #7c7a7a;
+}
+
+h1 {
+    color: white;
+    font-weight: 900;
+}
+
+h6 {
+    color: white;
+}
+
+.md__github-icon {
+    width: 30px;
+    margin-right: 0.5rem;
+}
+
+.md__linkedIn-icon {
+    width: 30px;
+    margin-right: 0.5rem;
+}
+
+.md__text-copyright {
+    color: white;
+    font-size: 12px;
+    margin-top: 0.2rem;
+}
+
+footer {
+    padding-left: 2rem;
+}
+
+.md__bg-light {
+    background-color: #2A66D4 !important;
+}
+
+.md__avatar-img {
+    width: 100%;
+    height: auto;
+}
+
+/** Extra small devices (portrait phones, less than 576px) **/
+@media (max-width: 575.98px) {
+    .md__wave-left-img {
+        display: none;
+    }
+
+    .md__wave-right-img {
+        display: none;
+    }
+
+    .md__wave-top-img {
+        display: none;
+    }
+
+    .md__circle-line-img {
+        width: 10rem;
+    }
+
+    footer {
+        position: initial;
+        bottom: 0;
+        width: 100%;
+        margin-top: 1rem;
+        padding-left: 1rem;
+    }
+
+    .container.pt-5 {
+        padding-top: 0 !important;
+    }
+
+    .col-md-6.align-self-center.pt-4 {
+        padding-top: 4rem !important;
+    }
+
+    div.mt-5 {
+        margin-top: 0 !important;
+    }
+
+    .md__home-menu-img {
+        width: 3rem;
+        margin-left: 0;
+    }
+}
+
+/** Small devices (landscape phones, 576px and up) **/
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .md__wave-left-img {
+        display: none;
+    }
+
+    .md__wave-right-img {
+        display: none;
+    }
+
+    .md__wave-top-img {
+        display: none;
+    }
+
+    .md__circle-line-img {
+        width: 10rem;
+    }
+
+    footer {
+        position: initial;
+        bottom: 0;
+        width: 100%;
+        margin-top: 1rem;
+        padding-left: 1rem;
+    }
+
+    .container.pt-5 {
+        padding-top: 0 !important;
+    }
+
+    .col-md-6.align-self-center.pt-4 {
+        padding-top: 4rem !important;
+    }
+
+    div.mt-5 {
+        margin-top: 0 !important;
+    }
+
+    .md__home-menu-img {
+        width: 3rem;
+        margin-left: 0;
+    }
+}
+
+/** Medium devices (tablets, 768px and up) **/
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .md__wave-left-img {
+        width: 30rem;
+    }
+
+    .md__wave-right-img {
+        width: 1rem;
+    }
+
+    .md__wave-top-img {
+        width: 10rem;
+    }
+
+    .md__circle-line-img {
+        width: 20rem;
+    }
+}
+
+/** Large devices (desktops, 992px and up) **/
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .md__wave-left-img {
+        width: 30rem;
+    }
+
+    .md__wave-right-img {
+        width: 1rem;
+    }
+
+    .md__wave-top-img {
+        width: 10rem;
+    }
+
+    .md__circle-line-img {
+        width: 20rem;
+    }
+}
+
+/** Extra large devices (large desktops, 1200px and up) **/
+@media (min-width: 1200px) {
+}
