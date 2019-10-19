@@ -11,7 +11,6 @@ import (
 var templates *template.Template
 
 func main() {
-	print("Hello world")
 
 	rootDir, err := os.Getwd()
 	if err != nil {
@@ -35,6 +34,8 @@ func main() {
 
 	http.Handle("/", r)
 	http.ListenAndServe(":8000", nil)
+
+	print("listening to port 8000")
 }
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
