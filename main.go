@@ -13,7 +13,7 @@ func main() {
 	r := routes.NewRouter()
 	http.Handle("/", r)
 
+	print("listening to http://localhost:8000")
 	http.ListenAndServe(":8000", nil)
-	print("listening to port 8000")
 
 }
