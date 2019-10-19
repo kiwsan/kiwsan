@@ -1,14 +1,12 @@
 package main
 
 import (
+	"./utils"
 	"github.com/gorilla/mux"
-	"html/template"
 	"net/http"
 	"os"
 	"path"
 )
-
-var templates *template.Template
 
 func main() {
 
@@ -17,7 +15,7 @@ func main() {
 		panic(err)
 	}
 
-	templates = template.Must(template.ParseGlob("templates/*.html"))
+	utils.LoadTemplates("templates/*.html")
 
 	// This is the only way I have found to be able to serve images requested in the templates
 	http.Handle("/static/images/", http.StripPrefix("/static/images/",
@@ -39,8 +37,5 @@ func main() {
 }
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	err := templates.ExecuteTemplate(w, "index.html", nil)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+	utils.ExecuteTemplate(w, "index.html", nil)
 }
