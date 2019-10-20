@@ -10,9 +10,12 @@ import (
 
 func OnStart() {
 
-	bundle()
+	initStatics()
+	initRoutes()
 
-	utils.LoadTemplates("templates/*.html")
+}
+
+func initRoutes() {
 
 	r := routes.NewRouter()
 
@@ -20,7 +23,7 @@ func OnStart() {
 
 }
 
-func bundle() {
+func initStatics() {
 
 	rootDir, err := os.Getwd()
 	if err != nil {
@@ -36,5 +39,7 @@ func bundle() {
 
 	http.Handle("/static/js/", http.StripPrefix("/static/js/",
 		http.FileServer(http.Dir(path.Join(rootDir, "/static/js/")))))
+
+	utils.LoadTemplates("templates/*.html")
 
 }
