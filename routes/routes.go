@@ -10,7 +10,7 @@ func NewRouter() *mux.Router {
 	r := mux.NewRouter()
 
 	//home controller
-	r.HandleFunc("/", controllers.GetHandler).Methods("GET")
+	r.HandleFunc("/", controllers.HomeGetHandler).Methods("GET")
 
 	return r
 }
