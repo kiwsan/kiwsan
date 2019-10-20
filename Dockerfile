@@ -14,13 +14,17 @@ LABEL maintainer="Ekkachai Kiwsanthia <kiwsanthia@gmail.com>"
 # Set the Current Working Directory inside the container
 WORKDIR /io
 
+# Copy go mod and sum files
+COPY go.mod go.sum ./
+
 # Download all dependancies. Dependencies will be cached if the go.mod and go.sum files are not changed
-RUN go get github.com/gorilla/mux
-RUN go get github.com/kiwsan/io/utils
-RUN go get github.com/kiwsan/io/routes
+RUN go mod download
 
 # Copy the source from the current directory to the Working Directory inside the container
 COPY . .
+
+# Build the Go app
+RUN go build -o main .
 
 # Expose port 8000 to the outside world
 EXPOSE 8000
