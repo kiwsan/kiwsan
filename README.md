@@ -22,5 +22,6 @@ $ docker-compose up -d
 $ curl http://localhost:8000
 ```
 
-
+## Resources
+- https://developers.google.com/web/fundamentals
 
