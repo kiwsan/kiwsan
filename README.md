@@ -5,11 +5,11 @@
 Build and run using dockerfile:
 
 ```bash
-$ docker build -f Dockerfile -t kiwsan-goapp . 
+$ docker build -f Dockerfile -t goapp . 
 ```
 
 ```bash
-$ docker run --rm -it -p 8000:8000 kiwsan-goapp
+$ docker run --rm -it -p 8000:8000 goapp
 ```
 
 Build and run using docker-compose:
