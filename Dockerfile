@@ -24,7 +24,8 @@ RUN go mod download
 COPY . .
 
 # Build the Go app
-RUN go build -o main .
+#RUN go build -o main .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
 
 # Expose port 8000 to the outside world
 EXPOSE 8000
