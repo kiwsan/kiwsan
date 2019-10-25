@@ -4,15 +4,15 @@ services:
   - docker
 
 before_script:
-  - docker build -t offcial_app:${TRAVIS_COMMIT} .
-  - docker run -d -p 127.0.0.1:8000:8000 offcial_app:${TRAVIS_COMMIT}
+  - docker build -t offcial-app:${TRAVIS_COMMIT} .
+  - docker run -d -p 127.0.0.1:8000:8000 offcial-app:${TRAVIS_COMMIT}
 
 script:
   - docker ps
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin  
-  - docker tag offcial_app:${TRAVIS_COMMIT} plar/offcial_app:${TRAVIS_COMMIT}
-  - docker push plar/offcial_app:${TRAVIS_COMMIT}
-  - docker build --no-cache -t offcial_app:latest .
-  - docker tag offcial_app:latest plar/offcial_app:latest
-  - docker push plar/offcial_app:latest
+  - docker tag offcial-app:${TRAVIS_COMMIT} plar/offcial-app:${TRAVIS_COMMIT}
+  - docker push plar/offcial-app:${TRAVIS_COMMIT}
+  - docker build --no-cache -t offcial-app:latest .
+  - docker tag offcial-app:latest plar/offcial-app:latest
+  - docker push plar/offcial-app:latest
 
