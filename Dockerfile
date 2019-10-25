@@ -14,6 +14,8 @@ LABEL maintainer="Ekkachai Kiwsanthia <kiwsanthia@gmail.com>"
 # Set the Current Working Directory inside the container
 WORKDIR /io
 
+FROM builder
+
 # Copy go mod and sum files
 COPY go.mod go.sum ./
 
