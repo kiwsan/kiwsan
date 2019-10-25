@@ -14,22 +14,26 @@ LABEL maintainer="Ekkachai Kiwsanthia <kiwsanthia@gmail.com>"
 # Set the Current Working Directory inside the container
 WORKDIR /io
 
-FROM builder
+# Copy the source from the current directory to the Working Directory inside the container
+COPY . .
 
 # Copy go mod and sum files
-COPY go.mod go.sum ./
+# COPY go.mod go.sum ./
 
 # Download all dependancies. Dependencies will be cached if the go.mod and go.sum files are not changed
 RUN go mod download
 
-# Copy the source from the current directory to the Working Directory inside the container
-COPY . .
-
 # Build the Go app
-RUN go build -o main .
+RUN go build -o /go/bin/app
+
+FROM scratch
+# Copy our static executable.
+COPY --from=builder /go/bin/app /go/bin/app
 
 # Expose port 8000 to the outside world
 EXPOSE 8000
 
 # run main.go
-CMD ["go", "run", "main.go"]
+# CMD ["go", "run", "main.go"]
+# Run the hello binary.
+ENTRYPOINT ["/go/bin/app"]
