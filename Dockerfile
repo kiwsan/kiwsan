@@ -22,13 +22,21 @@ RUN go mod download
 
 # Copy the source from the current directory to the Working Directory inside the container
 COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -a -installsuffix cgo -o app .
 
 # Build the Go app
 #RUN go build -o main .
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
+
+FROM scratch
 
 # Expose port 8000 to the outside world
 EXPOSE 8000
 
+COPY . .
+
 # run main.go
-CMD ["go", "run", "main.go"]
+#CMD ["go", "run", "main.go"]
+
+WORKDIR /
+COPY --from=0 /build/app /
+CMD ["/app"]
