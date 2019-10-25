@@ -1,7 +1,7 @@
 # Dockerfile References: https://docs.docker.com/engine/reference/builder/
 
 # Start from golang:1.13.2-alpine base image
-FROM golang:alpine AS build
+FROM golang:1.13.2-alpine AS build
 
 # The latest alpine images don't have some tools like (`git` and `bash`).
 # Adding git, bash and openssh to the image
@@ -33,9 +33,6 @@ FROM scratch
 EXPOSE 8000
 
 COPY . .
-
-# run main.go
-#CMD ["go", "run", "main.go"]
 
 WORKDIR /
 COPY --from=0 /build/app /
