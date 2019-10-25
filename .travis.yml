@@ -4,15 +4,15 @@ services:
   - docker
 
 before_script:
-  - docker build -t ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT} .
-  - docker run -d -p 127.0.0.1:8000:8000 ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT}
+  - docker build -t offcial_app:${TRAVIS_COMMIT} .
+  - docker run -d -p 127.0.0.1:8000:8000 offcial_app:${TRAVIS_COMMIT}
 
 script:
   - docker ps
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin  
-  - docker tag ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT} plar/${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT}
-  - docker push plar/${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT}
-  - docker build --no-cache -t ${TRAVIS_REPO_SLUG}:latest .
-  - docker tag ${TRAVIS_REPO_SLUG}:latest plar/${TRAVIS_REPO_SLUG}:latest
-  - docker push plar/${TRAVIS_REPO_SLUG}:latest
+  - docker tag offcial_app:${TRAVIS_COMMIT} plar/offcial_app:${TRAVIS_COMMIT}
+  - docker push plar/offcial_app:${TRAVIS_COMMIT}
+  - docker build --no-cache -t offcial_app:latest .
+  - docker tag offcial_app:latest plar/offcial_app:latest
+  - docker push plar/offcial_app:latest
 
