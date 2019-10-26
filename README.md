@@ -4,11 +4,19 @@
 
 ## Quick start
 
-Build and run using dockerfile:
+Build using docker command:
 
 ```bash
 $ docker build -f Dockerfile -t goapp . 
 ```
+
+Optimize debug informations and compile only for linux target and disabling cross compilation.
+
+| REPOSITORY | TAG | IMAGE ID | CREATED | SIZE | 
+|--|--|--|--|--|
+| goapp | latest | 81de301a6fa4 | 28 minutes ago | 8.37MB | 
+
+Run using docker command:
 
 ```bash
 $ docker run --rm -it -p 8000:8000 goapp
