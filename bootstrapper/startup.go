@@ -1,8 +1,10 @@
 package bootstrapper
 
 import (
+	"github.com/kiwsan/io/controllers"
 	"github.com/kiwsan/io/routes"
 	"github.com/kiwsan/io/utils"
+	"github.com/rs/cors"
 	"net/http"
 	"os"
 	"path"
@@ -19,8 +21,22 @@ func initRoutes() {
 
 	r := routes.NewRouter()
 
-	http.Handle("/", r)
+	// handle static files
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/",
+		CacheControlWrapper(http.FileServer(http.Dir("/static/")))))
 
+	r.NotFoundHandler = http.HandlerFunc(controllers.HomeGetHandler) // work around for SPA serving index.html
+
+	handler := cors.Default().Handler(r)
+	http.Handle("/", handler)
+
+}
+
+func CacheControlWrapper(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "max-age=3600")
+		h.ServeHTTP(w, r)
+	})
 }
 
 func initStatics() {
