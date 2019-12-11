@@ -24,7 +24,7 @@ before_install:
   - chmod 600 travis_rsa
   - mv travis_rsa ~/.ssh/travis_rsa
 after_success:
-  - set -xe
+  #- set -xe
   - rm -rf .git
   - eval "$(ssh-agent -s)" && ssh-add ~/.ssh/travis_rsa && ssh -o "StrictHostKeyChecking=no" ${REMOTE_USER}@${SSH_HOST} -v exit
   - git init
