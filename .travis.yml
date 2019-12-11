@@ -1,22 +1,22 @@
 language: go
-
 services:
-  - docker
-
+- docker
 branches:
   only:
   - travis-ci
-
+addons:
+  ssh_known_hosts: "${SSH_HOST}"
 before_script:
-  - docker build -t offcial-app:${TRAVIS_COMMIT} .
-  - docker run -d -p 127.0.0.1:8000:8000 offcial-app:${TRAVIS_COMMIT}
-
+- docker build -t offcial-app:${TRAVIS_COMMIT} .
+- docker run -d -p 127.0.0.1:8000:8000 offcial-app:${TRAVIS_COMMIT}
 script:
-  - docker ps
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin  
-  - docker tag offcial-app:${TRAVIS_COMMIT} plar/offcial-app:${TRAVIS_COMMIT}
-  - docker push plar/offcial-app:${TRAVIS_COMMIT}
-  - docker build --no-cache -t offcial-app:latest .
-  - docker tag offcial-app:latest plar/offcial-app:latest
-  - docker push plar/offcial-app:latest
-
+- docker ps
+- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+- docker tag offcial-app:${TRAVIS_COMMIT} plar/offcial-app:${TRAVIS_COMMIT}
+- docker push plar/offcial-app:${TRAVIS_COMMIT}
+- docker build --no-cache -t offcial-app:latest .
+- docker tag offcial-app:latest plar/offcial-app:latest
+- docker push plar/offcial-app:latest
+before_install:
+- openssl aes-256-cbc -K $encrypted_4d5e503578b4_key -iv $encrypted_4d5e503578b4_iv
+  -in travis_rsa.enc -out travis_rsa -d
