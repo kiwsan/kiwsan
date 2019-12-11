@@ -1,4 +1,8 @@
-github.com/dc0d/cache-control v0.0.0-20180102063924-01b38e1f8593 h1:cQe9dHGN50Jp/wRCcBEYBYSoAhDfvcQVxBd98snR398=
-github.com/dc0d/cache-control v0.0.0-20180102063924-01b38e1f8593/go.mod h1:tnrMUKTVwfRDcu1m92LFLA2eXywtO71poxmJzKwiB5w=
+github.com/golang/snappy v0.0.1 h1:Qgr9rKW7uDUkrbSmQeiDsGa8SjGyCOGtuasMWwvp2P4=
+github.com/golang/snappy v0.0.1/go.mod h1:/XxbfmMg8lxefKM7IXC3fBNl/7bRcc72aCRzEWrmP2Q=
 github.com/gorilla/mux v1.7.3 h1:gnP5JzjVOuiZD07fKKToCAOjS0yOpj/qPETTXCCS6hw=
 github.com/gorilla/mux v1.7.3/go.mod h1:1lud6UwP+6orDFRuTfBEV8e9/aOM/c4fVVCaMa2zaAs=
+github.com/hashicorp/golang-lru v0.5.3 h1:YPkqC67at8FYaadspW/6uE0COsBxS2656RLEr8Bppgk=
+github.com/hashicorp/golang-lru v0.5.3/go.mod h1:iADmTwqILo4mZ8BN3D2Q6+9jd8WM5uGBxy+E8yxSoD4=
+github.com/kevburnsjr/microcache v1.2.0 h1:b1KriEnK1VCOBamSPToX6ys7o+SZ5d2iIWE9ubsTe4I=
+github.com/kevburnsjr/microcache v1.2.0/go.mod h1:8E5X9kyG0BGXJrEkDYx3DFD17CsuUmNVXzMKRP9gtvs=
