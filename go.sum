@@ -1,2 +1,4 @@
+github.com/dc0d/cache-control v0.0.0-20180102063924-01b38e1f8593 h1:cQe9dHGN50Jp/wRCcBEYBYSoAhDfvcQVxBd98snR398=
+github.com/dc0d/cache-control v0.0.0-20180102063924-01b38e1f8593/go.mod h1:tnrMUKTVwfRDcu1m92LFLA2eXywtO71poxmJzKwiB5w=
 github.com/gorilla/mux v1.7.3 h1:gnP5JzjVOuiZD07fKKToCAOjS0yOpj/qPETTXCCS6hw=
 github.com/gorilla/mux v1.7.3/go.mod h1:1lud6UwP+6orDFRuTfBEV8e9/aOM/c4fVVCaMa2zaAs=
