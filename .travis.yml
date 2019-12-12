@@ -1,37 +1,18 @@
 language: go
 services:
-- docker
+  - docker
 branches:
   only:
   - travis-ci
 before_script:
-- docker build -t offcial-app:${TRAVIS_COMMIT} .
-- docker run -d -p 127.0.0.1:8000:8000 offcial-app:${TRAVIS_COMMIT}
+  - bash scripts/docker-build.sh
 script:
-- docker ps
-- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-- docker tag offcial-app:${TRAVIS_COMMIT} plar/offcial-app:${TRAVIS_COMMIT}
-- docker push plar/offcial-app:${TRAVIS_COMMIT}
-- docker build --no-cache -t offcial-app:latest .
-- docker tag offcial-app:latest plar/offcial-app:latest
-- docker push plar/offcial-app:latest
+  - bash scripts/docker-push.sh
 before_install:
-- openssl aes-256-cbc -K $encrypted_4d5e503578b4_key -iv $encrypted_4d5e503578b4_iv
-  -in travis_rsa.enc -out travis_rsa -d
-- chmod 600 travis_rsa
-- mv travis_rsa ~/.ssh/travis_rsa
+  - bash scripts/ssh-build.sh
 after_success:
-- rm -rf .git
-- eval "$(ssh-agent -s)" && ssh-add ~/.ssh/travis_rsa && ssh -o "StrictHostKeyChecking=no"
-  ${REMOTE_USER}@${SSH_HOST} -v exit
-- git init
-- git remote add deploy "${REMOTE_USER}@${SSH_HOST}:${REMOTE_APP_DIR}" && git config
-  user.name "Travis CI" && git config user.email "kiwsan+travis@gmail.com" && git
-  status && git add docker-compose.yml && git commit -m "deploy"
-- git push --force deploy master
-- ssh -l ${REMOTE_USER} ${SSH_HOST} "docker-compose -f ${REMOTE_APP_DIR}/public/docker-compose.${TRAVIS_ENVIRONMENT}.yml
-  pull && docker-compose -f ${REMOTE_APP_DIR}/public/docker-compose.${TRAVIS_ENVIRONMENT}.yml
-  up -d"
+  - set -xe
+  - bash scripts/deploy.sh
 notifications:
   email: false    # default notification method
   slack:
