@@ -38,5 +38,5 @@ $ curl http://localhost:8000
 - https://developers.google.com/web/fundamentals
 
 ## User story (Scrum)
-- https://tree.taiga.io/project/kiwsan-io-personal-website/us/1
+- https://tree.taiga.io/project/kiwsan-io-personal-website/timeline
 
