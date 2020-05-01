@@ -1,42 +1,34 @@
-# github.kiwsan.io
+# io
 
-[![Build Status](https://travis-ci.org/kiwsan/io.svg?branch=master)](https://travis-ci.org/kiwsan/io)
-
-## Quick start
-
-Build using docker command:
-
-```bash
-$ docker build -f Dockerfile -t goapp . 
+## Project setup
+```
+yarn install
 ```
 
-Optimize debug informations and compile only for linux target and disabling cross compilation.
-
-| REPOSITORY | TAG | IMAGE ID | CREATED | SIZE | 
-|--|--|--|--|--|
-| goapp | latest | 81de301a6fa4 | 28 minutes ago | 8.37MB | 
-
-<img src="https://github.com/kiwsan/io/blob/master/Screenshot_20191106_234848.png" alt="drawing" width="550"/>
-
-Run using docker command:
-
-```bash
-$ docker run --rm -it -p 8000:8000 goapp
+### Compiles and hot-reloads for development
+```
+yarn serve
 ```
 
-Build and run using docker-compose:
-
-```bash
-$ docker-compose up -d
+### Compiles and minifies for production
+```
+yarn build
 ```
 
-```bash
-$ curl http://localhost:8000
+### Run your unit tests
+```
+yarn test:unit
 ```
 
-## Resources
-- https://developers.google.com/web/fundamentals
+### Run your end-to-end tests
+```
+yarn test:e2e
+```
 
-## User story (Scrum)
-- https://tree.taiga.io/project/kiwsan-io/timeline
+### Lints and fixes files
+```
+yarn lint
+```
 
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
