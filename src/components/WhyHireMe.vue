@@ -1,5 +1,5 @@
 <template>
-  <div class="whyhireme">
+  <section class="whyhireme">
     <v-layout>
       <v-row justify="center">
         <v-col cols="8">
@@ -93,7 +93,7 @@
         </v-col>
       </v-row>
     </v-layout>
-  </div>
+  </section>
 </template>
 <script>
 export default {

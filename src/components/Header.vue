@@ -1,5 +1,5 @@
 <template>
-  <div class="header">
+  <section class="header">
     <v-layout>
       <v-row>
         <v-col cols="5" class="pa-0">
@@ -47,7 +47,7 @@
         </v-col>
       </v-row>
     </v-layout>
-  </div>
+  </section>
 </template>
 
 <script>
