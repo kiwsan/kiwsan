@@ -4,6 +4,7 @@
     <WhatIDo />
     <WhoIAm />
     <ShowCase />
+    <WhyHireMe />
   </div>
 </template>
 
@@ -13,6 +14,7 @@ import Header from "@/components/Header";
 import WhatIDo from "@/components/WhatIDo";
 import WhoIAm from "@/components/WhoIAm";
 import ShowCase from "@/components/ShowCase";
+import WhyHireMe from "@/components/WhyHireMe";
 
 export default {
   name: "Home",
@@ -20,7 +22,8 @@ export default {
     Header,
     WhatIDo,
     WhoIAm,
-    ShowCase
+    ShowCase,
+    WhyHireMe
   }
 };
 </script>
