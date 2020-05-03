@@ -1,52 +1,50 @@
 <template>
-  <section class="whatido">
-    <v-layout>
-      <v-row justify="center">
-        <v-col cols="8">
-          <h1 class="text-center section-title">What I Do</h1>
-          <v-row justify="center">
-            <v-col cols="4" class="text-center">
-              <v-card class="whatido-card">
-                <v-img
-                  class="whatido-image"
-                  :src="require('../assets/full-stack-developer.png')"
-                  width="80"
-                ></v-img>
-              </v-card>
+  <section class="what-i-do">
+    <v-row justify="center">
+      <v-col cols="8">
+        <h1 class="text-center section-title">What I Do</h1>
+        <v-row justify="center">
+          <v-col cols="4" class="text-center">
+            <v-card class="whatido-card">
+              <v-img
+                class="whatido-image"
+                :src="require('../assets/full-stack-developer.png')"
+                width="80"
+              ></v-img>
+            </v-card>
 
-              <p class="whatido-title">Full Stack Developer</p>
-              <p class="whatido-subtitle">Frontend and Backend</p>
-            </v-col>
-            <v-col cols="4" class="text-center">
-              <v-card class="whatido-card">
-                <v-img
-                  class="whatido-image"
-                  :src="require('../assets/devops.png')"
-                  width="80"
-                ></v-img>
-              </v-card>
+            <p class="whatido-title">Full Stack Developer</p>
+            <p class="whatido-subtitle">Frontend and Backend</p>
+          </v-col>
+          <v-col cols="4" class="text-center">
+            <v-card class="whatido-card">
+              <v-img
+                class="whatido-image"
+                :src="require('../assets/devops.png')"
+                width="80"
+              ></v-img>
+            </v-card>
 
-              <p class="whatido-title">DevOps</p>
-              <p class="whatido-subtitle">
-                Digitalocean, Docker, Jenkins and Travis
-              </p>
-            </v-col>
-            <v-col cols="4" class="text-center">
-              <v-card class="whatido-card">
-                <v-img
-                  class="whatido-image"
-                  :src="require('../assets/uxui-design.png')"
-                  width="65"
-                ></v-img>
-              </v-card>
+            <p class="whatido-title">DevOps</p>
+            <p class="whatido-subtitle">
+              Digitalocean, Docker, Jenkins and Travis
+            </p>
+          </v-col>
+          <v-col cols="4" class="text-center">
+            <v-card class="whatido-card">
+              <v-img
+                class="whatido-image"
+                :src="require('../assets/uxui-design.png')"
+                width="65"
+              ></v-img>
+            </v-card>
 
-              <p class="whatido-title">UX/UI Design</p>
-              <p class="whatido-subtitle">Adobe XD</p>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
-    </v-layout>
+            <p class="whatido-title">UX/UI Design</p>
+            <p class="whatido-subtitle">Adobe XD</p>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
   </section>
 </template>
 

@@ -1,98 +1,96 @@
 <template>
-  <section class="whyhireme">
-    <v-layout>
-      <v-row justify="center">
-        <v-col cols="8">
-          <h1 class="section-title text-center">Why Hire Me?</h1>
+  <section class="why-hire-me">
+    <v-row justify="center">
+      <v-col cols="8">
+        <h1 class="section-title text-center">Why Hire Me?</h1>
 
-          <v-row>
-            <v-col cols="6">
-              <v-img :src="require('../assets/why-me.png')"></v-img>
-            </v-col>
-            <v-col cols="6">
-              <v-row>
-                <v-col cols="12">
-                  <v-alert
-                    class="corporate-item"
-                    border="left"
-                    colored-border
-                    color="red lighten-2"
-                    elevation="5"
-                  >
-                    <h1 class="corporate-title">Software Developer</h1>
-                    <h1 class="corporate-title">At ADI (Thailand) Co., Ltd.</h1>
-                    <p class="corporate-subtitle float-left">
-                      Jul 2018 - Present
-                    </p>
-                    <div class="d-flex float-right">
-                      <v-img
-                        class="card-image"
-                        :src="require('../assets/aig-logo.png')"
-                        width="40"
-                      ></v-img>
-                    </div>
-                  </v-alert>
-                </v-col>
-                <v-col cols="12">
-                  <v-alert
-                    class="corporate-item"
-                    border="left"
-                    colored-border
-                    color="yellow lighten-1"
-                    elevation="5"
-                  >
-                    <h1 class="corporate-title">.NET Web Developer</h1>
-                    <h1 class="corporate-title">At Ayodia Co., Ltd.</h1>
-                    <p class="corporate-subtitle float-left">
-                      Mar 2017 - Feb 2018
-                    </p>
-                    <div class="d-flex float-right">
-                      <v-img
-                        class="card-image"
-                        :src="require('../assets/cpmaji-logo.png')"
-                        width="40"
-                      ></v-img>
-                      <v-img
-                        class="card-image"
-                        :src="require('../assets/kasset-logo.png')"
-                        width="40"
-                      ></v-img>
-                    </div>
-                  </v-alert>
-                </v-col>
-                <v-col cols="12">
-                  <v-alert
-                    class="corporate-item"
-                    border="left"
-                    colored-border
-                    color="light-blue lighten-2"
-                    elevation="5"
-                  >
-                    <h1 class="corporate-title">Junior .NET Developer</h1>
-                    <h1 class="corporate-title">At PNL Co., Ltd.</h1>
-                    <p class="corporate-subtitle float-left">
-                      Nov 2015 - Feb 2017
-                    </p>
-                    <div class="d-flex float-right">
-                      <v-img
-                        class="card-image"
-                        :src="require('../assets/bvl-logo.png')"
-                        width="40"
-                      ></v-img>
-                      <v-img
-                        class="card-image"
-                        :src="require('../assets/pnl-logo.png')"
-                        width="40"
-                      ></v-img>
-                    </div>
-                  </v-alert>
-                </v-col>
-              </v-row>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
-    </v-layout>
+        <v-row>
+          <v-col cols="6">
+            <v-img :src="require('../assets/why-me.png')"></v-img>
+          </v-col>
+          <v-col cols="6">
+            <v-row>
+              <v-col cols="12">
+                <v-alert
+                  class="corporate-item"
+                  border="left"
+                  colored-border
+                  color="red lighten-2"
+                  elevation="5"
+                >
+                  <h1 class="corporate-title">Software Developer</h1>
+                  <h1 class="corporate-title">At ADI (Thailand) Co., Ltd.</h1>
+                  <p class="corporate-subtitle float-left">
+                    Jul 2018 - Present
+                  </p>
+                  <div class="d-flex float-right">
+                    <v-img
+                      class="card-image"
+                      :src="require('../assets/aig-logo.png')"
+                      width="40"
+                    ></v-img>
+                  </div>
+                </v-alert>
+              </v-col>
+              <v-col cols="12">
+                <v-alert
+                  class="corporate-item"
+                  border="left"
+                  colored-border
+                  color="yellow lighten-1"
+                  elevation="5"
+                >
+                  <h1 class="corporate-title">.NET Web Developer</h1>
+                  <h1 class="corporate-title">At Ayodia Co., Ltd.</h1>
+                  <p class="corporate-subtitle float-left">
+                    Mar 2017 - Feb 2018
+                  </p>
+                  <div class="d-flex float-right">
+                    <v-img
+                      class="card-image"
+                      :src="require('../assets/cpmaji-logo.png')"
+                      width="40"
+                    ></v-img>
+                    <v-img
+                      class="card-image"
+                      :src="require('../assets/kasset-logo.png')"
+                      width="40"
+                    ></v-img>
+                  </div>
+                </v-alert>
+              </v-col>
+              <v-col cols="12">
+                <v-alert
+                  class="corporate-item"
+                  border="left"
+                  colored-border
+                  color="light-blue lighten-2"
+                  elevation="5"
+                >
+                  <h1 class="corporate-title">Junior .NET Developer</h1>
+                  <h1 class="corporate-title">At PNL Co., Ltd.</h1>
+                  <p class="corporate-subtitle float-left">
+                    Nov 2015 - Feb 2017
+                  </p>
+                  <div class="d-flex float-right">
+                    <v-img
+                      class="card-image"
+                      :src="require('../assets/bvl-logo.png')"
+                      width="40"
+                    ></v-img>
+                    <v-img
+                      class="card-image"
+                      :src="require('../assets/pnl-logo.png')"
+                      width="40"
+                    ></v-img>
+                  </div>
+                </v-alert>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
   </section>
 </template>
 <script>
@@ -101,7 +99,7 @@ export default {
 };
 </script>
 <style scoped>
-.whyhireme {
+.why-hire-me {
   margin-top: 6.5rem;
 }
 .section-title {
