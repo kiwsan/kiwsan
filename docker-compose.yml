@@ -1,0 +1,12 @@
+# Docker Compose file Reference (https://docs.docker.com/compose/compose-file/)
+version: "3.7"
+
+services:
+  app:
+    container_name: portfolio
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8088:8080"
+    restart: unless-stopped

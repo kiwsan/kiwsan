@@ -5,6 +5,10 @@
     <WhoIAm />
     <ShowCase />
     <WhyHireMe />
+    <Certifications />
+    <ContactMe />
+    <Framework />
+    <Footer />
   </v-content>
 </template>
 
@@ -15,6 +19,10 @@ import WhatIDo from "@/components/WhatIDo";
 import WhoIAm from "@/components/WhoIAm";
 import ShowCase from "@/components/ShowCase";
 import WhyHireMe from "@/components/WhyHireMe";
+import Certifications from "@/components/Certifications";
+import ContactMe from "@/components/ContactMe";
+import Framework from "@/components/Framework";
+import Footer from "@/components/Footer";
 
 export default {
   name: "Home",
@@ -23,7 +31,11 @@ export default {
     WhatIDo,
     WhoIAm,
     ShowCase,
-    WhyHireMe
+    WhyHireMe,
+    Certifications,
+    ContactMe,
+    Framework,
+    Footer
   }
 };
 </script>

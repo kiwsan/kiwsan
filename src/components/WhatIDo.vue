@@ -5,7 +5,7 @@
         <h1 class="text-center section-title">What I Do</h1>
         <v-row justify="center">
           <v-col cols="4" class="text-center">
-            <v-card class="whatido-card">
+            <v-card class="whatido-card" elevation="5">
               <v-img
                 class="whatido-image"
                 :src="require('../assets/full-stack-developer.png')"
@@ -17,7 +17,7 @@
             <p class="whatido-subtitle">Frontend and Backend</p>
           </v-col>
           <v-col cols="4" class="text-center">
-            <v-card class="whatido-card">
+            <v-card class="whatido-card" elevation="5">
               <v-img
                 class="whatido-image"
                 :src="require('../assets/devops.png')"
@@ -31,7 +31,7 @@
             </p>
           </v-col>
           <v-col cols="4" class="text-center">
-            <v-card class="whatido-card">
+            <v-card class="whatido-card" elevation="5">
               <v-img
                 class="whatido-image"
                 :src="require('../assets/uxui-design.png')"
@@ -56,7 +56,7 @@ export default {
 
 <style scoped>
 .section-title {
-  margin-top: 6.5rem;
+  margin-top: 12rem;
   margin-bottom: 4rem;
   color: #405680;
   font-size: 68px;

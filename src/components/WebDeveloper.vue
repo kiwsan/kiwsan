@@ -2,7 +2,7 @@
   <section class="web-developer">
     <v-row>
       <v-col cols="6" class="pa-0">
-        <v-img :src="require('../assets/iam-nothing-like-you.png')"></v-img>
+        <v-img :src="require('../assets/iam-nothing-like-you.jpg')"></v-img>
       </v-col>
       <v-col cols="6" class="pa-0">
         <v-container class="whoami-panel">
@@ -22,25 +22,35 @@
           </div>
 
           <div class="mt-10">
-            <v-btn rounded color="primary" x-large dark>See Projects</v-btn>
+            <v-btn elevation="5" rounded color="primary" x-large dark
+              >See Projects</v-btn
+            >
           </div>
         </v-container>
       </v-col>
     </v-row>
-    <v-row justify="center">
-      <v-col cols="8">
-        <v-card>
-          <v-row class="pa-4" justify="center">
-            <v-col cols="1">
-              <v-img :src="require('../assets/dotnet-full-logo.png')"></v-img>
-            </v-col>
-            <v-col cols="1">
-              <v-img :src="require('../assets/angular-full-logo.png')"></v-img>
-            </v-col>
-          </v-row>
-        </v-card>
-      </v-col>
-    </v-row>
+    <v-content class="web-area">
+      <div class="web-content">
+        <v-row justify="center">
+          <v-col cols="8">
+            <v-card elevation="5">
+              <v-row class="pa-4" justify="center">
+                <v-col cols="1">
+                  <v-img
+                    :src="require('../assets/dotnet-full-logo.png')"
+                  ></v-img>
+                </v-col>
+                <v-col cols="1">
+                  <v-img
+                    :src="require('../assets/angular-full-logo.png')"
+                  ></v-img>
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-col>
+        </v-row>
+      </div>
+    </v-content>
   </section>
 </template>
 
@@ -54,8 +64,16 @@ export default {
 </script>
 
 <style scoped>
+.web-area {
+  position: relative;
+}
+.web-content {
+  position: absolute;
+  width: 100%;
+  top: -80px;
+}
 .whoami-panel {
-  padding: 8rem 8rem 0 8rem;
+  padding: 4rem 8rem 0 6rem;
 }
 
 .whoami-panel .whoami-text {
