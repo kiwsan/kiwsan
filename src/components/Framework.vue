@@ -3,17 +3,17 @@
     <p class="framework-title">THANKS</p>
     <div class="d-flex float-left">
       <v-img
-        class="card-image"
+        class="mr-2"
         :src="require('../assets/dribbble-logo.png')"
         width="50"
       ></v-img>
       <v-img
-        class="card-image"
+        class="mr-2"
         :src="require('../assets/shutterstock-logo.png')"
         width="50"
       ></v-img>
       <v-img
-        class="card-image"
+        class="mr-2"
         :src="require('../assets/adobe-xd-logo.png')"
         width="50"
       ></v-img>

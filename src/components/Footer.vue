@@ -1,6 +1,6 @@
 <template>
   <section class="footer">
-    <p class="footer-text">&copy; kiwsan 2020. All rights reserved.</p>
+    <p class="footer-text">&copy; kiwsan 2020. All rights reserved. (beta version 1.0.21) </p>
   </section>
 </template>
 <script>
