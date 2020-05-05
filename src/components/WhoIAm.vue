@@ -36,7 +36,7 @@
               <a class="mr-2">
                 <v-img
                   class="whatido-image"
-                  :src="require('../assets/linkedin-logo.png')"
+                  :src="require('../assets/linkedin-brand-logo.png')"
                   width="65"
                   elevation="5"
                 ></v-img>
