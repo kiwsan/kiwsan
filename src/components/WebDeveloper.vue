@@ -16,7 +16,7 @@
             <a class="menu-item font-weight-bold">Hi there!</a>
           </div>
 
-          <v-layout align-center class="text-content">
+          <v-layout align-top class="text-content">
             <v-flex>
               <div class="mt-md-2">
                 <p class="whoami-text">whoami:</p>
@@ -90,6 +90,7 @@ export default {
 <style scoped>
 .web-area {
   position: relative;
+  top: -80px;
 }
 .web-content {
   position: absolute;
@@ -132,10 +133,13 @@ export default {
   .whoami-panel .whoami-text {
     font-size: 12px;
   }
+  .web-area {
+    top: -55px;
+  }
 }
 @media screen and (min-width: 1264px) {
   .whoami-panel .whoami-title {
-    font-size: 7.25rem;
+    font-size: 6rem;
   }
   .whoami-panel .whoami-text {
     font-size: 16px;
@@ -146,6 +150,9 @@ export default {
   }
   .whoami-panel {
     padding: 2rem 4rem 0 2rem;
+  }
+  .web-area {
+    top: -80px;
   }
 }
 @media screen and (min-width: 1604px) {

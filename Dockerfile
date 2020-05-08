@@ -1,7 +1,4 @@
-FROM node:lts-alpine
-
-# install simple http server for serving static content
-RUN npm install -g http-server
+FROM node:lts-alpine as develop-stage
 
 # make the 'app' folder the current working directory
 WORKDIR /app
@@ -16,7 +13,15 @@ RUN npm install
 COPY . .
 
 # build app for production with minification
+FROM develop-stage as build-stage
 RUN npm run build
 
+FROM node:lts-alpine as deploy-stage
+
+# install simple http server for serving static content
+RUN npm install -g http-server
+
+COPY --from=build-stage /app/dist ./
+
 EXPOSE 8080
-CMD [ "http-server", "dist" ]
+CMD [ "http-server" ]

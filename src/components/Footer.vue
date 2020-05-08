@@ -1,7 +1,7 @@
 <template>
   <section class="footer">
     <p class="footer-text">
-      &copy; kiwsan 2020. All rights reserved. (beta version 1.0.21)
+      &copy; kiwsan 2020. All rights reserved. (beta version 1.0.22)
     </p>
   </section>
 </template>
