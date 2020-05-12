@@ -121,7 +121,7 @@ export default {
 
 @media screen and (min-width: 960px) {
   .whoami-panel .whoami-title {
-    font-size: 5rem;
+    font-size: 4rem;
   }
   .whoami-panel {
     padding: 1.5rem 4rem 0 2rem;
@@ -134,7 +134,7 @@ export default {
     font-size: 12px;
   }
   .web-area {
-    top: -55px;
+    top: -47px;
   }
 }
 @media screen and (min-width: 1264px) {
@@ -157,13 +157,18 @@ export default {
 }
 @media screen and (min-width: 1604px) {
   .whoami-panel .whoami-title {
-    font-size: 9rem;
+    font-size: 8rem;
   }
   .whoami-panel {
     padding: 3.5rem 4rem 0 4rem;
   }
   .text-content {
     height: 90%;
+  }
+}
+@media screen and (min-width: 1704px) {
+  .whoami-panel .whoami-title {
+    font-size: 9rem;
   }
 }
 </style>

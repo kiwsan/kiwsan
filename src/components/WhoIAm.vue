@@ -16,18 +16,10 @@
             </p>
 
             <div class="d-flex justify-start">
-              <v-btn
-                elevation="5"
-                class="mr-10"
-                rounded
-                color="primary"
-                x-large
-                dark
-                >Download CV</v-btn
-              >
+              <v-btn elevation="5" class="mr-10" rounded color="primary" x-large dark>Download CV</v-btn>
               <a class="mr-2">
                 <v-img
-                  class="whatido-image"
+                  class="who-i-am-image"
                   :src="require('../assets/github-logo.png')"
                   width="65"
                   elevation="5"
@@ -35,7 +27,7 @@
               </a>
               <a class="mr-2">
                 <v-img
-                  class="whatido-image"
+                  class="who-i-am-image"
                   :src="require('../assets/linkedin-brand-logo.png')"
                   width="65"
                   elevation="5"
@@ -56,17 +48,55 @@ export default {
 </script>
 
 <style scoped>
-.who-i-am {
-  margin-top: 6.5rem;
-  background-color: #f7f7f7;
-  padding: 2rem 0 2rem 0;
+@media screen and (min-width: 960px) {
+  .who-i-am {
+    margin-top: 2.5rem;
+    background-color: #f7f7f7;
+    padding: 1rem 0 1rem 0;
+  }
+  .section-title {
+    color: #405680;
+    font-size: 35px;
+  }
+  .text-description {
+    font-size: 15px;
+    color: #707070;
+  }
+  .v-responsive.v-image.who-i-am-image {
+    height: 45px !important;
+    width: 45px !important;
+  }
 }
-.section-title {
-  color: #405680;
-  font-size: 68px;
+@media screen and (min-width: 1264px) {
+  .who-i-am {
+    margin-top: 3.5rem;
+    padding: 1.5rem 0 1.5rem 0;
+  }
+  .section-title {
+    font-size: 48px;
+  }
+  .text-description {
+    font-size: 20px;
+  }
+  .v-responsive.v-image.who-i-am-image {
+    height: 55px !important;
+    width: 55px !important;
+  }
 }
-.text-description {
-  font-size: 28px;
-  color: #707070;
+@media screen and (min-width: 1604px) {
+  .who-i-am {
+    margin-top: 6.5rem;
+    padding: 3.5rem 0 3.5rem 0;
+  }
+  .section-title {
+    font-size: 68px;
+  }
+  .text-description {
+    font-size: 28px;
+  }
+  .v-responsive.v-image.who-i-am-image {
+    height: 65px !important;
+    width: 65px !important;
+  }
 }
 </style>
