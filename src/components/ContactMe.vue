@@ -110,5 +110,8 @@ export default {
     right: -3rem;
     bottom: -3rem;
   }
+  .v-responsive.v-image {
+    width: 100px !important;
+  }
 }
 </style>
