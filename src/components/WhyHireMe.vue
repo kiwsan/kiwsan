@@ -102,9 +102,6 @@ export default {
     font-size: 10px;
     font-weight: bold;
   }
-  .whyme {
-    display: grid;
-  }
 }
 @media screen and (min-width: 1264px) {
   .why-hire-me {
