@@ -4,10 +4,16 @@
       <v-col cols="12" lg="5" md="6">
         <div class="contact-area">
           <div class="contact-bullet-left">
-            <v-img width="100" :src="require('../assets/bullter-left.png')"></v-img>
+            <v-img
+              width="100"
+              :src="require('../assets/bullter-left.png')"
+            ></v-img>
           </div>
           <div class="contact-bullet-right">
-            <v-img width="100" :src="require('../assets/bullter-right.png')"></v-img>
+            <v-img
+              width="100"
+              :src="require('../assets/bullter-right.png')"
+            ></v-img>
           </div>
           <v-alert
             border="bottom"

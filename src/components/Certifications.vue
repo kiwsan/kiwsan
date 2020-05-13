@@ -1,7 +1,15 @@
 <template>
   <section class="certifications">
-    <v-img class="cert-line" width="900" :src="require('../assets/studio.png')"></v-img>
-    <v-img class="cert-women" width="850" :src="require('../assets/goal.png')"></v-img>
+    <v-img
+      class="cert-line"
+      width="900"
+      :src="require('../assets/studio.png')"
+    ></v-img>
+    <v-img
+      class="cert-women"
+      width="850"
+      :src="require('../assets/goal.png')"
+    ></v-img>
     <v-row justify="center" class="cert-content">
       <v-col cols="8">
         <v-row justify="end">
@@ -11,7 +19,10 @@
               <h1 class="cert-card-title">Certificartions</h1>
               <v-row>
                 <v-col cols="4" class="text-center">
-                  <v-img class="mb-4" :src="require('../assets/cert-ms-csharp.png')"></v-img>
+                  <v-img
+                    class="mb-4"
+                    :src="require('../assets/cert-ms-csharp.png')"
+                  ></v-img>
                   <a class="cert-additional-link">Additional Details</a>
                 </v-col>
                 <v-col cols="8">
@@ -27,7 +38,9 @@
                   <v-row class="row-skil">
                     <v-col cols="5" class="pb-0">
                       <v-card class="text-center">
-                        <p class="cert-detail-text pa-2">Application Developer</p>
+                        <p class="cert-detail-text pa-2">
+                          Application Developer
+                        </p>
                       </v-card>
                     </v-col>
                     <v-col cols="4" class="pb-0">
@@ -42,7 +55,9 @@
                     </v-col>
                     <v-col cols="6" class="pb-0">
                       <v-card class="text-center">
-                        <p class="cert-detail-text pa-2">Object-based Programming</p>
+                        <p class="cert-detail-text pa-2">
+                          Object-based Programming
+                        </p>
                       </v-card>
                     </v-col>
                     <v-col cols="5" class="pb-0">
@@ -52,10 +67,14 @@
                     </v-col>
                   </v-row>
                   <h3 class="cert-subtitle mt-4">Earning Criteria</h3>
-                  <p class="cert-detail-text mt-4">VALIDATE SKILLS IN THE FOLLWING AREAS:</p>
+                  <p class="cert-detail-text mt-4">
+                    VALIDATE SKILLS IN THE FOLLWING AREAS:
+                  </p>
                   <p class="cert-detail-text">- Manage program flow</p>
                   <p class="cert-detail-text">- Create and use types</p>
-                  <p class="cert-detail-text">- Debug applications and implement security</p>
+                  <p class="cert-detail-text">
+                    - Debug applications and implement security
+                  </p>
                   <p class="cert-detail-text">- Implement data access</p>
                 </v-col>
               </v-row>

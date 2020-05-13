@@ -7,7 +7,11 @@
             <v-col cols="12">
               <v-card class="card-item" elevation="5">
                 <div class="card-content">
-                  <v-img class="card-image" :src="require('../assets/no-data.png')" width="250"></v-img>
+                  <v-img
+                    class="card-image"
+                    :src="require('../assets/no-data.png')"
+                    width="250"
+                  ></v-img>
                   <p>No data.</p>
                 </div>
               </v-card>
@@ -15,13 +19,24 @@
             <v-col cols="12">
               <v-card class="card-item" elevation="5">
                 <div class="card-content">
-                  <v-img class="card-image" :src="require('../assets/no-data.png')" width="250"></v-img>
+                  <v-img
+                    class="card-image"
+                    :src="require('../assets/no-data.png')"
+                    width="250"
+                  ></v-img>
                   <p>No data.</p>
                 </div>
               </v-card>
             </v-col>
             <v-col cols="12" class="text-right">
-              <v-btn class="mr-10" elevation="5" rounded color="primary" x-large dark>
+              <v-btn
+                class="mr-10"
+                elevation="5"
+                rounded
+                color="primary"
+                x-large
+                dark
+              >
                 <span class="ml-8 mr-8">View All</span>
               </v-btn>
             </v-col>
@@ -34,7 +49,11 @@
               <v-col cols="12">
                 <v-card class="card-item" elevation="5">
                   <div class="card-content">
-                    <v-img class="card-image" :src="require('../assets/no-data.png')" width="250"></v-img>
+                    <v-img
+                      class="card-image"
+                      :src="require('../assets/no-data.png')"
+                      width="250"
+                    ></v-img>
                     <p>No data.</p>
                   </div>
                 </v-card>
@@ -42,7 +61,11 @@
               <v-col cols="12">
                 <v-card class="card-item" elevation="5">
                   <div class="card-content">
-                    <v-img class="card-image" :src="require('../assets/no-data.png')" width="250"></v-img>
+                    <v-img
+                      class="card-image"
+                      :src="require('../assets/no-data.png')"
+                      width="250"
+                    ></v-img>
                     <p>No data.</p>
                   </div>
                 </v-card>

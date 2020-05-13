@@ -18,15 +18,25 @@
           </v-col>
           <v-col cols="12" md="4" sm="12" class="text-center">
             <v-card class="whatido-card" elevation="5">
-              <v-img class="whatido-image" :src="require('../assets/devops.png')" width="80"></v-img>
+              <v-img
+                class="whatido-image"
+                :src="require('../assets/devops.png')"
+                width="80"
+              ></v-img>
             </v-card>
 
             <p class="whatido-title">DevOps</p>
-            <p class="whatido-subtitle">Digitalocean, Docker, Jenkins and Travis</p>
+            <p class="whatido-subtitle">
+              Digitalocean, Docker, Jenkins and Travis
+            </p>
           </v-col>
           <v-col cols="12" md="4" sm="12" class="text-center">
             <v-card class="whatido-card" elevation="5">
-              <v-img class="whatido-image" :src="require('../assets/uxui-design.png')" width="65"></v-img>
+              <v-img
+                class="whatido-image"
+                :src="require('../assets/uxui-design.png')"
+                width="65"
+              ></v-img>
             </v-card>
 
             <p class="whatido-title">UX/UI Design</p>

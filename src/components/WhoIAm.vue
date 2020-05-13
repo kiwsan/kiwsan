@@ -16,7 +16,15 @@
             </p>
 
             <div class="d-flex justify-start">
-              <v-btn elevation="5" class="mr-10" rounded color="primary" x-large dark>Download CV</v-btn>
+              <v-btn
+                elevation="5"
+                class="mr-10"
+                rounded
+                color="primary"
+                x-large
+                dark
+                >Download CV</v-btn
+              >
               <a class="mr-2">
                 <v-img
                   class="who-i-am-image"

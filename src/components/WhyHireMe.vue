@@ -20,9 +20,15 @@
                 >
                   <h1 class="corporate-title">Software Developer</h1>
                   <h1 class="corporate-title">At ADI (Thailand) Co., Ltd.</h1>
-                  <p class="corporate-subtitle float-left">Jul 2018 - Present</p>
+                  <p class="corporate-subtitle float-left">
+                    Jul 2018 - Present
+                  </p>
                   <div class="d-flex float-right">
-                    <v-img class="card-image" :src="require('../assets/aig-logo.png')" width="40"></v-img>
+                    <v-img
+                      class="card-image"
+                      :src="require('../assets/aig-logo.png')"
+                      width="40"
+                    ></v-img>
                   </div>
                 </v-alert>
               </v-col>
@@ -36,7 +42,9 @@
                 >
                   <h1 class="corporate-title">.NET Web Developer</h1>
                   <h1 class="corporate-title">At Ayodia Co., Ltd.</h1>
-                  <p class="corporate-subtitle float-left">Mar 2017 - Feb 2018</p>
+                  <p class="corporate-subtitle float-left">
+                    Mar 2017 - Feb 2018
+                  </p>
                   <div class="d-flex float-right">
                     <v-img
                       class="card-image"
@@ -61,10 +69,20 @@
                 >
                   <h1 class="corporate-title">Junior .NET Developer</h1>
                   <h1 class="corporate-title">At PNL Co., Ltd.</h1>
-                  <p class="corporate-subtitle float-left">Nov 2015 - Feb 2017</p>
+                  <p class="corporate-subtitle float-left">
+                    Nov 2015 - Feb 2017
+                  </p>
                   <div class="d-flex float-right">
-                    <v-img class="card-image" :src="require('../assets/bvl-logo.png')" width="40"></v-img>
-                    <v-img class="card-image" :src="require('../assets/pnl-logo.png')" width="40"></v-img>
+                    <v-img
+                      class="card-image"
+                      :src="require('../assets/bvl-logo.png')"
+                      width="40"
+                    ></v-img>
+                    <v-img
+                      class="card-image"
+                      :src="require('../assets/pnl-logo.png')"
+                      width="40"
+                    ></v-img>
                   </div>
                 </v-alert>
               </v-col>
