@@ -7,14 +7,14 @@ WORKDIR /app
 COPY package*.json ./
 
 # install project dependencies
-RUN npm install
+RUN yarn install
 
 # copy project files and folders to the current working directory (i.e. 'app' folder)
 COPY . .
 
 # build app for production with minification
 FROM develop-stage as build-stage
-RUN npm run build
+RUN yarn build
 
 FROM node:lts-alpine as deploy-stage
 
