@@ -100,6 +100,7 @@ export default {
     background: #f9bc58;
   }
   .cert-content {
+    width: 100%;
     position: absolute;
     top: -22%;
     border: 0px solid red;
