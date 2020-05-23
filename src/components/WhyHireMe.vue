@@ -3,10 +3,18 @@
     <v-row justify="center">
       <v-col cols="8">
         <h1 class="section-title text-center">Why Hire Me?</h1>
-
         <v-row>
           <v-col cols="6" class="whyme">
-            <v-img :src="require('../assets/why-me.png')" width="100%"></v-img>
+            <v-container bg fill-height grid-list-md text-xs-center>
+              <v-layout row wrap align-center>
+                <v-flex>
+                  <v-img
+                    :src="require('../assets/why-me.png')"
+                    width="100%"
+                  ></v-img>
+                </v-flex>
+              </v-layout>
+            </v-container>
           </v-col>
           <v-col cols="6">
             <v-row>

@@ -21,7 +21,7 @@
               <div class="mt-md-2">
                 <p class="whoami-text">whoami:</p>
                 <h1 class="whoami-title">I'm</h1>
-                <h1 class="whoami-title">A Web</h1>
+                <h1 class="whoami-title">Web</h1>
                 <h1 class="whoami-title">Developer</h1>
               </div>
 
