@@ -1,4 +1,28 @@
-# io
+# kiwsan, inc.
+
+## Quick start
+
+Build using docker command:
+
+```bash
+$ docker build -f Dockerfile -t vuejsapp . 
+```
+
+Run using docker command:
+
+```bash
+$ docker run --rm -it -p 8088:8080 vuejsapp
+```
+
+Build and run using docker-compose:
+
+```bash
+$ docker-compose up -d
+```
+
+```bash
+$ curl http://localhost:8088
+```
 
 ## Project setup
 ```
