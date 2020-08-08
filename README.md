@@ -24,6 +24,10 @@ $ docker-compose up -d
 $ curl http://localhost:8088
 ```
 
+## On Mobile screen
+
+<img src="https://raw.githubusercontent.com/kiwsan/kiwsan/master/screenshots/iPhone%20XR%2C%20XS%20Max%2C%2011%20%E2%80%93%201.png" alt="dasktop" width="550"/>
+
 ## Project setup
 ```
 yarn install
