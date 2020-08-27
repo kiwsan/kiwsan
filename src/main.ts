@@ -1,15 +1,26 @@
-import Vue from "vue";
-import App from "./App.vue";
-import createRouter from "./router";
-import createStore from "./store";
-import { BootstrapVue, BootstrapVueIcons } from "bootstrap-vue";
-
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { faUserSecret } from "@fortawesome/free-solid-svg-icons";
+import { BootstrapVue, BootstrapVueIcons } from "bootstrap-vue";
+
+import App from "./App.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import Vue from "vue";
+import VueGtag from "vue-gtag";
+import VueMeta from 'vue-meta'
+import createRouter from "./router";
+import createStore from "./store";
+import { faUserSecret } from "@fortawesome/free-solid-svg-icons";
+import { library } from "@fortawesome/fontawesome-svg-core";
+
+Vue.use(VueGtag, {
+  config: { id: "UA-150385748-1" }
+});
+
+Vue.use(VueMeta, {
+  // optional pluginOptions
+  refreshOnceOnNavigation: true
+});
 
 library.add(faUserSecret);
 

@@ -2,7 +2,7 @@
 version: "3.7"
 
 services:
-  kiwsan:
+  app:
     container_name: kiwsan
     build:
       context: .
