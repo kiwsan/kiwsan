@@ -1,4 +1,4 @@
-.git
-.DS_Store
 node_modules
-dist
+/dist
+/docker-compose.yml
+/nginx

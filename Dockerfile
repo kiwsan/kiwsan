@@ -1,27 +1,36 @@
-FROM node:lts-alpine as develop-stage
+FROM node:10-slim as builder
 
-# make the 'app' folder the current working directory
-WORKDIR /app
+ENV NODE_ENV production
 
-# copy both 'package.json' and 'package-lock.json' (if available)
-COPY package*.json ./
+RUN mkdir -p /home/node/app
+WORKDIR /home/node/app
 
-# install project dependencies
-RUN yarn install
+COPY package*.json yarn*.lock /home/node/app/
+RUN chown -R node:node /home/node/
 
-# copy project files and folders to the current working directory (i.e. 'app' folder)
-COPY . .
+USER node
 
-# build app for production with minification
-FROM develop-stage as build-stage
-RUN yarn build
+RUN yarn --production=false --pure-lock
 
-FROM node:lts-alpine as deploy-stage
+COPY --chown=node:node . /home/node/app
 
-# install simple http server for serving static content
-RUN npm install -g http-server
+RUN yarn ssr:build && \
+  yarn --production --pure-lock && \
+  yarn add core-js@3 && \
+  yarn cache clean
 
-COPY --from=build-stage /app/dist ./
+###
 
+FROM node:10-alpine
+
+ENV NODE_ENV production
+ENV HOST 0.0.0.0
+ENV PORT 8080
 EXPOSE 8080
-CMD [ "http-server" ]
+
+USER node
+WORKDIR /home/node/app
+
+COPY --chown=node:node --from=builder /home/node/app /home/node/app
+
+CMD ["./node_modules/@uvue/server/start.js"]

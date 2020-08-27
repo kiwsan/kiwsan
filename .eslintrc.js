@@ -4,7 +4,7 @@ module.exports = {
     node: true
   },
   'extends': [
-    'plugin:vue/vue3-essential',
+    'plugin:vue/essential',
     'eslint:recommended',
     '@vue/typescript/recommended'
   ],
@@ -22,7 +22,7 @@ module.exports = {
         '**/tests/unit/**/*.spec.{j,t}s?(x)'
       ],
       env: {
-        jest: true
+        mocha: true
       }
     }
   ]
