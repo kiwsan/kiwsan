@@ -23,6 +23,7 @@
     "@fortawesome/vue-fontawesome": "^0.1.10",
     "@uvue/core": "^0.1.0",
     "@uvue/server": "^0.1.0",
+    "axios": "^0.20.0",
     "bootstrap-vue": "^2.16.0",
     "compression": "^1.7.3",
     "connect": "^3.6.6",
