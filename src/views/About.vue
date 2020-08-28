@@ -8,8 +8,5 @@
 export default {
   name: "About",
   components: {},
-  head: {
-    title: "About",
-  },
 };
 </script>
