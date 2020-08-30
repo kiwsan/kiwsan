@@ -30,39 +30,35 @@
     </v-app-bar>
 
     <v-main>
-      <div style="text-align: center;margin-top:2rem;">
-        <router-link to="/">Home</router-link>|
-        <router-link to="/about">About</router-link>
-      </div>
-      <router-view />
+      <router-view></router-view>
     </v-main>
   </v-app>
 </template>
 
-<script>
-export default {
-  name: "App",
+<script lang="ts">
+import Vue from "vue";
+import Component from "vue-class-component";
 
+@Component({
   components: {},
-
-  head: {
-    titleTemplate(title) {
-      return title ? `${title} | kiwsan, inc.` : "kiwsan, inc.";
-    },
-    htmlAttrs: {
-      lang: "en",
-    },
-    //link: [{ rel: 'manifest', href: '/manifest.json' }],
-    meta: [
-      { charset: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { name: "description", content: "kiwsan, inc. website!" },
-      { name: "theme-color", content: "#ffffff" },
-    ],
-  },
-
-  data: () => ({
-    //
-  }),
-};
+})
+export default class App extends Vue {
+  head() {
+    return {
+      titleTemplate: (title: string) => {
+        return title ? `${title} | kiwsan, inc.` : "kiwsan, inc.";
+      },
+      htmlAttrs: {
+        lang: "en",
+      },
+      //link: [{ rel: 'manifest', href: '/manifest.json' }],
+      meta: [
+        { charset: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { name: "description", content: "kiwsan, inc. website!" },
+        { name: "theme-color", content: "#ffffff" },
+      ],
+    };
+  }
+}
 </script>
