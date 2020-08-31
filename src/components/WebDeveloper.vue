@@ -35,7 +35,7 @@
         </v-container>
       </v-col>
     </v-row>
-    <v-content class="web-area">
+    <v-main class="web-area">
       <div class="web-content">
         <v-row justify="center">
           <v-col cols="8">
@@ -56,7 +56,7 @@
           </v-col>
         </v-row>
       </div>
-    </v-content>
+    </v-main>
   </section>
 </template>
 
