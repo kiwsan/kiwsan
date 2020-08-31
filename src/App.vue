@@ -30,7 +30,8 @@
     </v-app-bar>
 
     <v-main>
-      <router-view></router-view>
+      <router-view v-if="!$errorHandler.error" />
+      <ErrorPage v-else />
     </v-main>
   </v-app>
 </template>
@@ -38,9 +39,10 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
+import ErrorPage from "@/components/ErrorPage.vue";
 
 @Component({
-  components: {},
+  components: { ErrorPage },
 })
 export default class App extends Vue {
   head() {
@@ -50,6 +52,12 @@ export default class App extends Vue {
       },
       htmlAttrs: {
         lang: "en",
+        amp: true,
+      },
+      bodyAttrs: {
+        "data-spy": "scroll",
+        "data-target": ".navbar-nav",
+        "data-offset": "110",
       },
       //link: [{ rel: 'manifest', href: '/manifest.json' }],
       meta: [
