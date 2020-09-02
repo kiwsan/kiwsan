@@ -1,43 +1,16 @@
 <template>
   <div class="home">
-    <WebDeveloper />
-    <WhatIDo />
-    <WhoIAm />
-    <ShowCase />
-    <WhyHireMe />
-    <Certifications />
-    <ContactMe />
-    <Framework />
-    <Footer />
+    Content
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import axios from "axios";
-import WebDeveloper from "@/components/WebDeveloper";
-import WhatIDo from "@/components/WhatIDo";
-import WhoIAm from "@/components/WhoIAm";
-import ShowCase from "@/components/ShowCase";
-import WhyHireMe from "@/components/WhyHireMe";
-import Certifications from "@/components/Certifications";
-import ContactMe from "@/components/ContactMe";
-import Framework from "@/components/Framework";
-import Footer from "@/components/Footer";
 
 export default {
   name: "Home",
-  components: {
-    WebDeveloper,
-    WhatIDo,
-    WhoIAm,
-    ShowCase,
-    WhyHireMe,
-    Certifications,
-    ContactMe,
-    Framework,
-    Footer,
-  },
+  components: {},
   head() {
     return {
       title: this.foo.disclaimer,

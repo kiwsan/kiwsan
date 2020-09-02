@@ -1,174 +1,87 @@
 <template>
-  <section class="web-developer">
-    <v-row>
-      <v-col cols="12" xl="6" lg="6" md="6" sm="12" xs="12" class="pa-0">
-        <v-img :src="require('../assets/iam-nothing-like-you.jpg')"></v-img>
+  <div class="web-developer">
+    <v-row no-gutters>
+      <v-col md="6" class="pa-0 hidden-xs-only">
+        <img src="@/assets/iam-nothing-like-you.jpg" class="w-100" />
       </v-col>
-      <v-col cols="12" xl="6" lg="6" md="6" sm="12" xs="12" class="pa-0">
-        <v-container class="whoami-panel">
-          <div class="d-flex">
-            <a class="menu-item font-weight-bold">STORY</a>
-            <a class="menu-item font-weight-bold">NOTE</a>
-            <a class="menu-item font-weight-bold">BLOG</a>
+      <v-col md="6" class="pa-5">
+        <v-app-bar color="white" flat>
+          <v-tabs
+            optional
+            slider-color="white"
+            class="hidden-xs-only md_tabs"
+            left
+            background-color="white"
+          >
+            <v-tab class="black--text" router :to="'/'">NOTE</v-tab>
+            <v-tab class="black--text" router :to="'/'">BLOG</v-tab>
+            <v-tab class="black--text" router :to="'/'">STORY</v-tab>
+          </v-tabs>
 
-            <v-spacer></v-spacer>
+          <v-spacer></v-spacer>
 
-            <a class="menu-item font-weight-bold">Hi there!</a>
-          </div>
+          <v-toolbar-title>kiwsan, inc.</v-toolbar-title>
+        </v-app-bar>
+        <v-layout align-top class="md_layout">
+          <v-flex>
+            <div class="mt-md-2 md_title">
+              <p>whoami:</p>
+              <h1 :style="titleSize">I'm</h1>
+              <h1 :style="titleSize">Web</h1>
+              <h1 :style="titleSize">Developer</h1>
+            </div>
 
-          <v-layout align-top class="text-content">
-            <v-flex>
-              <div class="mt-md-2">
-                <p class="whoami-text">whoami:</p>
-                <h1 class="whoami-title">I'm</h1>
-                <h1 class="whoami-title">Web</h1>
-                <h1 class="whoami-title">Developer</h1>
-              </div>
-
-              <div class="mt-md-6">
-                <v-btn elevation="5" rounded color="primary" x-large dark
-                  >See Projects</v-btn
-                >
-              </div>
-            </v-flex>
-          </v-layout>
-        </v-container>
+            <div class="mt-4">
+              <v-btn elevation="5" rounded color="primary" x-large>
+                See Projects {{ titleSize }}
+              </v-btn>
+            </div>
+          </v-flex>
+        </v-layout>
       </v-col>
     </v-row>
-    <v-main class="web-area">
-      <div class="web-content">
-        <v-row justify="center">
-          <v-col cols="8">
-            <v-card elevation="5">
-              <v-row class="pa-md-2 pa-lg-4" justify="center">
-                <v-col cols="1">
-                  <v-img
-                    :src="require('../assets/dotnet-full-logo.png')"
-                  ></v-img>
-                </v-col>
-                <v-col cols="1">
-                  <v-img
-                    :src="require('../assets/angular-full-logo.png')"
-                  ></v-img>
-                </v-col>
-              </v-row>
-            </v-card>
-          </v-col>
-        </v-row>
-      </div>
-    </v-main>
-  </section>
+  </div>
 </template>
 
 <script>
 export default {
-  name: "Header",
-  data: () => ({
-    //
-  }),
+  name: "WebDeveloper",
   computed: {
-    example() {
+    titleSize() {
       switch (this.$vuetify.breakpoint.name) {
+        default:
+          return "font-size: 150px";
         case "xs":
-          return "220px";
+          return "font-size: 65px";
         case "sm":
-          return "400px";
+          return "font-size: 50px";
         case "md":
-          return "500px";
+          return "font-size: 85px";
         case "lg":
-          return "600px";
+          return "font-size: 120px";
         case "xl":
-          return "800px";
+          return "font-size: 150px";
       }
-
-      return "100px";
-    }
-  }
+    },
+  },
+  data() {
+    return {};
+  },
 };
 </script>
 
-<style scoped>
-.web-area {
-  position: relative;
-  top: -80px;
+<style lang="scss" scoped>
+.md_tabs {
+  width: unset;
 }
-.web-content {
-  position: absolute;
-  width: 100%;
+.md_layout {
+  padding-left: 1.5rem;
 }
-.text-content {
-  height: 95%;
-}
-.whoami-panel {
-  height: 100%;
-}
-
-.whoami-panel .whoami-text {
-  color: #959595;
-  font-size: 20px;
-}
-
-.whoami-panel .whoami-title {
-  font-size: 9rem;
-  color: #405680;
+.md_title h1 {
   line-height: 1.2;
-}
-
-.menu-item {
-  font-size: 28px;
   color: #405680;
 }
-
-@media screen and (min-width: 960px) {
-  .whoami-panel .whoami-title {
-    font-size: 4rem;
-  }
-  .whoami-panel {
-    padding: 1.5rem 4rem 0 2rem;
-  }
-  .menu-item {
-    font-size: 18px;
-    margin-right: 16px;
-  }
-  .whoami-panel .whoami-text {
-    font-size: 12px;
-  }
-  .web-area {
-    top: -47px;
-  }
-}
-@media screen and (min-width: 1264px) {
-  .whoami-panel .whoami-title {
-    font-size: 6rem;
-  }
-  .whoami-panel .whoami-text {
-    font-size: 16px;
-  }
-  .menu-item {
-    font-size: 22px;
-    margin-right: 16px;
-  }
-  .whoami-panel {
-    padding: 2rem 4rem 0 2rem;
-  }
-  .web-area {
-    top: -80px;
-  }
-}
-@media screen and (min-width: 1604px) {
-  .whoami-panel .whoami-title {
-    font-size: 8rem;
-  }
-  .whoami-panel {
-    padding: 3.5rem 4rem 0 4rem;
-  }
-  .text-content {
-    height: 90%;
-  }
-}
-@media screen and (min-width: 1704px) {
-  .whoami-panel .whoami-title {
-    font-size: 9rem;
-  }
+.md_title p {
+  font-size: 16px;
 }
 </style>
