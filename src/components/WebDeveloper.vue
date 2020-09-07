@@ -4,7 +4,7 @@
       <v-col md="6" class="pa-0 hidden-xs-only">
         <img src="@/assets/iam-nothing-like-you.jpg" class="w-100" />
       </v-col>
-      <v-col md="6" class="pa-5">
+      <v-col md="6" class="pa-md-5 pa-xs-0">
         <v-app-bar color="white" flat>
           <v-tabs
             optional
@@ -33,7 +33,7 @@
 
             <div class="mt-4">
               <v-btn elevation="5" rounded color="primary" x-large>
-                See Projects {{ titleSize }}
+                See Projects
               </v-btn>
             </div>
           </v-flex>

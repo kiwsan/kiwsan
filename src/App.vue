@@ -1,10 +1,7 @@
 <template>
   <v-app>
-    <WebDeveloper />
-    <v-container>
-      <router-view v-if="!$errorHandler.error" />
-      <ErrorPage v-else />
-    </v-container>
+    <router-view v-if="!$errorHandler.error" />
+    <ErrorPage v-else />
   </v-app>
 </template>
 
@@ -12,10 +9,9 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import ErrorPage from "@/components/ErrorPage.vue";
-import WebDeveloper from "@/components/WebDeveloper.vue";
 
 @Component({
-  components: { ErrorPage, WebDeveloper },
+  components: { ErrorPage },
 })
 export default class App extends Vue {
   head() {
