@@ -8,5 +8,12 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "8082:8080"
     restart: unless-stopped
+
+#docker run -d -e VIRTUAL_HOST=kiwsan.com,www.kiwsan.com \
+#              -e LETSENCRYPT_HOST=kiwsan.com,www.kiwsan.com \
+#              -e LETSENCRYPT_EMAIL=kiwsanthia@gmail.com \
+#              --network=webproxy \
+#              --name kiwsan_app \
+#              plar/kiwsan:latest
