@@ -1,75 +1,14 @@
-# kiwsan, inc.
+# kiwsan.
 
 Deploy your next app in seconds. Get $100 in cloud credits from @DigitalOcean using my link:
 
 [![DigitalOcean Referral Badge](https://web-platforms.sfo2.digitaloceanspaces.com/WWW/Badge%202.svg)](https://www.digitalocean.com/?refcode=0e2c3672d1dc&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge)
 
-## Quick start
+Hey there 👋,
 
-Build using docker command:
+My name is Ekkachai,
+I am web developer from Bangkok, Thailand.
+Since beginning my journey as a web developer nearly 5 years ago, I’ve done remote work for agencies, and collaborated with talented people to create digital products. Currently, I’m focused on writing code for humans and digital marketing.
 
-```bash
-$ docker build -f Dockerfile -t vuejsapp .
-```
-
-Run using docker command:
-
-```bash
-$ docker run --rm -it -p 8088:8080 vuejsapp
-```
-
-Build and run using docker-compose:
-
-```bash
-$ docker-compose up -d
-```
-
-```bash
-$ curl http://localhost:8088
-```
-
-## On Mobile screen
-
-<img src="https://raw.githubusercontent.com/kiwsan/kiwsan/master/screenshots/iPhone%20XR%2C%20XS%20Max%2C%2011%20%E2%80%93%201.png" alt="dasktop" width="550"/>
-
-## Project setup
-
-**Start a development server with HMR**
-
-```bash
-npm run ssr:serve
-```
-
-**Build for production**
-
-```bash
-npm run ssr:build
-```
-
-**Start in production mode** (need a `npm run ssr:build` before)
-
-```bash
-npm run ssr:start
-```
-
-**Generate a static website**
-
-```bash
-npm run ssr:static
-```
-
-**Try to fix code to be SSR compatible**
-
-```bash
-npm run ssr:fix
-```
-
-**Try to fix Vuex states to be SSR compatible**
-
-```bash
-npm run ssr:fix-vuex
-```
-
-### Customize configuration
-
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Hire me!
+kiwsanthia@gmail.com
