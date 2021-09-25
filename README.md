@@ -12,3 +12,7 @@ Since beginning my journey as a web developer nearly 5 years ago, I’ve done re
 
 Hire me!
 kiwsanthia@gmail.com
+, personal
+[kiwsan.com](http://kiwsan.com/).
+, for work!
+[ggbbxx.xyz](http://ggbbxx.xyz/).
