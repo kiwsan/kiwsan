@@ -23,7 +23,7 @@
             class="contact-content text-center pt-10"
           >
             <p class="contact-title">Contact Me</p>
-            <p class="contact-email">kiwsanthia@gmail.com</p>
+            <p class="contact-email">@kiwsan</p>
           </v-alert>
         </div>
 

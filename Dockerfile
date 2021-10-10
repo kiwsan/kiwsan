@@ -1,4 +1,4 @@
-FROM node:10-slim as builder
+FROM node:14-slim as builder
 
 ENV NODE_ENV production
 
@@ -21,7 +21,7 @@ RUN yarn ssr:build && \
 
 ###
 
-FROM node:10-alpine
+FROM node:14-alpine
 
 ENV NODE_ENV production
 ENV HOST 0.0.0.0
