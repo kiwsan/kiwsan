@@ -1,4 +1,4 @@
-# kiwsan.
+# kiwsan
 
 Deploy your next app in seconds. Get $100 in cloud credits from @DigitalOcean using my link:
 
