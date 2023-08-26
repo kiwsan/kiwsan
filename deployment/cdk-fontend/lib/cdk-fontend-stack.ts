@@ -7,10 +7,13 @@ import * as route53 from 'aws-cdk-lib/aws-route53';
 import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
 
 import * as path from 'path';
-import { OriginAccessIdentity, CloudFrontWebDistribution, SSLMethod, SecurityPolicyProtocol, ViewerProtocolPolicy } from 'aws-cdk-lib/aws-cloudfront';
-import { RemovalPolicy } from 'aws-cdk-lib';
+import { Function, OriginAccessIdentity, SecurityPolicyProtocol, ViewerProtocolPolicy, FunctionCode, FunctionEventType, CachePolicy, AllowedMethods, Distribution } from 'aws-cdk-lib/aws-cloudfront';
+import { CfnOutput, RemovalPolicy } from 'aws-cdk-lib';
 import { DnsValidatedCertificate } from 'aws-cdk-lib/aws-certificatemanager';
-import * as targets from 'aws-cdk-lib/aws-route53-targets';
+import { S3Origin } from 'aws-cdk-lib/aws-cloudfront-origins';
+import { RecordTarget } from 'aws-cdk-lib/aws-route53';
+import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
+import { BucketAccessControl } from 'aws-cdk-lib/aws-s3';
 
 // import * as sqs from 'aws-cdk-lib/aws-sqs';
 // NOTE: See README.md for instructions on how to configure a Hosted Zone.
@@ -30,72 +33,99 @@ export class CdkFontendStack extends cdk.Stack {
       domainName: domainName
     });
 
+    new CfnOutput(this, 'Site', { value: 'https://' + domainName });
+
     // create the site bucket
-    const siteBucket = new s3.Bucket(this, 'Bucket', {
-      bucketName: domainName,
-      publicReadAccess: true, // your bucket will be browsable directly via unsecured HTTP
-      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ACLS,
-      removalPolicy: RemovalPolicy.DESTROY, // NOT recommended for production code
-      accessControl: s3.BucketAccessControl.PRIVATE,
-      objectOwnership: s3.ObjectOwnership.BUCKET_OWNER_ENFORCED,
-      encryption: s3.BucketEncryption.S3_MANAGED,
-      websiteIndexDocument: "index.html",
-      autoDeleteObjects: true, // NOT recommended for production code
+    const bucket = new s3.Bucket(this, 'Bucket', {
+      bucketName: `${domainName}`,
+      publicReadAccess: false,
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      accessControl: BucketAccessControl.PRIVATE,
+
+      /**
+       * The default removal policy is RETAIN, which means that cdk destroy will not attempt to delete
+       * the new bucket, and it will remain in your account until manually deleted. By setting the policy to
+       * DESTROY, cdk destroy will attempt to delete the bucket, but will error if the bucket is not empty.
+       */
+      // removalPolicy: RemovalPolicy.DESTROY, // NOT recommended for production code
+
+      /**
+       * For sample purposes only, if you create an S3 bucket then populate it, stack destruction fails.  This
+       * setting will enable full cleanup of the demo.
+       */
+      // autoDeleteObjects: true, // NOT recommended for production code
+    });
+
+    const originAccessIdentity = new OriginAccessIdentity(this, 'CloudFrontOriginAccessIdentity', {
+      comment: 'Restrict access to the S3 origin using Origin Access Identity',
     });
 
     // Uncomment the lines related to the subdomain if you want it connected as well
     // const subdomainName = `www.${domainName}`;
 
     // TLS certificate
-    const dnsValidatedCertificate = new DnsValidatedCertificate(this, "SiteCertificate",
-      {
-        domainName: domainName,
-        // subjectAlternativeNames: [subdomainName],
-        hostedZone: zone,
-        region: "us-east-1", // Cloudfront only checks us-east-1 (N. Virginia) for certificates.
-      }
-    );
+    const dnsValidatedCertificate = new DnsValidatedCertificate(this, "DnsValidatedCertificate", {
+      domainName: domainName,
+      // subjectAlternativeNames: [subdomainName],
+      hostedZone: zone,
+      region: "us-east-1", // Cloudfront only checks us-east-1 (N. Virginia) for certificates.
+    });
 
-    const originAccessIdentity = new OriginAccessIdentity(this, 'OriginAccessIdentity');
+    new CfnOutput(this, 'dnsCertificate', { value: dnsValidatedCertificate.certificateArn });
 
-    // Assuming you have 'bucket' defined somewhere
-    siteBucket.grantRead(originAccessIdentity);
+    const cfFunction = new Function(this, 'HugoPaths', {
+      code: FunctionCode.fromInline(`function handler(event) {
+  var request = event.request;
+  var uri = request.uri;
+  if (uri.endsWith('/')) {
+    request.uri += 'index.html';
+  } else if (!uri.includes('.')) {
+    request.uri += '/index.html';
+  }
+  return request;
+}
+`),
+    });
+
+    bucket.grantRead(originAccessIdentity);
 
     // CloudFront distribution that provides HTTPS
-    const distribution = new CloudFrontWebDistribution(this, "CloudFrontWebDistribution", {
-      viewerCertificate: {
-        aliases: [domainName /*, subdomainName*/],
-        props: {
-          acmCertificateArn: dnsValidatedCertificate.certificateArn,
-          sslSupportMethod: SSLMethod.SNI,
-          minimumProtocolVersion: SecurityPolicyProtocol.TLS_V1_2_2021,
-        },
-      },
-      viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-      defaultRootObject: 'index.html',
-      errorConfigurations: [{
-        errorCode: 403,
-        responseCode: 403,
-        responsePagePath: '/error.html',
-      }],
-      originConfigs: [
-        {
-          s3OriginSource: {
-            s3BucketSource: siteBucket,
-            originAccessIdentity: originAccessIdentity,
+    const distribution = new Distribution(this, 'Distribution', {
+      defaultBehavior: {
+        origin: new S3Origin(bucket, { originAccessIdentity }),
+        viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        allowedMethods: AllowedMethods.ALLOW_GET_HEAD,
+        cachePolicy: CachePolicy.CACHING_OPTIMIZED,
+        functionAssociations: [
+          {
+            function: cfFunction,
+            eventType: FunctionEventType.VIEWER_REQUEST,
           },
-          behaviors: [{ isDefaultBehavior: true }],
+        ],
+      },
+      domainNames: [domainName],
+      certificate: dnsValidatedCertificate,
+      minimumProtocolVersion: SecurityPolicyProtocol.TLS_V1_2_2021,
+      errorResponses: [
+        {
+          httpStatus: 403,
+          responsePagePath: '/index.html',
+          responseHttpStatus: 200,
+        },
+        {
+          httpStatus: 404,
+          responsePagePath: '/404.html',
+          responseHttpStatus: 200,
         },
       ],
-    }
-    );
+    });
+
+    new CfnOutput(this, 'DistributionId', { value: distribution.distributionId });
 
     // Route53 record for the naked domain
-    new route53.ARecord(this, "SiteAliasARecord", {
+    new route53.ARecord(this, "DomainAliasARecord", {
       recordName: domainName,
-      target: route53.RecordTarget.fromAlias(
-        new targets.CloudFrontTarget(distribution)
-      ),
+      target: RecordTarget.fromAlias(new CloudFrontTarget(distribution)),
       zone,
     });
 
@@ -111,9 +141,10 @@ export class CdkFontendStack extends cdk.Stack {
     // The distribution must be specified in order to perform cache invalidation, up
     // to 1000 invalidations free per month
     new BucketDeployment(this, "BucketDeployment", {
-      sources: [Source.asset(path.resolve(__dirname, '..', '..', '..', './dist'))],
-      destinationBucket: siteBucket,
-      distribution: distribution
+      sources: [Source.asset(path.resolve(__dirname, '..', '..', '..', './src/public'))],
+      destinationBucket: bucket,
+      distribution: distribution,
+      distributionPaths: ['/', '/index.html'],
     });
 
   }
