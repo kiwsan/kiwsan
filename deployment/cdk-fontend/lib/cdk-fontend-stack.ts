@@ -121,6 +121,11 @@ export class CdkFontendStack extends cdk.Stack {
                 header: "Permissions-Policy",
                 value: "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()",
                 override: true
+              },
+              {
+                header: "X-Powered-By",
+                value: "kiwsan, Inc.",
+                override: true
               }
             ]
           },
@@ -149,7 +154,7 @@ export class CdkFontendStack extends cdk.Stack {
             },
             contentSecurityPolicy: {
               override: true,
-              contentSecurityPolicy: "frame-ancestors 'self'; default-src 'self' ; object-src 'none' ; script-src 'self'; style-src  'self'; font-src 'self' data:; img-src 'self' data:;"
+              contentSecurityPolicy: "frame-ancestors 'self'; default-src 'self' ; object-src 'none' ; script-src 'self'; style-src  'self' https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com data:; img-src 'self' data:;"
             }
           },
           removeHeaders: ["server"],
