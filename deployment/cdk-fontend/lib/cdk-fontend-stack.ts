@@ -7,7 +7,7 @@ import * as route53 from 'aws-cdk-lib/aws-route53';
 import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
 
 import * as path from 'path';
-import { Function, OriginAccessIdentity, SecurityPolicyProtocol, ViewerProtocolPolicy, FunctionCode, FunctionEventType, CachePolicy, AllowedMethods, Distribution } from 'aws-cdk-lib/aws-cloudfront';
+import { Function, OriginAccessIdentity, SecurityPolicyProtocol, ViewerProtocolPolicy, FunctionCode, FunctionEventType, CachePolicy, AllowedMethods, Distribution, HeadersFrameOption } from 'aws-cdk-lib/aws-cloudfront';
 import { CfnOutput, RemovalPolicy } from 'aws-cdk-lib';
 import { DnsValidatedCertificate } from 'aws-cdk-lib/aws-certificatemanager';
 import { S3Origin } from 'aws-cdk-lib/aws-cloudfront-origins';
@@ -102,6 +102,59 @@ export class CdkFontendStack extends cdk.Stack {
             eventType: FunctionEventType.VIEWER_REQUEST,
           },
         ],
+        originRequestPolicy: cdk.aws_cloudfront.OriginRequestPolicy.CORS_S3_ORIGIN,
+        responseHeadersPolicy: new cdk.aws_cloudfront.ResponseHeadersPolicy(this, "ResponseHeadersPolicy", {
+          responseHeadersPolicyName: "CustomResponseHeadersPolicy",
+          comment: "Custom Header Policy for kiwsan.com",
+          corsBehavior: {
+            accessControlAllowOrigins: ["*"],
+            accessControlAllowHeaders: ["*"],
+            accessControlAllowMethods: ["GET", "DELETE", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"],
+            accessControlMaxAge: cdk.Duration.seconds(600),
+            accessControlExposeHeaders: [],
+            accessControlAllowCredentials: false,
+            originOverride: true,
+          },
+          customHeadersBehavior: {
+            customHeaders: [
+              {
+                header: "Permissions-Policy",
+                value: "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()",
+                override: true
+              }
+            ]
+          },
+          securityHeadersBehavior: {
+            strictTransportSecurity: {
+              accessControlMaxAge: cdk.Duration.seconds(31536000),
+              preload: true,
+              includeSubdomains: true,
+              override: true
+            },
+            contentTypeOptions: {
+              override: true
+            },
+            frameOptions: {
+              frameOption: HeadersFrameOption.DENY,
+              override: true
+            },
+            xssProtection: {
+              override: true,
+              protection: true,
+              modeBlock: true
+            },
+            referrerPolicy: {
+              override: true,
+              referrerPolicy: cdk.aws_cloudfront.HeadersReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN
+            },
+            contentSecurityPolicy: {
+              override: true,
+              contentSecurityPolicy: "frame-ancestors 'self'; default-src 'self' ; object-src 'none' ; script-src 'self'; style-src  'self'; font-src 'self' data:; img-src 'self' data:;"
+            }
+          },
+          removeHeaders: ["server"],
+          serverTimingSamplingRate: 0.0001
+        })
       },
       domainNames: [domainName],
       certificate: dnsValidatedCertificate,
