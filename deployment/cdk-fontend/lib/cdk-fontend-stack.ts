@@ -8,7 +8,7 @@ import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
 
 import * as path from 'path';
 import { Function, OriginAccessIdentity, SecurityPolicyProtocol, ViewerProtocolPolicy, FunctionCode, FunctionEventType, CachePolicy, AllowedMethods, Distribution, HeadersFrameOption } from 'aws-cdk-lib/aws-cloudfront';
-import { CfnOutput, RemovalPolicy } from 'aws-cdk-lib';
+import { CfnOutput, Duration, RemovalPolicy } from 'aws-cdk-lib';
 import { DnsValidatedCertificate } from 'aws-cdk-lib/aws-certificatemanager';
 import { S3Origin } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { RecordTarget } from 'aws-cdk-lib/aws-route53';
@@ -89,13 +89,20 @@ export class CdkFontendStack extends cdk.Stack {
 
     bucket.grantRead(originAccessIdentity);
 
+    const miniCachePolicy = new CachePolicy(this, `MiniCachePolicy`, {
+      cachePolicyName: `MiniCachePolicy`,
+      defaultTtl: Duration.minutes(30),
+      minTtl: Duration.minutes(30),
+      maxTtl: Duration.minutes(45),
+    });
+
     // CloudFront distribution that provides HTTPS
     const distribution = new Distribution(this, 'Distribution', {
       defaultBehavior: {
         origin: new S3Origin(bucket, { originAccessIdentity }),
         viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         allowedMethods: AllowedMethods.ALLOW_GET_HEAD,
-        cachePolicy: CachePolicy.CACHING_OPTIMIZED,
+        cachePolicy: miniCachePolicy,
         functionAssociations: [
           {
             function: cfFunction,
