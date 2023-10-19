@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34202.233
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AWSServerless", "AWSServerless.csproj", "{FFED925B-4201-4DAD-B1DE-A076C430D7D8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FFED925B-4201-4DAD-B1DE-A076C430D7D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFED925B-4201-4DAD-B1DE-A076C430D7D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFED925B-4201-4DAD-B1DE-A076C430D7D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFED925B-4201-4DAD-B1DE-A076C430D7D8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {071BF9B5-5636-4BF7-8D5F-BA6244187053}
+	EndGlobalSection
+EndGlobal
