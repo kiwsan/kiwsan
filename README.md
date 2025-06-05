@@ -15,4 +15,4 @@ kiwsanthia@gmail.com
 , personal
 [kiwsan.com](http://kiwsan.com/).
 , for work!
-[ggbbxx102.site](http://ggbbxx102.site/).
+[knowdevlaunchpad.site](https://knowdevlaunchpad.site/).
