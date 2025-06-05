@@ -14,6 +14,7 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddControllers();
+        services.AddDirectoryBrowser(); // Add this line to enable directory browsing
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
@@ -25,6 +26,8 @@ public class Startup
         }
 
         app.UseHttpsRedirection();
+
+        app.UseStaticFiles(); // Enable static file serving (wwwroot)
 
         app.UseRouting();
 
