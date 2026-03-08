@@ -86,6 +86,7 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
   overflow-x: hidden;
   min-height: 100vh;
+  padding-top: 60px;
 }
 
 .container {
@@ -154,10 +155,13 @@ button {
 }
 
 @media (max-width: 480px) {
+  body {
+    padding-top: 52px;
+  }
   .theme-toggle {
     width: 36px;
     height: 36px;
-    top: 0.75rem;
+    top: 0.5rem;
     right: 0.75rem;
   }
 }
