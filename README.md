@@ -27,7 +27,7 @@ Software Engineer passionate about building scalable solutions and elegant user 
 
 ## 🚀 Featured Projects
 
-[![Portfolio Website](https://github-readme-stats.vercel.app/api/pin/?username=kiwsan&repo=kiwsan.dev&theme=dark&hide_border=true)](https://github.com/kiwsan/kiwsan.dev)
+[![Portfolio Website](https://kiwsan.com)](https://kiwsan.com)
 
 ## 📫 Get in Touch
 
