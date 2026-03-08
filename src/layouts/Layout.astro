@@ -23,14 +23,37 @@ const {
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content={`${url}/images/og-image.png`} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
 
     <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={`${url}/images/og-image.png`} />
 
     <!-- Canonical -->
     <link rel="canonical" href={url} />
+
+    <!-- JSON-LD Structured Data -->
+    <script is:inline type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "ProfilePage",
+      "mainEntity": {
+        "@type": "Person",
+        "name": "Ekkachai Kiwsanthia",
+        "jobTitle": "Technical Lead",
+        "description": description,
+        "url": url,
+        "email": "kiwsanthia@gmail.com",
+        "address": { "@type": "PostalAddress", "addressLocality": "Bangkok", "addressCountry": "TH" },
+        "sameAs": [
+          "https://www.linkedin.com/in/kiwsan",
+          "https://github.com/kiwsan"
+        ]
+      }
+    })} />
   </head>
   <body>
     <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
@@ -230,12 +253,16 @@ const {
         animation: fadeIn 0.8s ease-out forwards;
       }
 
-      .stagger-1 { animation-delay: 0.1s; opacity: 0; }
-      .stagger-2 { animation-delay: 0.2s; opacity: 0; }
-      .stagger-3 { animation-delay: 0.3s; opacity: 0; }
-      .stagger-4 { animation-delay: 0.4s; opacity: 0; }
-      .stagger-5 { animation-delay: 0.5s; opacity: 0; }
-      .stagger-6 { animation-delay: 0.6s; opacity: 0; }
+      .stagger-1  { animation-delay: 0.1s; opacity: 0; }
+      .stagger-2  { animation-delay: 0.2s; opacity: 0; }
+      .stagger-3  { animation-delay: 0.3s; opacity: 0; }
+      .stagger-4  { animation-delay: 0.4s; opacity: 0; }
+      .stagger-5  { animation-delay: 0.5s; opacity: 0; }
+      .stagger-6  { animation-delay: 0.6s; opacity: 0; }
+      .stagger-7  { animation-delay: 0.7s; opacity: 0; }
+      .stagger-8  { animation-delay: 0.8s; opacity: 0; }
+      .stagger-9  { animation-delay: 0.9s; opacity: 0; }
+      .stagger-10 { animation-delay: 1.0s; opacity: 0; }
 
       section {
         opacity: 0;
@@ -280,7 +307,11 @@ const {
         .stagger-3,
         .stagger-4,
         .stagger-5,
-        .stagger-6 {
+        .stagger-6,
+        .stagger-7,
+        .stagger-8,
+        .stagger-9,
+        .stagger-10 {
           opacity: 1;
         }
       }
@@ -319,7 +350,9 @@ const {
       });
 
       document.querySelectorAll('.fade-in-item').forEach((item, index) => {
-        (item as HTMLElement).style.transitionDelay = `${index * 0.1}s`;
+        if (item instanceof HTMLElement) {
+          item.style.transitionDelay = `${index * 0.1}s`;
+        }
         observer.observe(item);
       });
     </script>
