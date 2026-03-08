@@ -2,8 +2,46 @@
 ---
 
 <header class="header">
+  <!-- Background -->
+  <div class="header-bg"></div>
+  
   <div class="container">
-    <a href="/" class="logo">EK</a>
+    <a href="/" class="logo" aria-label="Home">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="logo-svg" role="img" aria-hidden="true">
+        <defs>
+          <clipPath id="kBox">
+            <rect width="40" height="40" rx="10"/>
+          </clipPath>
+          <clipPath id="kDark">
+            <polygon points="0,0 40,0 0,40"/>
+          </clipPath>
+          <clipPath id="kLight">
+            <polygon points="40,0 40,40 0,40"/>
+          </clipPath>
+        </defs>
+
+        <g clip-path="url(#kBox)">
+          <!-- dark half -->
+          <polygon points="0,0 40,0 0,40" fill="#111111"/>
+          <!-- light half -->
+          <polygon points="40,0 40,40 0,40" fill="#E8E8E8"/>
+
+          <!-- K on dark → light gray -->
+          <g clip-path="url(#kDark)">
+            <rect x="11" y="9" width="4" height="22" fill="#E8E8E8"/>
+            <line x1="14" y1="20" x2="27" y2="9"  stroke="#E8E8E8" stroke-width="4.2" stroke-linecap="round"/>
+            <line x1="14" y1="20" x2="27" y2="31" stroke="#E8E8E8" stroke-width="4.2" stroke-linecap="round"/>
+          </g>
+
+          <!-- K on light → dark -->
+          <g clip-path="url(#kLight)">
+            <rect x="11" y="9" width="4" height="22" fill="#111111"/>
+            <line x1="14" y1="20" x2="27" y2="9"  stroke="#111111" stroke-width="4.2" stroke-linecap="round"/>
+            <line x1="14" y1="20" x2="27" y2="31" stroke="#111111" stroke-width="4.2" stroke-linecap="round"/>
+          </g>
+        </g>
+      </svg>
+    </a>
     <nav class="nav">
       <a href="#experience">Experience</a>
       <a href="#projects">Projects</a>
@@ -19,13 +57,23 @@
     left: 0;
     right: 0;
     z-index: 50;
-    background: var(--color-bg);
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.3);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
   }
 
+  .header-bg {
+    position: absolute;
+    inset: 0;
+    background: #ffffff;
+  }
+
+  :global(.dark) .header-bg {
+    background: #0f172a;
+  }
+
   .header .container {
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -34,13 +82,28 @@
   }
 
   .logo {
-    font-size: var(--text-xl);
-    font-weight: 700;
-    color: var(--color-text);
+    display: inline-flex;
+    align-items: center;
   }
 
-  .logo:hover {
-    color: var(--color-accent);
+  .logo-svg {
+    display: block;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+  }
+
+  .logo:hover .logo-svg {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 480px) {
+    .logo-svg {
+      width: 32px;
+      height: 32px;
+    }
   }
 
   .nav {
@@ -62,9 +125,6 @@
     .header .container {
       padding-top: var(--space-3);
       padding-bottom: var(--space-3);
-    }
-    .logo {
-      font-size: var(--text-lg);
     }
     .nav {
       gap: var(--space-3);

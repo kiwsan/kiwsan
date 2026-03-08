@@ -2,6 +2,9 @@
 ---
 
 <section class="hero">
+  <!-- Background -->
+  <div class="hero-bg"></div>
+  
   <div class="container">
     <p class="greeting animate-fade-in-up stagger-1">Hi, I'm Ekkachai</p>
     <h1 class="animate-fade-in-up stagger-2">I build systems that process<br /><span class="highlight">250K+ orders/month</span></h1>
@@ -11,14 +14,30 @@
       <span>Bangkok</span>
     </div>
     <div class="cta animate-fade-in-up stagger-4">
-      <a href="#experience" class="btn-primary">View My Work</a>
+      <a href="#experience">View My Work</a>
     </div>
   </div>
 </section>
 
 <style>
   .hero {
+    position: relative;
     padding: var(--space-24) 0 var(--space-16);
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: #ffffff;
+  }
+
+  :global(.dark) .hero-bg {
+    background: #0f172a;
+  }
+
+  .hero .container {
+    position: relative;
   }
 
   .greeting {
