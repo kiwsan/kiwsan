@@ -63,12 +63,14 @@
   }
 
   .header-bg {
-    position: absolute;
-    inset: 0;
     background: #ffffff;
   }
 
-  :global(.dark) .header-bg {
+  .header.dark .header-bg {
+    background: #0f172a;
+  }
+
+  :global(html.dark) .header-bg {
     background: #0f172a;
   }
 

@@ -27,12 +27,14 @@
   }
 
   .hero-bg {
-    position: absolute;
-    inset: 0;
     background: #ffffff;
   }
 
-  :global(.dark) .hero-bg {
+  .hero.dark .hero-bg {
+    background: #0f172a;
+  }
+
+  :global(html.dark) .hero-bg {
     background: #0f172a;
   }
 
