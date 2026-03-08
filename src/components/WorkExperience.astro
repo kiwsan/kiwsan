@@ -1,0 +1,152 @@
+---
+import { getCollection } from 'astro:content';
+
+const workExperience = (await getCollection('projects'))
+  .filter(p => p.data.type === 'work')
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<section id="experience" class="experience">
+  <div class="container">
+    <h2>Work Experience</h2>
+    <div class="timeline">
+      {workExperience.map((work) => (
+        <article class="work-card fade-in-item">
+          <div class="work-header">
+            <h3>{work.data.title}</h3>
+            <div class="meta">
+              <span class="company">{work.data.company}</span>
+              <span class="period">{work.data.period}</span>
+            </div>
+          </div>
+          
+          <div class="work-content">
+            <div class="section">
+              <strong>Challenge:</strong> {work.data.challenge}
+            </div>
+            <div class="section">
+              <strong>Solution:</strong> {work.data.solution}
+            </div>
+          </div>
+
+          <div class="tech-stack">
+            {work.data.tech.map((tech) => (
+              <span class="tech-tag">{tech}</span>
+            ))}
+          </div>
+
+          <div class="results">
+            <strong>Results:</strong>
+            <ul>
+              {work.data.results.map((result) => (
+                <li>{result}</li>
+              ))}
+            </ul>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .experience {
+    padding: var(--space-16) 0;
+  }
+
+  h2 {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-8);
+  }
+
+  .timeline {
+    display: grid;
+    gap: var(--space-8);
+  }
+
+  .work-card {
+    padding: var(--space-8) 0;
+    border-bottom: 2px solid var(--color-border);
+  }
+
+  .work-header h3 {
+    font-size: var(--text-2xl);
+    margin-bottom: var(--space-2);
+  }
+
+  .meta {
+    display: flex;
+    gap: var(--space-4);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-5);
+  }
+
+  .company {
+    font-weight: 500;
+  }
+
+  .work-content {
+    margin-bottom: var(--space-5);
+  }
+
+  .section {
+    margin-bottom: var(--space-4);
+    line-height: 1.6;
+  }
+
+  .section strong {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: var(--space-1);
+  }
+
+  .tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-5);
+  }
+
+  .tech-tag {
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    font-size: var(--text-xs);
+    font-family: var(--font-mono);
+    color: var(--color-text);
+  }
+
+  .results strong {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .results ul {
+    margin-top: var(--space-2);
+    padding-left: var(--space-5);
+  }
+
+  .results li {
+    margin-bottom: var(--space-1);
+    color: var(--color-text);
+  }
+
+  @media (max-width: 768px) {
+    .experience {
+      padding: var(--space-12) 0;
+    }
+    h2 {
+      font-size: var(--text-3xl);
+    }
+    .work-card {
+      padding: var(--space-5);
+    }
+  }
+</style>

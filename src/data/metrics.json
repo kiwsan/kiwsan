@@ -1,0 +1,22 @@
+[
+  {
+    "value": "250K+",
+    "label": "Orders/Month",
+    "description": "Orders processed monthly across Shopee, Lazada, TikTok Shop"
+  },
+  {
+    "value": "50%",
+    "label": "Sync Faster",
+    "description": "Reduction in sync delays through event-driven architecture"
+  },
+  {
+    "value": "35%",
+    "label": "AWS Saved",
+    "description": "Infrastructure cost reduction through optimization"
+  },
+  {
+    "value": "48→24h",
+    "label": "SLA Improved",
+    "description": "Ship-by SLA improvement, reducing penalties"
+  }
+]

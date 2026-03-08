@@ -1,0 +1,5 @@
+{
+  "expert": ["C#", "Node.js", "React.js", "AWS", "Docker"],
+  "proficient": ["MongoDB", "Event-Driven", "Microservices", "CI/CD", "MS SQL Server"],
+  "specialized": ["Shopee API", "Lazada API", "TikTok Shop", "RFID Integration", "ISO 27001", "PDPA", "Amazon Q"]
+}
