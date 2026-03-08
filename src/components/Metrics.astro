@@ -17,31 +17,41 @@ import metrics from '../data/metrics.json';
 </section>
 
 <script>
-  function animateValue(el: HTMLElement, target: string) {
-    const num = parseInt(target.replace(/[^0-9]/g, ''));
-    const suffix = target.replace(/[0-9]/g, '');
-    const duration = 2000;
-    const start = 0;
-    const increment = num / (duration / 16);
-    let current = start;
+  // Only animate simple values: leading digits followed by an optional suffix (e.g. "250K+", "50%")
+  // Complex values like "48→24h" are left as-is
+  function isAnimatable(target: string): boolean {
+    return /^\d+[^\d]*$/.test(target);
+  }
 
-    const timer = setInterval(() => {
+  function animateValue(el: HTMLElement, target: string) {
+    const num = parseInt(target.replace(/[^0-9]/g, ''), 10);
+    const suffix = target.replace(/^\d+/, '');
+    const duration = 2000;
+    const increment = num / (duration / 16);
+    let current = 0;
+    let timer: ReturnType<typeof setInterval>;
+
+    timer = setInterval(() => {
       current += increment;
       if (current >= num) {
         el.textContent = target;
         clearInterval(timer);
       } else {
-        el.textContent = Math.floor(current) + suffix;
+        el.textContent = String(Math.floor(current)) + suffix;
       }
     }, 16);
   }
 
   document.querySelectorAll('.value').forEach((el) => {
     const target = el.getAttribute('data-target');
-    if (target) {
-      el.textContent = '0';
+    if (!target) return;
+
+    if (isAnimatable(target)) {
+      const suffix = target.replace(/^\d+/, '');
+      el.textContent = '0' + suffix;
       setTimeout(() => animateValue(el as HTMLElement, target), 300);
     }
+    // Non-animatable values (e.g. "48→24h") keep their SSR-rendered text
   });
 </script>
 
