@@ -1,4 +1,4 @@
-# Hi there, I'm Ekkachai Kiwsanthia 👋
+# Hi there, I'm Ekkachai K. 👋
 
 [![Portfolio](https://img.shields.io/badge/Portfolio-kiwsan.dev-blue?style=flat-square)](https://kiwsan.dev)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-kiwsan-0077B5?style=flat-square&logo=linkedin)](https://linkedin.com/in/kiwsan)
