@@ -6,7 +6,7 @@ challenge: "Scale omnichannel operations across Shopee, Lazada, TikTok Shop with
 solution: "Event-driven integration architecture connecting ERP, WMS, POS, and loyalty systems"
 tech: ["Node.js", "AWS", "Docker", "Event-Driven", "Zebra RFID", "Microservices"]
 results: [
-  "250K orders/month automated",
+  "Million+ orders/month automated",
   "50% faster sync",
   "35% AWS cost reduction",
   "48h → 24h marketplace SLA compliance"
