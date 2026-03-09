@@ -94,11 +94,16 @@
     justify-content: center;
     transition: all 0.3s ease;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 0;
   }
 
   .chat-toggle:hover {
     transform: scale(1.05);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  .chat-toggle:active {
+    transform: scale(0.95);
   }
 
   .chat-toggle .chat-icon-close {
@@ -117,6 +122,17 @@
     .chat-toggle {
       bottom: 1rem;
       right: 1rem;
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      min-height: 48px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .chat-toggle {
+      bottom: 0.75rem;
+      right: 0.75rem;
     }
   }
 
