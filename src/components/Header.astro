@@ -89,15 +89,11 @@
   }
 
   .header-bg {
-    background: #ffffff;
-  }
-
-  .header.dark .header-bg {
-    background: #0f172a;
-  }
-
-  :global(html.dark) .header-bg {
-    background: #0f172a;
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--color-bg);
+    transition: background-color 0.3s ease;
   }
 
   .header .container {

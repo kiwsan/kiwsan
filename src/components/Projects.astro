@@ -125,25 +125,28 @@ const projects = (await getCollection('projects'))
   }
 
   h2 {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-8);
     opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
   }
 
   h2.animate {
-    animation: fadeInUp 0.6s ease-out forwards;
+    opacity: 1;
+    transform: translateY(0);
   }
 
   .project-card {
     opacity: 0;
     transform: translateX(-30px);
+    transition: transform 0.3s ease, opacity 0.6s ease;
   }
 
   .project-card.animate {
-    animation: slideInLeft 0.6s ease-out forwards;
-  }
-
-  h2 {
-    font-size: var(--text-4xl);
-    margin-bottom: var(--space-8);
+    animation: none;
+    opacity: 1;
+    transform: translateX(0);
   }
 
   .projects-grid {

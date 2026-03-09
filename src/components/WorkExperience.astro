@@ -100,10 +100,13 @@ const workExperience = (await getCollection('projects'))
     font-size: var(--text-4xl);
     margin-bottom: var(--space-8);
     opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
   }
 
   h2.animate {
-    animation: fadeInUp 0.6s ease-out forwards;
+    opacity: 1;
+    transform: translateY(0);
   }
 
   .timeline {
@@ -116,14 +119,17 @@ const workExperience = (await getCollection('projects'))
     border-bottom: 2px solid var(--color-border);
     opacity: 0;
     transform: translateX(30px);
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, opacity 0.3s ease;
   }
 
   .work-card.animate {
-    animation: slideInRight 0.6s ease-out forwards;
+    animation: none;
+    opacity: 1;
+    transform: translateX(0);
+    transition: transform 0.3s ease, opacity 0.6s ease;
   }
 
-  .work-card:hover {
+  .work-card.animate:hover {
     transform: translateX(-8px);
   }
 
