@@ -9,7 +9,10 @@
         Bangkok, Thailand<br />
         9+ years in software engineering<br />
         B.Sc. Information Technology<br />
-        Microsoft Certified (C# 70-480)
+        <a href="https://www.credly.com/badges/67952a92-1f24-469c-911a-b9f461552fdb" target="_blank" rel="noopener noreferrer" class="credential-link">
+          <img src="/images/programming_in_C_23-01.png" alt="Microsoft Certified C#" class="credential-icon" />
+          Microsoft Certified (C# 70-480)
+        </a>
       </p>
       <p class="focus">
         Currently: Technical Lead @ MC Group<br />
@@ -66,6 +69,27 @@
     font-size: var(--text-base);
     line-height: 1.8;
     margin-bottom: var(--space-5);
+  }
+
+  .credential-link {
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .credential-link:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+  }
+
+  .credential-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
   }
 
   .focus {
