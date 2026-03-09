@@ -2,9 +2,9 @@
 
 > Software Engineer specializing in scalable web applications, cloud architecture, and modern JavaScript frameworks. Experienced in React, TypeScript, Python, Node.js, and AWS cloud solutions.
 
-[![Portfolio](https://img.shields.io/badge/Portfolio-kiwsan.dev-blue?style=flat-square)](https://kiwsan.dev)
+[![Portfolio](https://img.shields.io/badge/Portfolio-kiwsan.com-blue?style=flat-square)](https://kiwsan.com)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-kiwsan-0077B5?style=flat-square&logo=linkedin)](https://linkedin.com/in/kiwsan)
-[![Email](https://img.shields.io/badge/Email-contact@kiwsan.dev-red?style=flat-square&logo=gmail)](mailto:contact@kiwsan.dev)
+[![Email](https://img.shields.io/badge/Email-kiwsanthia@gmail.com-red?style=flat-square&logo=gmail)](mailto:kiwsanthia@gmail.com)
 
 ## 👨💻 About Me - Professional Software Developer
 
@@ -28,12 +28,6 @@ Full Stack Software Engineer with expertise in building scalable web application
 
 ![AWS](https://img.shields.io/badge/-AWS-232F3E?style=flat-square&logo=amazon-aws&logoColor=white)
 ![Docker](https://img.shields.io/badge/-Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
-
-## 📊 GitHub Stats
-
-![GitHub Stats](https://github-readme-stats.vercel.app/api?username=kiwsan&show_icons=true&theme=dark&hide_border=true)
-
-![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=kiwsan&layout=compact&theme=dark&hide_border=true)
 
 ## 🚀 Featured Projects & Portfolio
 
