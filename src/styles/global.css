@@ -136,12 +136,8 @@ button {
 }
 
 .theme-toggle {
-  position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
-  z-index: 1000;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-full);
   border: 1px solid var(--color-border);
   background: var(--color-bg);
@@ -151,7 +147,6 @@ button {
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 @media (max-width: 480px) {
@@ -159,10 +154,8 @@ button {
     padding-top: 52px;
   }
   .theme-toggle {
-    width: 48px;
-    height: 48px;
-    bottom: 1rem;
-    right: 1rem;
+    width: 32px;
+    height: 32px;
   }
 }
 
