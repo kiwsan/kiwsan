@@ -6,15 +6,99 @@
   <div class="hero-bg"></div>
   
   <div class="container">
-    <p class="greeting animate-fade-in-up stagger-1">Hi, I'm Ekkachai</p>
-    <h1 class="animate-fade-in-up stagger-2">I build systems that process<br /><span class="highlight">250K+ orders/month</span></h1>
-    <div class="tags animate-fade-in-up stagger-3">
-      <span>Technical Lead</span>
-      <span>E-Commerce Integration</span>
-      <span>Bangkok</span>
-    </div>
-    <div class="cta animate-fade-in-up stagger-4">
-      <a href="#experience">View My Work</a>
+    <div class="hero-content">
+      <div class="hero-text">
+        <p class="greeting animate-fade-in-up stagger-1">Hi, I'm Ekkachai</p>
+        <h1 class="animate-fade-in-up stagger-2">I build systems that process<br /><span class="highlight">250K+ orders/month</span></h1>
+        <div class="tags animate-fade-in-up stagger-3">
+          <span>Technical Lead</span>
+          <span>E-Commerce Integration</span>
+          <span>Bangkok</span>
+        </div>
+        <div class="cta animate-fade-in-up stagger-4">
+          <a href="#experience">View My Work</a>
+        </div>
+      </div>
+      
+      <div class="hero-illustration animate-fade-in-up stagger-5">
+        <svg viewBox="400 50 600 350" xmlns="http://www.w3.org/2000/svg">
+          <style>
+            .line {
+              stroke: #111827;
+              stroke-width: 2;
+              stroke-linecap: round;
+              stroke-linejoin: round;
+              fill: none;
+            }
+            .soft {
+              stroke: #6b7280;
+              stroke-width: 1.5;
+              fill: none;
+              opacity: 0.8;
+            }
+            .node {
+              fill: #374151;
+            }
+            .panel {
+              fill: #e5e7eb;
+            }
+            @media (prefers-color-scheme: dark) {
+              .line {
+                stroke: #e5e7eb;
+              }
+              .soft {
+                stroke: #9ca3af;
+              }
+              .node {
+                fill: #d1d5db;
+              }
+              .panel {
+                fill: #1f2937;
+              }
+            }
+          </style>
+          
+          <!-- tech mesh -->
+          <g class="soft">
+            <line x1="780" y1="120" x2="900" y2="80"/>
+            <line x1="900" y1="80" x2="1020" y2="180"/>
+            <line x1="1020" y1="180" x2="880" y2="260"/>
+            <line x1="880" y1="260" x2="760" y2="210"/>
+          </g>
+          
+          <circle cx="780" cy="120" r="4" class="node"/>
+          <circle cx="900" cy="80" r="4" class="node"/>
+          <circle cx="1020" cy="180" r="4" class="node"/>
+          <circle cx="880" cy="260" r="4" class="node"/>
+          <circle cx="760" cy="210" r="4" class="node"/>
+          
+          <!-- desk -->
+          <rect x="470" y="330" width="260" height="10" class="panel"/>
+          
+          <!-- laptop -->
+          <rect x="520" y="260" width="160" height="80" rx="6" class="line"/>
+          <rect x="510" y="340" width="180" height="8" rx="3" class="panel"/>
+          
+          <!-- code symbol -->
+          <polyline points="565,300 545,315 565,330" class="line"/>
+          <polyline points="635,300 655,315 635,330" class="line"/>
+          
+          <!-- developer -->
+          <circle cx="600" cy="220" r="22" class="line"/>
+          <path d="M560 260 c10-25 70-25 80 0" class="line"/>
+          
+          <!-- arms -->
+          <line x1="565" y1="260" x2="540" y2="310" class="line"/>
+          <line x1="635" y1="260" x2="660" y2="310" class="line"/>
+          
+          <!-- floating panels -->
+          <rect x="840" y="300" width="70" height="40" rx="6" class="panel"/>
+          <rect x="940" y="230" width="70" height="40" rx="6" class="panel"/>
+          
+          <line x1="855" y1="320" x2="895" y2="320" class="soft"/>
+          <line x1="955" y1="250" x2="995" y2="250" class="soft"/>
+        </svg>
+      </div>
     </div>
   </div>
 </section>
@@ -22,8 +106,11 @@
 <style>
   .hero {
     position: relative;
-    padding: var(--space-24) 0 var(--space-16);
+    padding: var(--space-4) 0;
     overflow: hidden;
+    height: 55vh;
+    display: flex;
+    align-items: center;
   }
 
   .hero-bg {
@@ -40,6 +127,38 @@
 
   .hero .container {
     position: relative;
+  }
+
+  .hero-content {
+    display: flex;
+    align-items: center;
+    gap: var(--space-12);
+    width: 100%;
+  }
+
+  .hero-text {
+    flex: 2;
+  }
+
+  .hero-illustration {
+    flex: 1;
+  }
+
+  .hero-text {
+    max-width: 100%;
+  }
+
+  .hero-illustration {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .hero-illustration svg {
+    width: 100%;
+    height: auto;
+    max-width: 350px;
+    min-width: 250px;
   }
 
   .greeting {
@@ -132,7 +251,18 @@
 
   @media (max-width: 768px) {
     .hero {
-      padding: var(--space-12) 0 var(--space-8);
+      padding: var(--space-4) 0;
+    }
+    .hero-content {
+      flex-direction: column;
+      gap: var(--space-6);
+      text-align: center;
+    }
+    .hero-illustration {
+      order: -1;
+    }
+    .hero-illustration svg {
+      max-width: 350px;
     }
     h1 {
       font-size: var(--text-3xl);
@@ -141,7 +271,10 @@
 
   @media (max-width: 480px) {
     .hero {
-      padding: var(--space-10) 0 var(--space-6);
+      padding: var(--space-3) 0;
+    }
+    .hero-illustration svg {
+      max-width: 280px;
     }
     h1 {
       font-size: var(--text-2xl);

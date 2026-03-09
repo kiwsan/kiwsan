@@ -8,38 +8,26 @@
   <div class="container">
     <a href="/" class="logo" aria-label="Home">
       <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="logo-svg" role="img" aria-hidden="true">
-        <defs>
-          <clipPath id="kBox">
-            <rect width="40" height="40" rx="10"/>
-          </clipPath>
-          <clipPath id="kDark">
-            <polygon points="0,0 40,0 0,40"/>
-          </clipPath>
-          <clipPath id="kLight">
-            <polygon points="40,0 40,40 0,40"/>
-          </clipPath>
-        </defs>
 
-        <g clip-path="url(#kBox)">
-          <!-- dark half -->
-          <polygon points="0,0 40,0 0,40" fill="#111111"/>
-          <!-- light half -->
-          <polygon points="40,0 40,40 0,40" fill="#E8E8E8"/>
+        <!-- flow lines -->
+        <path d="M5 28C13 6 27 6 35 28"
+              stroke="#222"
+              stroke-width="3"
+              fill="none"
+              stroke-linecap="round"/>
 
-          <!-- K on dark → light gray -->
-          <g clip-path="url(#kDark)">
-            <rect x="11" y="9" width="4" height="22" fill="#E8E8E8"/>
-            <line x1="14" y1="20" x2="27" y2="9"  stroke="#E8E8E8" stroke-width="4.2" stroke-linecap="round"/>
-            <line x1="14" y1="20" x2="27" y2="31" stroke="#E8E8E8" stroke-width="4.2" stroke-linecap="round"/>
-          </g>
+        <path d="M5 12C13 34 27 34 35 12"
+              stroke="#222"
+              stroke-width="3"
+              fill="none"
+              stroke-linecap="round"/>
 
-          <!-- K on light → dark -->
-          <g clip-path="url(#kLight)">
-            <rect x="11" y="9" width="4" height="22" fill="#111111"/>
-            <line x1="14" y1="20" x2="27" y2="9"  stroke="#111111" stroke-width="4.2" stroke-linecap="round"/>
-            <line x1="14" y1="20" x2="27" y2="31" stroke="#111111" stroke-width="4.2" stroke-linecap="round"/>
-          </g>
-        </g>
+        <!-- endpoints -->
+        <circle cx="5" cy="28" r="1.2" fill="#222"/>
+        <circle cx="35" cy="28" r="1.2" fill="#222"/>
+        <circle cx="5" cy="12" r="1.2" fill="#222"/>
+        <circle cx="35" cy="12" r="1.2" fill="#222"/>
+
       </svg>
     </a>
     <nav class="nav">
