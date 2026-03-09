@@ -22,43 +22,6 @@
       
       <div class="hero-illustration animate-fade-in-up stagger-5">
         <svg viewBox="420 40 720 380" xmlns="http://www.w3.org/2000/svg">
-          <style>
-          .main{
-          stroke:#111827;
-          stroke-width:2;
-          stroke-linecap:round;
-          stroke-linejoin:round;
-          fill:none;
-          }
-
-          .soft{
-          stroke:#6b7280;
-          stroke-width:1.3;
-          stroke-linecap:round;
-          fill:none;
-          opacity:.7;
-          }
-
-          .node{
-          fill:#374151;
-          }
-
-          .panel{
-          fill:#e5e7eb;
-          }
-
-          .glow{
-          opacity:.15;
-          }
-
-          @media (prefers-color-scheme: dark){
-          .main{stroke:#f3f4f6}
-          .soft{stroke:#9ca3af}
-          .node{fill:#e5e7eb}
-          .panel{fill:#1f2937}
-          .glow{opacity:.25}
-          }
-          </style>
 
           <!-- subtle tech mesh -->
           <g class="soft">
@@ -310,6 +273,52 @@
     .btn-primary {
       width: 100%;
       justify-content: center;
+    }
+  }
+
+  :global(.hero-illustration svg .main) {
+    stroke: #111827;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+  }
+
+  :global(.hero-illustration svg .soft) {
+    stroke: #6b7280;
+    stroke-width: 1.3;
+    stroke-linecap: round;
+    fill: none;
+    opacity: 0.7;
+  }
+
+  :global(.hero-illustration svg .node) {
+    fill: #374151;
+  }
+
+  :global(.hero-illustration svg .panel) {
+    fill: #e5e7eb;
+  }
+
+  :global(.hero-illustration svg .glow) {
+    opacity: 0.15;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :global(.hero-illustration svg .main) {
+      stroke: #f3f4f6;
+    }
+    :global(.hero-illustration svg .soft) {
+      stroke: #9ca3af;
+    }
+    :global(.hero-illustration svg .node) {
+      fill: #e5e7eb;
+    }
+    :global(.hero-illustration svg .panel) {
+      fill: #1f2937;
+    }
+    :global(.hero-illustration svg .glow) {
+      opacity: 0.25;
     }
   }
 </style>
