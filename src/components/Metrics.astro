@@ -59,7 +59,7 @@ import metrics from '../data/metrics.json';
   .metrics {
     padding: var(--space-4) 0;
     background: var(--color-surface);
-    height: 45vh;
+    min-height: 45vh;
     display: flex;
     align-items: center;
   }
@@ -101,21 +101,12 @@ import metrics from '../data/metrics.json';
   }
 
   @media (max-width: 768px) {
-    .metrics-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: var(--space-4);
-    }
-    .value {
-      font-size: var(--text-4xl);
-    }
-  }
-
-  @media (max-width: 480px) {
     .metrics {
+      min-height: auto;
       padding: var(--space-8) 0;
     }
     .metrics-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, 1fr);
       gap: var(--space-6);
     }
     .metric-card {
@@ -123,6 +114,22 @@ import metrics from '../data/metrics.json';
     }
     .value {
       font-size: var(--text-3xl);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .metrics {
+      padding: var(--space-6) 0;
+    }
+    .metrics-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+    }
+    .metric-card {
+      padding: var(--space-3);
+    }
+    .value {
+      font-size: var(--text-2xl);
     }
     .label {
       font-size: var(--text-sm);

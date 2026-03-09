@@ -128,16 +128,22 @@
     color: var(--color-accent);
   }
 
+  @media (max-width: 768px) {
+    .nav {
+      gap: var(--space-4);
+    }
+  }
+
   @media (max-width: 480px) {
     .header .container {
       padding-top: var(--space-3);
       padding-bottom: var(--space-3);
     }
     .nav {
-      gap: var(--space-3);
+      gap: var(--space-2);
     }
     .nav a {
-      font-size: var(--text-xs);
+      font-size: 0.75rem;
     }
   }
 </style>
