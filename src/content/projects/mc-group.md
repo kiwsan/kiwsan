@@ -9,7 +9,7 @@ results: [
   "250K orders/month automated",
   "50% faster sync",
   "35% AWS cost reduction",
-  "48h → 24h SLA improvement"
+  "48h → 24h marketplace SLA compliance"
 ]
 order: 1
 type: "work"
