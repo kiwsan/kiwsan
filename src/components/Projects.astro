@@ -8,62 +8,137 @@ const projects = (await getCollection('projects'))
 
 <section id="projects" class="projects">
   <div class="container">
-    <h2>Featured Projects</h2>
-    <div class="projects-grid">
-      {projects.map((project) => (
-        <article class="project-card fade-in-item">
-          <div class="project-header">
-            <h3>{project.data.title}</h3>
-            <div class="meta">
-              <span class="company">{project.data.company}</span>
-              <span class="period">{project.data.period}</span>
-            </div>
-          </div>
-          
-          <div class="project-content">
-            <div class="section">
-              <strong>Challenge:</strong> {project.data.challenge}
-            </div>
-            <div class="section">
-              <strong>Solution:</strong> {project.data.solution}
-            </div>
-          </div>
+    <h2 class="fade-in-up">Featured Projects</h2>
+    <div class="projects-grid stagger-container">
+      {projects.map((project, index) => (
+        <article class="project-card" data-index={index}>
+          <div class="project-layout">
+            <div class="project-info">
+              <div class="project-header">
+                <h3>{project.data.title}</h3>
+                <div class="meta">
+                  <span class="company">{project.data.company}</span>
+                  <span class="period">{project.data.period}</span>
+                </div>
+              </div>
+              
+              <div class="project-content">
+                <div class="section">
+                  <strong>Challenge:</strong> {project.data.challenge}
+                </div>
+                <div class="section">
+                  <strong>Solution:</strong> {project.data.solution}
+                </div>
+              </div>
 
-          <div class="tech-stack">
-            {project.data.tech.map((tech) => (
-              <span class="tech-tag">{tech}</span>
-            ))}
-          </div>
+              <div class="tech-stack">
+                {project.data.tech.map((tech) => (
+                  <span class="tech-tag">{tech}</span>
+                ))}
+              </div>
 
-          <div class="results">
-            <strong>Results:</strong>
-            <ul>
-              {project.data.results.map((result) => (
-                <li>{result}</li>
-              ))}
-            </ul>
-          </div>
+              <div class="results">
+                <strong>Results:</strong>
+                <ul>
+                  {project.data.results.map((result) => (
+                    <li>{result}</li>
+                  ))}
+                </ul>
+              </div>
 
-          {project.data.link && (
-            <a href={project.data.link} target="_blank" rel="noopener noreferrer" class="project-link" aria-label={`Visit ${project.data.title} (opens in new tab)`}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                <polyline points="15 3 21 3 21 9"/>
-                <line x1="10" y1="14" x2="21" y2="3"/>
-              </svg>
-              Visit Project
-            </a>
-          )}
+              {project.data.link && (
+                <a href={project.data.link} target="_blank" rel="noopener noreferrer" class="project-link" aria-label={`Visit ${project.data.title} (opens in new tab)`}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                    <polyline points="15 3 21 3 21 9"/>
+                    <line x1="10" y1="14" x2="21" y2="3"/>
+                  </svg>
+                  Visit Project
+                </a>
+              )}
+            </div>
+            
+            {(project.data.imageDark || project.data.imageLight) && (
+              <div class="project-image">
+                {project.data.imageDark && (
+                  <img src={project.data.imageDark} alt={project.data.title} class="theme-dark" />
+                )}
+                {project.data.imageLight && (
+                  <img src={project.data.imageLight} alt={project.data.title} class="theme-light" />
+                )}
+              </div>
+            )}
+          </div>
         </article>
       ))}
     </div>
   </div>
 </section>
 
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const target = entry.target as HTMLElement;
+        const index = target.dataset.index;
+        if (index) {
+          setTimeout(() => {
+            target.classList.add('animate');
+          }, parseInt(index) * 150);
+        } else {
+          target.classList.add('animate');
+        }
+        observer.unobserve(target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('h2, .project-card').forEach(el => observer.observe(el));
+</script>
+
 <style>
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
   .projects {
     padding: var(--space-16) 0;
     background: var(--color-surface);
+  }
+
+  h2 {
+    opacity: 0;
+  }
+
+  h2.animate {
+    animation: fadeInUp 0.6s ease-out forwards;
+  }
+
+  .project-card {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+
+  .project-card.animate {
+    animation: slideInLeft 0.6s ease-out forwards;
   }
 
   h2 {
@@ -79,11 +154,77 @@ const projects = (await getCollection('projects'))
   .project-card {
     padding: var(--space-8) 0;
     border-bottom: 2px solid var(--color-border);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .project-card:hover {
+    transform: translateX(8px);
+  }
+
+  .project-layout {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--space-8);
+    align-items: start;
+  }
+
+  .project-info {
+    min-width: 0;
+  }
+
+  .project-image {
+    position: relative;
+    width: 400px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+
+  .project-image img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .project-card:hover .project-image img {
+    transform: scale(1.05);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .project-image .theme-dark {
+    display: none;
+  }
+
+  .project-image .theme-light {
+    display: block;
+  }
+
+  [data-theme="dark"] .project-image .theme-dark {
+    display: block;
+  }
+
+  [data-theme="dark"] .project-image .theme-light {
+    display: none;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .project-image .theme-dark {
+      display: block;
+    }
+    :root:not([data-theme="light"]) .project-image .theme-light {
+      display: none;
+    }
   }
 
   .project-header h3 {
     font-size: var(--text-2xl);
     margin-bottom: var(--space-2);
+    transition: color 0.3s ease;
+  }
+
+  .project-card:hover .project-header h3 {
+    color: var(--color-primary);
   }
 
   .meta {
@@ -132,6 +273,15 @@ const projects = (await getCollection('projects'))
     font-size: var(--text-xs);
     font-weight: 500;
     font-family: var(--font-mono);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .tech-tag:hover {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 12px rgba(255, 92, 122, 0.3);
   }
 
   .results strong {
@@ -149,6 +299,29 @@ const projects = (await getCollection('projects'))
   .results li {
     margin-bottom: var(--space-1);
     color: var(--color-text);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+  }
+
+  .results li::before {
+    content: '';
+    position: absolute;
+    left: -20px;
+    top: 50%;
+    transform: translateY(-50%) scaleX(0);
+    width: 12px;
+    height: 2px;
+    background: var(--color-primary);
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .results li:hover {
+    transform: translateX(6px);
+    color: var(--color-primary);
+  }
+
+  .results li:hover::before {
+    transform: translateY(-50%) scaleX(1);
   }
 
   .project-link {
@@ -180,7 +353,21 @@ const projects = (await getCollection('projects'))
   }
 
   .project-link:hover svg {
-    transform: translateX(2px);
+    transform: translateX(3px) rotate(-5deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fade-in-up,
+    .fade-in-item {
+      animation: none;
+      opacity: 1;
+    }
+    .project-card:hover,
+    .tech-tag:hover,
+    .results li:hover,
+    .project-link:hover {
+      transform: none;
+    }
   }
 
   @media (max-width: 768px) {
@@ -192,6 +379,13 @@ const projects = (await getCollection('projects'))
     }
     .project-card {
       padding: var(--space-5) 0;
+    }
+    .project-layout {
+      grid-template-columns: 1fr;
+    }
+    .project-image {
+      width: 100%;
+      order: -1;
     }
   }
 

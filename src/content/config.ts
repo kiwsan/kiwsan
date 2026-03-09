@@ -13,6 +13,8 @@ const projects = defineCollection({
     order: z.number(),
     type: z.enum(['personal', 'work']),
     link: z.string().optional(),
+    imageDark: z.string().optional(),
+    imageLight: z.string().optional(),
   }),
 });
 

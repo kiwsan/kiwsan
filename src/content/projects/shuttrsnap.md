@@ -13,6 +13,8 @@ results: [
 order: 0
 type: "personal"
 link: "https://shuttrsnap.com"
+imageDark: "/images/shuttrsnap-dark.png"
+imageLight: "/images/shuttrsnap-light.png"
 ---
 
 Built a mini SaaS for small businesses to automatically track payments and receipts.
