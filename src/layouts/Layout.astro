@@ -1,10 +1,12 @@
 ---
 import '../styles/global.css';
+import { GoogleAnalytics } from 'astro-google-analytics';
 
 const {
-  title = "Ekkachai Kiwsanthia - Technical Lead",
-  description = "Technical Lead with 9+ years in software engineering, specializing in e-commerce integration, cloud architecture, and event-driven systems processing 250K+ orders/month.",
+  title = "Ekkachai K. - Full Stack Software Engineer | React, TypeScript, AWS Developer",
+  description = "Software Engineer specializing in scalable web applications, cloud architecture, and modern JavaScript frameworks. Experienced in React, TypeScript, Python, Node.js, and AWS cloud solutions.",
   url = "https://kiwsan.com",
+  keywords = "Full Stack Developer, Software Engineer, React Developer, TypeScript, JavaScript, Python, AWS, Cloud Computing, Web Development, Node.js, Docker",
 } = Astro.props;
 ---
 
@@ -16,8 +18,9 @@ const {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
     <meta name="author" content="Ekkachai Kiwsanthia" />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -38,6 +41,9 @@ const {
     <!-- Canonical -->
     <link rel="canonical" href={url} />
 
+    <!-- Google Analytics -->
+    <GoogleAnalytics id="G-VCVHY5429T" />
+
     <!-- JSON-LD Structured Data -->
     <script is:inline type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
@@ -45,7 +51,8 @@ const {
       "mainEntity": {
         "@type": "Person",
         "name": "Ekkachai Kiwsanthia",
-        "jobTitle": "Technical Lead",
+        "jobTitle": "Full Stack Software Engineer",
+        "knowsAbout": ["React", "TypeScript", "JavaScript", "Python", "Node.js", "AWS", "Docker", "Web Development", "Cloud Computing"],
         "description": description,
         "url": url,
         "email": "kiwsanthia@gmail.com",
