@@ -625,9 +625,14 @@
     }
   });
 
-  // Show tooltip briefly on load (both mobile and desktop)
+  // Auto-open on desktop
+  if (window.innerWidth > 480) {
+    setTimeout(() => toggleChat(), 1000);
+  }
+
+  // Show tooltip briefly on mobile only
   const tooltip = document.getElementById('chat-tooltip');
-  if (tooltip) {
+  if (tooltip && window.innerWidth <= 480) {
     setTimeout(() => tooltip.classList.add('show'), 2000);
     setTimeout(() => tooltip.classList.remove('show'), 6000);
   }
