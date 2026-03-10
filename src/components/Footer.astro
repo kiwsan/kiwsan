@@ -3,6 +3,16 @@
 
 <footer class="footer">
   <div class="container">
+    <div class="footer-referrals">
+      <p>Deploy your next app in seconds. Get $100 in cloud credits:</p>
+      <a href="https://www.digitalocean.com/?refcode=0e2c3672d1dc&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge" target="_blank" rel="noopener noreferrer">
+        <img src="/images/digitalocean-badge.svg" alt="DigitalOcean Referral Badge" />
+      </a>
+      <p>Premium web hosting with 20% off:</p>
+      <a href="https://www.hostinger.com/th?REFERRALCODE=GWYKIWSANQZC" target="_blank" rel="noopener noreferrer">
+        <img src="/images/hostinger-black.svg" alt="Hostinger Referral Badge" />
+      </a>
+    </div>
     <div class="footer-content">
       <p>&copy; {new Date().getFullYear()} Ekkachai Kiwsanthia. All rights reserved.</p>
       <div class="footer-links">
@@ -46,6 +56,31 @@
 
   .footer-links a:hover {
     color: var(--color-accent);
+  }
+
+  .footer-referrals {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .footer-referrals p {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    width: 100%;
+    margin: 0;
+  }
+
+  .footer-referrals p:not(:first-child) {
+    margin-top: var(--space-2);
+  }
+
+  .footer-referrals img {
+    height: 36px;
   }
 
   @media (max-width: 480px) {

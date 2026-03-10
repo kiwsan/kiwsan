@@ -625,15 +625,10 @@
     }
   });
 
-  // Auto-open on desktop, show tooltip on mobile
-  const isMobile = window.innerWidth <= 480;
-  if (isMobile) {
-    const tooltip = document.getElementById('chat-tooltip');
-    if (tooltip) {
-      tooltip.classList.add('show');
-      setTimeout(() => tooltip.classList.remove('show'), 4000);
-    }
-  } else {
-    toggleChat();
+  // Show tooltip briefly on load (both mobile and desktop)
+  const tooltip = document.getElementById('chat-tooltip');
+  if (tooltip) {
+    setTimeout(() => tooltip.classList.add('show'), 2000);
+    setTimeout(() => tooltip.classList.remove('show'), 6000);
   }
 </script>

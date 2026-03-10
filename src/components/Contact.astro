@@ -1,4 +1,7 @@
 ---
+const startYear = 2016;
+const currentYear = new Date().getFullYear();
+const yearsOfExperience = currentYear - startYear;
 ---
 
 <section class="contact" id="contact">
@@ -7,11 +10,11 @@
       <h2>Let's Work Together</h2>
       <p class="intro">
         Bangkok, Thailand<br />
-        9+ years in software engineering<br />
+        {yearsOfExperience}+ years in software engineering<br />
         B.Sc. Information Technology<br />
         <a href="https://www.credly.com/badges/67952a92-1f24-469c-911a-b9f461552fdb" target="_blank" rel="noopener noreferrer" class="credential-link">
           <img src="/images/programming_in_C_23-01.png" alt="Microsoft Certified C#" class="credential-icon" />
-          Microsoft Certified (C# 70-480)
+          Microsoft Certified: Programming in C#
         </a>
       </p>
       <p class="focus">
@@ -39,16 +42,6 @@
             <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
           </svg>
           github.com/kiwsan
-        </a>
-      </div>
-      <div class="referral">
-        <p>Deploy your next app in seconds. Get $100 in cloud credits:</p>
-        <a href="https://www.digitalocean.com/?refcode=0e2c3672d1dc&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge" target="_blank" rel="noopener noreferrer">
-          <img src="/images/digitalocean-badge.svg" alt="DigitalOcean Referral Badge" />
-        </a>
-        <p>Premium web hosting with 20% off:</p>
-        <a href="https://www.hostinger.com/th?REFERRALCODE=GWYKIWSANQZC" target="_blank" rel="noopener noreferrer">
-          <img src="/images/hostinger-black.svg" alt="Hostinger Referral Badge" />
         </a>
       </div>
     </div>
@@ -134,20 +127,6 @@
     transform: scale(1.1);
   }
 
-  .referral {
-    padding-top: var(--space-8);
-    border-top: 1px solid var(--color-border);
-  }
-
-  .referral p {
-    font-size: var(--text-sm);
-    color: var(--color-text-muted);
-    margin-bottom: var(--space-4);
-  }
-
-  .referral img {
-    height: 40px;
-  }
 
   @media (max-width: 768px) {
     .contact {
@@ -171,11 +150,6 @@
     .link-item {
       font-size: var(--text-sm);
       word-break: break-all;
-    }
-    .referral img {
-      height: 32px;
-      width: 100%;
-      max-width: 200px;
     }
   }
 </style>
