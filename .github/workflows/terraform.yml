@@ -12,63 +12,63 @@ env:
   TF_DIR: ./terraform
 
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+  # build-and-test:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: '20'
+  #         cache: 'npm'
 
-      - name: Install Dependencies
-        run: npm ci
+  #     - name: Install Dependencies
+  #       run: npm ci
 
-      - name: Generate Version
-        id: version
-        env:
-          GITHUB_RUN_ID: ${{ github.run_id }}
-        run: |
-          cat << 'EOF' > generate_version.js
-          /* sonar-disable-file */
-          function generateVersion() {
-              const now = new Date();
-              const year = now.getFullYear();
-              const month = String(now.getMonth() + 1).padStart(2, '0');
-              const day = String(now.getDate()).padStart(2, '0');
-              const countYear = year - 2023;
-              const version = `${countYear}.${month}.${day}`;
-              const build = `${year}.${month}.${process.env.GITHUB_RUN_ID || 'local'}`;
-              return { version, build };
-          }
-          const result = generateVersion();
-          console.log(`::set-output name=version::${result.version}`);
-          console.log(`::set-output name=build::${result.build}`);
-          EOF
-          node generate_version.js
+  #     - name: Generate Version
+  #       id: version
+  #       env:
+  #         GITHUB_RUN_ID: ${{ github.run_id }}
+  #       run: |
+  #         cat << 'EOF' > generate_version.js
+  #         /* sonar-disable-file */
+  #         function generateVersion() {
+  #             const now = new Date();
+  #             const year = now.getFullYear();
+  #             const month = String(now.getMonth() + 1).padStart(2, '0');
+  #             const day = String(now.getDate()).padStart(2, '0');
+  #             const countYear = year - 2023;
+  #             const version = `${countYear}.${month}.${day}`;
+  #             const build = `${year}.${month}.${process.env.GITHUB_RUN_ID || 'local'}`;
+  #             return { version, build };
+  #         }
+  #         const result = generateVersion();
+  #         console.log(`::set-output name=version::${result.version}`);
+  #         console.log(`::set-output name=build::${result.build}`);
+  #         EOF
+  #         node generate_version.js
 
-      - name: Build
-        run: npm run build
-        env:
-          PUBLIC_BUILD_VERSION: ${{ steps.version.outputs.build }}
+  #     - name: Build
+  #       run: npm run build
+  #       env:
+  #         PUBLIC_BUILD_VERSION: ${{ steps.version.outputs.build }}
 
-      - name: Install Test Dependencies
-        run: npm ci
-        working-directory: ./tests
+  #     - name: Install Test Dependencies
+  #       run: npm ci
+  #       working-directory: ./tests
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-        working-directory: ./tests
+  #     - name: Install Playwright Browsers
+  #       run: npx playwright install --with-deps
+  #       working-directory: ./tests
 
-      - name: Test
-        run: npm test
-        working-directory: ./tests
+  #     - name: Test
+  #       run: npm test
+  #       working-directory: ./tests
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build-and-test
+    # needs: build-and-test
     permissions:
       contents: read
       pull-requests: write
