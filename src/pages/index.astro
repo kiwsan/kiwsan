@@ -12,13 +12,21 @@ import Footer from '../components/Footer.astro';
 
 <Layout>
   <Header />
-  <main>
+  <main id="main-content" role="main">
     <Hero />
     <Metrics />
-    <WorkExperience />
-    <Projects />
-    <TechStack />
-    <Contact />
+    <section aria-label="Professional Experience">
+      <WorkExperience />
+    </section>
+    <section aria-label="Featured Projects">
+      <Projects />
+    </section>
+    <section aria-label="Technical Skills">
+      <TechStack />
+    </section>
+    <section aria-label="Contact Information">
+      <Contact />
+    </section>
   </main>
   <Footer />
 </Layout>

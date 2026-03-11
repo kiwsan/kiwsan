@@ -18,7 +18,7 @@ const projects = (await getCollection('projects'))
                 <h3>{project.data.title}</h3>
                 <div class="meta">
                   <span class="company">{project.data.company}</span>
-                  <span class="period">{project.data.period}</span>
+                  <time class="period" datetime={project.data.period.includes('Present') ? `${project.data.period.split(' - ')[0]}/P${new Date().getFullYear() - parseInt(project.data.period.split(' - ')[0])}Y` : project.data.period}>{project.data.period}</time>
                 </div>
               </div>
               
@@ -61,10 +61,10 @@ const projects = (await getCollection('projects'))
             {(project.data.imageDark || project.data.imageLight) && (
               <div class="project-image">
                 {project.data.imageDark && (
-                  <img src={project.data.imageDark} alt={project.data.title} class="theme-dark" />
+                  <img src={project.data.imageDark} alt={`${project.data.title} - Dark Theme Screenshot`} class="theme-dark" loading="lazy" decoding="async" />
                 )}
                 {project.data.imageLight && (
-                  <img src={project.data.imageLight} alt={project.data.title} class="theme-light" />
+                  <img src={project.data.imageLight} alt={`${project.data.title} - Light Theme Screenshot`} class="theme-light" loading="lazy" decoding="async" />
                 )}
               </div>
             )}

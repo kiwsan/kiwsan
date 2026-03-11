@@ -16,7 +16,7 @@ const workExperience = (await getCollection('projects'))
             <h3>{work.data.title}</h3>
             <div class="meta">
               <span class="company">{work.data.company}</span>
-              <span class="period">{work.data.period}</span>
+              <time class="period" datetime={work.data.period.includes('Present') ? `${work.data.period.split(' - ')[0]}/P${new Date().getFullYear() - parseInt(work.data.period.split(' - ')[0])}Y` : work.data.period}>{work.data.period}</time>
             </div>
           </div>
           

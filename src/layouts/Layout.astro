@@ -4,10 +4,10 @@ import { GoogleAnalytics } from 'astro-google-analytics';
 import ChatWidget from '../components/ChatWidget.astro';
 
 const {
-  title = "Ekkachai K. - Full Stack Software Engineer | React, TypeScript, AWS Developer",
-  description = "Software Engineer specializing in scalable web applications, cloud architecture, and modern JavaScript frameworks. Experienced in React, TypeScript, Node.js, and AWS cloud solutions.",
+  title = "Full Stack Software Engineer — I build systems that process Million+ orders/year | Ekkachai K.",
+  description = "10+ years Full Stack Software Engineer in Bangkok, Thailand. Built systems processing 1M+ orders/year for Shopee, Lazada. Expert in React, TypeScript, AWS cloud solutions.",
   url = "https://kiwsan.com",
-  keywords = "Full Stack Developer, Software Engineer, React Developer, TypeScript, JavaScript, AWS, Cloud Computing, Web Development, Node.js, Docker",
+  keywords = "Full Stack Software Engineer Bangkok, Software Engineer Thailand, React Developer Bangkok, TypeScript Developer Thailand, AWS Cloud Engineer Bangkok, E-commerce Systems Developer, Million Orders Processing, Shopee Lazada Developer, Node.js Developer Bangkok, Docker Kubernetes Thailand",
 } = Astro.props;
 ---
 
@@ -16,12 +16,25 @@ const {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+    
+    <!-- Performance & Preconnect -->
+    <link rel="preconnect" href="https://www.googletagmanager.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://www.linkedin.com" />
+    <link rel="dns-prefetch" href="https://github.com" />
+    
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="keywords" content={keywords} />
     <meta name="author" content="Ekkachai Kiwsanthia" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    
+    <!-- Local SEO -->
+    <meta name="geo.region" content="TH-10" />
+    <meta name="geo.placename" content="Bangkok" />
+    <meta name="geo.position" content="13.7563;100.5018" />
+    <meta name="ICBM" content="13.7563, 100.5018" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -29,15 +42,20 @@ const {
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content="Ekkachai K. - Full Stack Software Engineer" />
     <meta property="og:image" content={`${url}/images/og-image.png`} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Ekkachai K. - Full Stack Software Engineer Portfolio" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@kiwsan" />
+    <meta name="twitter:creator" content="@kiwsan" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={`${url}/images/og-image.png`} />
+    <meta name="twitter:image:alt" content="Ekkachai K. - Full Stack Software Engineer Portfolio" />
 
     <!-- Canonical -->
     <link rel="canonical" href={url} />
@@ -58,25 +76,133 @@ const {
       })();
     </script>
 
-    <!-- JSON-LD Structured Data -->
-    <script is:inline type="application/ld+json" set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "ProfilePage",
-      "mainEntity": {
-        "@type": "Person",
-        "name": "Ekkachai Kiwsanthia",
-        "jobTitle": "Full Stack Software Engineer",
-        "knowsAbout": ["React", "TypeScript", "JavaScript", "Node.js", "AWS", "Docker", "Web Development", "Cloud Computing"],
-        "description": description,
-        "url": url,
-        "email": "kiwsanthia@gmail.com",
-        "address": { "@type": "PostalAddress", "addressLocality": "Bangkok", "addressCountry": "TH" },
-        "sameAs": [
-          "https://www.linkedin.com/in/kiwsan",
-          "https://github.com/kiwsan"
+    <!-- Enhanced JSON-LD Structured Data -->
+    <script is:inline type="application/ld+json" set:html={JSON.stringify([
+      {
+        "@context": "https://schema.org",
+        "@type": "ProfilePage",
+        "mainEntity": {
+          "@type": "Person",
+          "name": "Ekkachai Kiwsanthia",
+          "alternateName": "Ekkachai K.",
+          "jobTitle": "Full Stack Software Engineer",
+          "worksFor": {
+            "@type": "Organization",
+            "name": "Freelance Software Engineer"
+          },
+          "alumniOf": {
+            "@type": "Organization",
+            "name": "Software Engineering"
+          },
+          "hasCredential": {
+            "@type": "EducationalOccupationalCredential",
+            "name": "10+ Years Software Engineering Experience"
+          },
+          "knowsAbout": ["React", "TypeScript", "JavaScript", "Node.js", "AWS", "Docker", "Web Development", "Cloud Computing", "E-commerce Systems", "Million+ Orders Processing"],
+          "knowsLanguage": ["English", "Thai"],
+          "description": description,
+          "url": url,
+          "email": "kiwsanthia@gmail.com",
+          "image": `${url}/images/og-image.png`,
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Bangkok",
+            "addressRegion": "Bangkok",
+            "addressCountry": "TH"
+          },
+          "sameAs": [
+            "https://www.linkedin.com/in/kiwsan",
+            "https://github.com/kiwsan",
+            "https://kiwsan.com"
+          ]
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": "Work Experience",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
+              "@type": "WorkRole",
+              "name": "Senior Software Engineer - E-commerce Platform",
+              "description": "Built systems processing Million+ orders/year for major e-commerce platforms"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
+              "@type": "WorkRole",
+              "name": "Full Stack Developer - Cloud Architecture",
+              "description": "Specialized in React, TypeScript, AWS cloud solutions and scalable web applications"
+            }
+          }
+        ]
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is Ekkachai K.'s expertise as a Full Stack Software Engineer?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Ekkachai K. is a Full Stack Software Engineer with 10+ years experience in Bangkok, Thailand. He specializes in building scalable systems that process Million+ orders/year using React, TypeScript, Node.js, and AWS cloud solutions for major e-commerce platforms like Shopee and Lazada."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What technologies does Ekkachai K. work with?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Ekkachai K. works with modern web technologies including React, TypeScript, JavaScript, Node.js, Python, AWS cloud services, Docker, and specializes in e-commerce systems architecture and cloud computing solutions."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Where is Ekkachai K. located and available for work?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Ekkachai K. is based in Bangkok, Thailand and available for remote software engineering projects. He has experience working with international teams and building systems for global e-commerce platforms."
+            }
+          }
+        ]
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": url
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Portfolio",
+            "item": `${url}#projects`
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Experience",
+            "item": `${url}#experience`
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "name": "Contact",
+            "item": `${url}#contact`
+          }
         ]
       }
-    })} />
+    ])} />
   </head>
   <body>
     <slot />
