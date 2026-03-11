@@ -20,6 +20,7 @@
     "typescript": "^5.9.3"
   },
   "devDependencies": {
-    "lightningcss": "^1.32.0"
+    "lightningcss": "^1.32.0",
+    "vite-plugin-compression": "^0.5.1"
   }
 }

@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import fs from 'fs';
 import path from 'path';
+import viteCompression from 'vite-plugin-compression';
 
 // https://astro.build/config
 export default defineConfig({
@@ -17,6 +18,7 @@ export default defineConfig({
       minify: 'esbuild',
     },
     plugins: [
+      viteCompression({ algorithm: 'gzip', ext: '.gz' }),
       {
         name: 'copy-deferred-css',
         buildStart() {
