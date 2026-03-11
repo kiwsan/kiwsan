@@ -18,5 +18,8 @@
     "astro-google-analytics": "^1.0.3",
     "astro-icon": "^1.1.5",
     "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "lightningcss": "^1.32.0"
   }
 }
