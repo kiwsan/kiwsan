@@ -12,39 +12,45 @@ env:
   TF_DIR: ./terraform
 
 jobs:
-  terraform:
+  test:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
-    
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-      
+
       - name: Install Dependencies
         run: npm ci
-      
+
       - name: Build
         run: npm run build
-      
+
       - name: Install Test Dependencies
         run: npm ci
         working-directory: ./tests
-      
+
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
         working-directory: ./tests
-      
+
       - name: Test
         run: npm test
         working-directory: ./tests
-      
+
+  terraform:
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
