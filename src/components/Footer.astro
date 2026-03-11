@@ -1,4 +1,5 @@
 ---
+const buildVersion = import.meta.env.PUBLIC_BUILD_VERSION || 'dev';
 ---
 
 <footer class="footer">
@@ -15,6 +16,7 @@
     </div>
     <div class="footer-content">
       <p>&copy; {new Date().getFullYear()} Ekkachai Kiwsanthia. All rights reserved.</p>
+      <p class="build-version">v{buildVersion}</p>
       <div class="footer-links">
         <a href="https://github.com/kiwsan" target="_blank" rel="noopener noreferrer">GitHub</a>
         <a href="https://www.linkedin.com/in/kiwsan" target="_blank" rel="noopener noreferrer">LinkedIn</a>
@@ -42,6 +44,11 @@
   .footer-content p {
     font-size: var(--text-sm);
     color: var(--color-text-muted);
+  }
+
+  .build-version {
+    font-size: var(--text-xs) !important;
+    opacity: 0.5;
   }
 
   .footer-links {
