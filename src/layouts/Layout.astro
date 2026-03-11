@@ -2,7 +2,6 @@
 import '@fontsource-variable/inter';
 import '@fontsource/noto-sans-thai';
 import '../styles/global.css';
-import { GoogleAnalytics } from 'astro-google-analytics';
 import ChatWidget from '../components/ChatWidget.astro';
 
 const {
@@ -17,13 +16,17 @@ const {
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://www.google-analytics.com https://analytics.google.com; img-src 'self' data: https://www.google-analytics.com; style-src 'self' 'unsafe-inline';" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; script-src-elem 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://www.google-analytics.com https://analytics.google.com; img-src 'self' data: https://www.google-analytics.com; style-src 'self' 'unsafe-inline';" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
     
     <!-- Performance & Preconnect -->
-    <link rel="preconnect" href="https://www.googletagmanager.com" />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
     <link rel="dns-prefetch" href="https://www.linkedin.com" />
     <link rel="dns-prefetch" href="https://github.com" />
+
+    <!-- Deferred non-critical CSS -->
+    <link rel="preload" href="/_deferred.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="/_deferred.css" /></noscript>
     
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
@@ -62,8 +65,25 @@ const {
     <!-- Canonical -->
     <link rel="canonical" href={url} />
 
-    <!-- Google Analytics -->
-    <GoogleAnalytics id="G-VCVHY5429T" />
+    <!-- Google Analytics (deferred until idle) -->
+    <script is:inline>
+      function loadGA() {
+        var s = document.createElement('script');
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-VCVHY5429T';
+        s.async = true;
+        document.head.appendChild(s);
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', 'G-VCVHY5429T');
+      }
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(loadGA);
+      } else {
+        setTimeout(loadGA, 3000);
+      }
+    </script>
 
     <!-- Theme init: must run before body renders to prevent flash -->
     <script is:inline>
@@ -224,22 +244,11 @@ const {
       // Scroll animations
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-          }
+          if (entry.isIntersecting) entry.target.classList.add('visible');
         });
       }, { threshold: 0.1 });
 
-      document.querySelectorAll('section').forEach(section => {
-        observer.observe(section);
-      });
-
-      document.querySelectorAll('.fade-in-item').forEach((item, index) => {
-        if (item instanceof HTMLElement) {
-          item.style.transitionDelay = `${index * 0.1}s`;
-        }
-        observer.observe(item);
-      });
+      document.querySelectorAll('section, .fade-in-item').forEach(el => observer.observe(el));
     </script>
   </body>
 </html>

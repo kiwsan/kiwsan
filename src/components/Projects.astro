@@ -61,10 +61,10 @@ const projects = (await getCollection('projects'))
             {(project.data.imageDark || project.data.imageLight) && (
               <div class="project-image">
                 {project.data.imageDark && (
-                  <img src={project.data.imageDark} alt={`${project.data.title} - Dark Theme Screenshot`} class="theme-dark" loading="lazy" decoding="async" />
+                  <img src={project.data.imageDark} alt={`${project.data.title} - Dark Theme Screenshot`} width="400" height="300" class="theme-dark" loading="lazy" decoding="async" />
                 )}
                 {project.data.imageLight && (
-                  <img src={project.data.imageLight} alt={`${project.data.title} - Light Theme Screenshot`} class="theme-light" loading="lazy" decoding="async" />
+                  <img src={project.data.imageLight} alt={`${project.data.title} - Light Theme Screenshot`} width="400" height="300" class="theme-light" loading="lazy" decoding="async" />
                 )}
               </div>
             )}

@@ -14,6 +14,9 @@ out/
 .next/
 .astro/
 
+# Generated static assets
+public/_deferred.css
+
 # Environment variables
 .env
 .env.local

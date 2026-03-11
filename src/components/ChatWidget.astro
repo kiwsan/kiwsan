@@ -435,205 +435,176 @@
 
 <script>
   const chatToggle = document.getElementById('chat-toggle');
-  const chatWindow = document.getElementById('chat-window');
-  const chatClose = document.getElementById('chat-close');
-  const chatInput = document.getElementById('chat-input') as HTMLInputElement;
-  const chatSend = document.getElementById('chat-send') as HTMLButtonElement;
-  const chatMessages = document.getElementById('chat-messages');
+  const isMobile = window.matchMedia('(max-width: 480px)').matches;
 
-  let isOpen = false;
-  let isBotTyping = false;
-
-  // Mock responses
-  const responses: Record<string, string> = {
-    skills: "Ekkachai is proficient in React, TypeScript, JavaScript, Python, Node.js, and AWS. He also works with Docker, cloud computing, and modern web development frameworks.",
-    experience: "Ekkachai is a Full Stack Software Engineer with experience building scalable web applications, cloud architecture, and modern JavaScript frameworks. He's based in Bangkok, Thailand.",
-    projects: "Ekkachai has worked on various projects involving scalable web applications, cloud-native solutions, and full-stack development. Check out the Projects section on this page for details!",
-    contact: "You can reach Ekkachai via email at kiwsanthia@gmail.com, connect on LinkedIn at linkedin.com/in/kiwsan, or check out his GitHub at github.com/kiwsan.",
-    hello: "Hi there! I'm Ekkachai's AI assistant. I can tell you about his skills, work experience, projects, or how to get in touch. What would you like to know?",
-  };
-
-  const defaultResponse = "I can help you learn about Ekkachai! Try asking about his skills, experience, projects, or contact information.";
-
-  function getTimeString(): string {
-    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  // Show tooltip briefly on mobile only (lightweight, runs immediately)
+  const tooltip = document.getElementById('chat-tooltip');
+  if (tooltip && isMobile) {
+    setTimeout(() => tooltip.classList.add('show'), 2000);
+    setTimeout(() => tooltip.classList.remove('show'), 6000);
   }
 
-  function createMessageEl(text: string, sender: 'bot' | 'user'): HTMLDivElement {
-    const msg = document.createElement('div');
-    msg.className = `chat-msg ${sender}`;
+  function initChat() {
+    const chatWindow = document.getElementById('chat-window');
+    const chatClose = document.getElementById('chat-close');
+    const chatInput = document.getElementById('chat-input') as HTMLInputElement;
+    const chatSend = document.getElementById('chat-send') as HTMLButtonElement;
+    const chatMessages = document.getElementById('chat-messages');
 
-    if (sender === 'bot') {
+    let isOpen = false;
+    let isBotTyping = false;
+
+    const responses: Record<string, string> = {
+      skills: "Ekkachai is proficient in React, TypeScript, JavaScript, Python, Node.js, and AWS. He also works with Docker, cloud computing, and modern web development frameworks.",
+      experience: "Ekkachai is a Full Stack Software Engineer with experience building scalable web applications, cloud architecture, and modern JavaScript frameworks. He's based in Bangkok, Thailand.",
+      projects: "Ekkachai has worked on various projects involving scalable web applications, cloud-native solutions, and full-stack development. Check out the Projects section on this page for details!",
+      contact: "You can reach Ekkachai via email at kiwsanthia@gmail.com, connect on LinkedIn at linkedin.com/in/kiwsan, or check out his GitHub at github.com/kiwsan.",
+      hello: "Hi there! I'm Ekkachai's AI assistant. I can tell you about his skills, work experience, projects, or how to get in touch. What would you like to know?",
+    };
+
+    const defaultResponse = "I can help you learn about Ekkachai! Try asking about his skills, experience, projects, or contact information.";
+
+    function getTimeString() {
+      return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function createMessageEl(text: string, sender: 'bot' | 'user') {
+      const msg = document.createElement('div');
+      msg.className = `chat-msg ${sender}`;
+      if (sender === 'bot') {
+        const avatar = document.createElement('div');
+        avatar.className = 'chat-avatar';
+        avatar.textContent = 'E';
+        msg.appendChild(avatar);
+      }
+      const content = document.createElement('div');
+      const bubble = document.createElement('div');
+      bubble.className = 'chat-bubble';
+      bubble.textContent = text;
+      content.appendChild(bubble);
+      const timestamp = document.createElement('div');
+      timestamp.className = 'chat-timestamp';
+      timestamp.textContent = getTimeString();
+      content.appendChild(timestamp);
+      msg.appendChild(content);
+      return msg;
+    }
+
+    function createTypingEl() {
+      const msg = document.createElement('div');
+      msg.className = 'chat-msg bot';
+      msg.id = 'chat-typing';
       const avatar = document.createElement('div');
       avatar.className = 'chat-avatar';
       avatar.textContent = 'E';
       msg.appendChild(avatar);
-    }
-
-    const content = document.createElement('div');
-
-    const bubble = document.createElement('div');
-    bubble.className = 'chat-bubble';
-    bubble.textContent = text;
-    content.appendChild(bubble);
-
-    const timestamp = document.createElement('div');
-    timestamp.className = 'chat-timestamp';
-    timestamp.textContent = getTimeString();
-    content.appendChild(timestamp);
-
-    msg.appendChild(content);
-    return msg;
-  }
-
-  function createTypingEl(): HTMLDivElement {
-    const msg = document.createElement('div');
-    msg.className = 'chat-msg bot';
-    msg.id = 'chat-typing';
-
-    const avatar = document.createElement('div');
-    avatar.className = 'chat-avatar';
-    avatar.textContent = 'E';
-    msg.appendChild(avatar);
-
-    const bubble = document.createElement('div');
-    bubble.className = 'chat-bubble chat-typing';
-    for (let i = 0; i < 3; i++) {
-      const dot = document.createElement('span');
-      dot.className = 'chat-typing-dot';
-      bubble.appendChild(dot);
-    }
-    msg.appendChild(bubble);
-
-    return msg;
-  }
-
-  function addWelcomeMessage(): void {
-    const welcome = createMessageEl(responses.hello, 'bot');
-    chatMessages?.appendChild(welcome);
-
-    // Add suggestion chips
-    const suggestions = document.createElement('div');
-    suggestions.className = 'chat-suggestions';
-    const chips = ['What are his skills?', 'Work experience', 'Projects', 'Contact info'];
-    chips.forEach(text => {
-      const chip = document.createElement('button');
-      chip.className = 'chat-suggestion';
-      chip.textContent = text;
-      chip.addEventListener('click', () => {
-        sendMessage(text);
-        suggestions.remove();
-      });
-      suggestions.appendChild(chip);
-    });
-    chatMessages?.appendChild(suggestions);
-  }
-
-  function getMockResponse(input: string): string {
-    const lower = input.toLowerCase();
-    if (/skill|tech|stack|react|typescript|python|node|aws|docker|language|framework/i.test(lower)) {
-      return responses.skills;
-    }
-    if (/experience|work|job|career|background|engineer/i.test(lower)) {
-      return responses.experience;
-    }
-    if (/project|portfolio|build|app|application/i.test(lower)) {
-      return responses.projects;
-    }
-    if (/contact|email|linkedin|github|hire|reach|connect/i.test(lower)) {
-      return responses.contact;
-    }
-    if (/hi|hello|hey|greet|sup|yo/i.test(lower)) {
-      return responses.hello;
-    }
-    return defaultResponse;
-  }
-
-  function scrollToBottom(): void {
-    if (chatMessages) {
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-  }
-
-  function setInputEnabled(enabled: boolean): void {
-    chatInput.disabled = !enabled;
-    chatSend.disabled = !enabled;
-  }
-
-  function sendMessage(text: string): void {
-    if (!text.trim() || isBotTyping) return;
-
-    // Add user message
-    const userMsg = createMessageEl(text, 'user');
-    chatMessages?.appendChild(userMsg);
-    chatInput.value = '';
-    scrollToBottom();
-
-    // Show typing indicator
-    isBotTyping = true;
-    setInputEnabled(false);
-    const typingEl = createTypingEl();
-    chatMessages?.appendChild(typingEl);
-    scrollToBottom();
-
-    // Simulate bot response delay
-    const delay = 1000 + Math.random() * 1000;
-    setTimeout(() => {
-      typingEl.remove();
-      const botReply = createMessageEl(getMockResponse(text), 'bot');
-      chatMessages?.appendChild(botReply);
-      scrollToBottom();
-      isBotTyping = false;
-      setInputEnabled(true);
-      chatInput.focus();
-    }, delay);
-  }
-
-  function toggleChat(): void {
-    isOpen = !isOpen;
-    chatToggle?.classList.toggle('active', isOpen);
-    chatWindow?.classList.toggle('open', isOpen);
-    chatWindow?.setAttribute('aria-hidden', String(!isOpen));
-
-    if (isOpen) {
-      if (!chatMessages?.hasChildNodes()) {
-        addWelcomeMessage();
+      const bubble = document.createElement('div');
+      bubble.className = 'chat-bubble chat-typing';
+      for (let i = 0; i < 3; i++) {
+        const dot = document.createElement('span');
+        dot.className = 'chat-typing-dot';
+        bubble.appendChild(dot);
       }
-      chatInput.focus();
+      msg.appendChild(bubble);
+      return msg;
     }
+
+    function addWelcomeMessage() {
+      chatMessages?.appendChild(createMessageEl(responses.hello, 'bot'));
+      const suggestions = document.createElement('div');
+      suggestions.className = 'chat-suggestions';
+      ['What are his skills?', 'Work experience', 'Projects', 'Contact info'].forEach(text => {
+        const chip = document.createElement('button');
+        chip.className = 'chat-suggestion';
+        chip.textContent = text;
+        chip.addEventListener('click', () => { sendMessage(text); suggestions.remove(); });
+        suggestions.appendChild(chip);
+      });
+      chatMessages?.appendChild(suggestions);
+    }
+
+    function getMockResponse(input: string) {
+      if (/skill|tech|stack|react|typescript|python|node|aws|docker|language|framework/i.test(input)) return responses.skills;
+      if (/experience|work|job|career|background|engineer/i.test(input)) return responses.experience;
+      if (/project|portfolio|build|app|application/i.test(input)) return responses.projects;
+      if (/contact|email|linkedin|github|hire|reach|connect/i.test(input)) return responses.contact;
+      if (/hi|hello|hey|greet|sup|yo/i.test(input)) return responses.hello;
+      return defaultResponse;
+    }
+
+    function scrollToBottom() {
+      if (chatMessages) chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function setInputEnabled(enabled: boolean) {
+      chatInput.disabled = !enabled;
+      chatSend.disabled = !enabled;
+    }
+
+    function sendMessage(text: string) {
+      if (!text.trim() || isBotTyping) return;
+      chatMessages?.appendChild(createMessageEl(text, 'user'));
+      chatInput.value = '';
+      scrollToBottom();
+      isBotTyping = true;
+      setInputEnabled(false);
+      const typingEl = createTypingEl();
+      chatMessages?.appendChild(typingEl);
+      scrollToBottom();
+      setTimeout(() => {
+        typingEl.remove();
+        chatMessages?.appendChild(createMessageEl(getMockResponse(text), 'bot'));
+        scrollToBottom();
+        isBotTyping = false;
+        setInputEnabled(true);
+        chatInput.focus();
+      }, 1000 + Math.random() * 1000);
+    }
+
+    function toggleChat() {
+      isOpen = !isOpen;
+      chatToggle?.classList.toggle('active', isOpen);
+      chatWindow?.classList.toggle('open', isOpen);
+      chatWindow?.setAttribute('aria-hidden', String(!isOpen));
+      if (isOpen) {
+        if (!chatMessages?.hasChildNodes()) addWelcomeMessage();
+        chatInput.focus();
+      }
+    }
+
+    chatToggle?.addEventListener('click', toggleChat);
+    chatClose?.addEventListener('click', toggleChat);
+    chatSend?.addEventListener('click', () => sendMessage(chatInput.value));
+    chatInput?.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(chatInput.value); }
+    });
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) toggleChat();
+    });
+
+    // Auto-open on desktop after init
+    if (!isMobile) toggleChat();
   }
 
-  // Event listeners
-  chatToggle?.addEventListener('click', toggleChat);
-  chatClose?.addEventListener('click', toggleChat);
-
-  chatSend?.addEventListener('click', () => {
-    sendMessage(chatInput.value);
-  });
-
-  chatInput?.addEventListener('keydown', (e: KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage(chatInput.value);
-    }
-  });
-
-  // Close on Escape
-  document.addEventListener('keydown', (e: KeyboardEvent) => {
-    if (e.key === 'Escape' && isOpen) {
-      toggleChat();
-    }
-  });
-
-  // Auto-open on desktop
-  if (window.innerWidth > 480) {
-    setTimeout(() => toggleChat(), 1000);
+  // Defer full chat init until user interaction or idle
+  let initialized = false;
+  function onFirstInteraction() {
+    if (initialized) return;
+    initialized = true;
+    chatToggle?.removeEventListener('click', onFirstInteraction);
+    initChat();
+    // Re-trigger the click that caused init
+    chatToggle?.click();
   }
 
-  // Show tooltip briefly on mobile only
-  const tooltip = document.getElementById('chat-tooltip');
-  if (tooltip && window.innerWidth <= 480) {
-    setTimeout(() => tooltip.classList.add('show'), 2000);
-    setTimeout(() => tooltip.classList.remove('show'), 6000);
+  if (isMobile) {
+    chatToggle?.addEventListener('click', onFirstInteraction);
+  } else {
+    // On desktop: init at idle so auto-open still works
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => { if (!initialized) { initialized = true; initChat(); } });
+    } else {
+      setTimeout(() => { if (!initialized) { initialized = true; initChat(); } }, 1000);
+    }
   }
 </script>
