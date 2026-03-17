@@ -8,11 +8,12 @@ terraform {
 }
 
 provider "aws" {
-  region = "ap-southeast-1"
+  region = var.aws_region
 }
 
+
 data "aws_s3_bucket" "website" {
-  bucket = "kiwsan.com"
+  bucket = var.bucket_name
 }
 
 resource "aws_s3_object" "website_files" {

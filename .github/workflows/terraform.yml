@@ -116,7 +116,10 @@ jobs:
       
       - name: Terraform Plan
         id: plan
-        run: terraform plan -no-color -out=tfplan
+        run: |
+          terraform plan -no-color -out=tfplan \
+            -var="aws_region=${{ secrets.AWS_REGION }}" \
+            -var="bucket_name=${{ secrets.BUCKET_NAME }}"
         working-directory: ${{ env.TF_DIR }}
       
       - name: Comment PR
@@ -139,5 +142,9 @@ jobs:
       
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve tfplan
+        run: |
+          terraform apply -auto-approve \
+            -var="aws_region=${{ secrets.AWS_REGION }}" \
+            -var="bucket_name=${{ secrets.BUCKET_NAME }}" \
+            tfplan
         working-directory: ${{ env.TF_DIR }}
