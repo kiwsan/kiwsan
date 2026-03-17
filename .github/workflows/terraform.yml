@@ -142,9 +142,5 @@ jobs:
       
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: |
-          terraform apply -auto-approve \
-            -var="aws_region=${{ secrets.AWS_REGION }}" \
-            -var="bucket_name=${{ secrets.BUCKET_NAME }}" \
-            tfplan
+        run: terraform apply -auto-approve tfplan
         working-directory: ${{ env.TF_DIR }}
