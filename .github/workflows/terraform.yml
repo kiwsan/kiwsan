@@ -360,7 +360,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "${{ steps.status.outputs.result == 'success' && ':white_check_mark:' || ':x:' }} *${{ steps.status.outputs.message }}*\n*Repo:* ${{ github.repository }}\n*Branch:* ${{ github.ref_name }}\n*Commit:* `${{ github.sha }}`\n*Actor:* ${{ github.actor }}"
+                    "text": "${{ steps.status.outputs.result == 'success' && ':white_check_mark:' || ':x:' }} *${{ steps.status.outputs.message }}*\n*Repo:* ${{ github.repository }}\n*Branch:* ${{ github.ref_name }}\n*Commit:* `${{ github.sha }}`\n*Actor:* ${{ github.actor }}\n*Action:* <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Run>"
                   }
                 }
               ]
