@@ -1,7 +1,11 @@
 import { defineCollection, z } from 'astro:content';
+import { file } from 'astro/loaders';
 
 const projects = defineCollection({
-  type: 'content',
+  loader: file({
+    base: './src/content/projects',
+    pattern: '**/*.{md,mdx}',
+  }),
   schema: z.object({
     title: z.string(),
     company: z.string(),
