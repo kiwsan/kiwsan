@@ -56,8 +56,7 @@
     font-family: var(--font-sans);
     padding: 0.5rem 0.875rem;
     border-radius: var(--radius-lg);
-    border: 1px solid var(--color-border);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 32px rgba(25, 28, 30, 0.05);
     white-space: nowrap;
     opacity: 0;
     transform: translateY(8px);
@@ -93,13 +92,13 @@
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 32px rgba(25, 28, 30, 0.05);
     padding: 0;
   }
 
   .chat-toggle:hover {
     transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 6px 32px rgba(25, 28, 30, 0.06);
   }
 
   .chat-toggle:active {
@@ -146,8 +145,7 @@
     height: 520px;
     border-radius: var(--radius-xl);
     background: var(--color-bg);
-    border: 1px solid var(--color-border);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 8px 64px rgba(25, 28, 30, 0.06);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -341,16 +339,16 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1rem;
-    border-top: 1px solid var(--color-border);
+    background: var(--color-surface-container-low);
     flex-shrink: 0;
   }
 
   .chat-input {
     flex: 1;
     padding: 0.5rem 0.75rem;
-    border: 1px solid var(--color-border);
+    border: 2px solid transparent;
     border-radius: var(--radius-full);
-    background: var(--color-surface);
+    background: var(--color-surface-container-high);
     color: var(--color-text);
     font-size: var(--text-sm);
     font-family: var(--font-sans);
@@ -363,7 +361,8 @@
   }
 
   .chat-input:focus {
-    border-color: var(--color-primary);
+    background: var(--color-bg);
+    border-color: rgba(0, 40, 142, 0.2);
   }
 
   .chat-input:disabled {
@@ -405,10 +404,10 @@
 
   :global(.chat-suggestion) {
     padding: 0.3rem 0.6rem;
-    border: 1px solid var(--color-border);
+    border: none;
     border-radius: var(--radius-full);
-    background: var(--color-bg);
-    color: var(--color-text);
+    background: var(--color-secondary-container);
+    color: var(--color-on-secondary-container);
     font-size: 0.7rem;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -416,8 +415,8 @@
   }
 
   :global(.chat-suggestion:hover) {
-    border-color: var(--color-primary);
-    color: var(--color-primary);
+    background: var(--color-primary);
+    color: white;
   }
 
   @media (prefers-reduced-motion: reduce) {

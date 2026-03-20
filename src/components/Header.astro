@@ -11,22 +11,22 @@
 
         <!-- flow lines -->
         <path d="M5 28C13 6 27 6 35 28"
-              stroke="#222"
+              stroke="#191c1e"
               stroke-width="3"
               fill="none"
               stroke-linecap="round"/>
 
         <path d="M5 12C13 34 27 34 35 12"
-              stroke="#222"
+              stroke="#191c1e"
               stroke-width="3"
               fill="none"
               stroke-linecap="round"/>
 
         <!-- endpoints -->
-        <circle cx="5" cy="28" r="1.2" fill="#222"/>
-        <circle cx="35" cy="28" r="1.2" fill="#222"/>
-        <circle cx="5" cy="12" r="1.2" fill="#222"/>
-        <circle cx="35" cy="12" r="1.2" fill="#222"/>
+        <circle cx="5" cy="28" r="1.2" fill="#191c1e"/>
+        <circle cx="35" cy="28" r="1.2" fill="#191c1e"/>
+        <circle cx="5" cy="12" r="1.2" fill="#191c1e"/>
+        <circle cx="35" cy="12" r="1.2" fill="#191c1e"/>
 
       </svg>
     </a>
@@ -83,16 +83,15 @@
     left: 0;
     right: 0;
     z-index: 50;
-    border-bottom: 1px solid rgba(226, 232, 240, 0.3);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
   }
 
   .header-bg {
     position: absolute;
     inset: 0;
     z-index: -1;
-    background: var(--color-bg);
+    background: rgba(255, 255, 255, 0.8);
     transition: background-color 0.3s ease;
   }
 
@@ -118,6 +117,10 @@
     transition: opacity 0.18s ease, transform 0.18s ease;
   }
 
+  [data-theme="dark"] .header-bg {
+    background: rgba(26, 27, 38, 0.8);
+  }
+
   [data-theme="dark"] .logo-svg path {
     stroke: #ffffff;
   }
@@ -127,6 +130,9 @@
   }
 
   @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .header-bg {
+      background: rgba(26, 27, 38, 0.8);
+    }
     :root:not([data-theme="light"]) .logo-svg path {
       stroke: #ffffff;
     }
@@ -224,14 +230,13 @@
       flex-direction: column;
       align-items: stretch;
       background: var(--color-bg);
-      border-bottom: 1px solid var(--color-border);
       padding: var(--space-6) var(--space-4);
       gap: var(--space-1);
       max-height: 0;
       overflow: hidden;
       opacity: 0;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 32px rgba(25, 28, 30, 0.04);
     }
 
     .nav.active {

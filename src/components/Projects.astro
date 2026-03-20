@@ -121,7 +121,7 @@ const projects = (await getCollection('projects'))
 
   .projects {
     padding: var(--space-16) 0;
-    background: var(--color-surface);
+    background: var(--color-surface-container-low);
   }
 
   h2 {
@@ -155,8 +155,9 @@ const projects = (await getCollection('projects'))
   }
 
   .project-card {
-    padding: var(--space-8) 0;
-    border-bottom: 2px solid var(--color-border);
+    padding: var(--space-8);
+    background: var(--color-bg);
+    border-radius: var(--radius-lg);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
 
@@ -187,13 +188,13 @@ const projects = (await getCollection('projects'))
     width: 100%;
     height: auto;
     border-radius: var(--radius-lg);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 32px rgba(25, 28, 30, 0.05);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
 
   .project-card:hover .project-image img {
     transform: scale(1.05);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 12px 64px rgba(25, 28, 30, 0.06);
   }
 
   .project-image .theme-dark {
@@ -270,9 +271,8 @@ const projects = (await getCollection('projects'))
 
   .tech-tag {
     padding: var(--space-1) var(--space-2);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    color: var(--color-text);
+    background: var(--color-secondary-container);
+    color: var(--color-on-secondary-container);
     border-radius: var(--radius-full);
     font-size: var(--text-xs);
     font-weight: 500;
@@ -283,9 +283,8 @@ const projects = (await getCollection('projects'))
   .tech-tag:hover {
     background: var(--color-primary);
     color: white;
-    border-color: var(--color-primary);
     transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 4px 12px rgba(255, 92, 122, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 40, 142, 0.2);
   }
 
   .results strong {
@@ -334,21 +333,20 @@ const projects = (await getCollection('projects'))
     gap: var(--space-2);
     margin-top: var(--space-5);
     padding: var(--space-2) var(--space-4);
-    background: var(--color-primary);
+    background: linear-gradient(135deg, #00288e, #1e40af);
     color: white;
-    border: 1px solid var(--color-primary);
-    border-radius: 9999px;
+    border: none;
+    border-radius: 8px;
     font-weight: 600;
     font-size: var(--text-xs);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .project-link:hover {
-    background: var(--color-secondary);
-    border-color: var(--color-secondary);
+    background: linear-gradient(135deg, #003272, #00288e);
     text-decoration: none;
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(255, 92, 122, 0.25);
+    box-shadow: 0 10px 25px rgba(0, 40, 142, 0.25);
   }
 
   .project-link svg {
