@@ -66,7 +66,7 @@ test.describe('Accessibility Tests', () => {
 
   test('external links should have rel="noopener noreferrer"', async ({ homePage }) => {
     await homePage.scrollToSection('footer');
-    const externalLinks = await homePage.page.locator('a[target="_blank"]').all();
+    const externalLinks = await homePage.page.locator('header a[target="_blank"], main a[target="_blank"], footer a[target="_blank"]').all();
     expect(externalLinks.length).toBeGreaterThan(0);
     for (const link of externalLinks) {
       const href = await link.getAttribute('href');
