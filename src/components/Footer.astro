@@ -29,8 +29,9 @@ const buildVersion = import.meta.env.PUBLIC_BUILD_VERSION || 'dev';
 <style>
   .footer {
     padding: var(--space-8) 0;
-    background: var(--color-surface-container-low);
-    margin-top: var(--space-16);
+    background: #1c1e20;
+    color: #ffffff;
+    margin-top: 0;
   }
 
   .footer-content {
@@ -42,12 +43,12 @@ const buildVersion = import.meta.env.PUBLIC_BUILD_VERSION || 'dev';
 
   .footer-content p {
     font-size: var(--text-sm);
-    color: var(--color-text-muted);
+    color: #cbd2dd;
   }
 
   .build-version {
     font-size: var(--text-xs) !important;
-    color: var(--color-text-muted);
+    color: #cbd2dd;
   }
 
   .footer-links {
@@ -57,11 +58,12 @@ const buildVersion = import.meta.env.PUBLIC_BUILD_VERSION || 'dev';
 
   .footer-links a {
     font-size: var(--text-sm);
-    color: var(--color-text-muted);
+    color: #cbd2dd;
+    transition: color 0.3s ease;
   }
 
   .footer-links a:hover {
-    color: var(--color-accent);
+    color: #ffffff;
   }
 
   .footer-referrals {
@@ -75,7 +77,7 @@ const buildVersion = import.meta.env.PUBLIC_BUILD_VERSION || 'dev';
 
   .footer-referrals p {
     font-size: var(--text-xs);
-    color: var(--color-text-muted);
+    color: #cbd2dd;
     width: 100%;
     margin: 0;
   }
@@ -88,18 +90,30 @@ const buildVersion = import.meta.env.PUBLIC_BUILD_VERSION || 'dev';
     height: 36px;
   }
 
-  @media (max-width: 480px) {
-    .footer {
-      padding: var(--space-6) 0;
-      margin-top: var(--space-8);
-    }
+  @media (max-width: 768px) {
     .footer-content {
       flex-direction: column;
       text-align: center;
       gap: var(--space-3);
     }
+    .footer-referrals {
+      justify-content: center;
+      text-align: center;
+    }
+    .footer-links {
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .footer {
+      padding: var(--space-6) 0;
+    }
     .footer-links {
       gap: var(--space-4);
+    }
+    .footer-referrals img {
+      height: 30px;
     }
   }
 </style>

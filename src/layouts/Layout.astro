@@ -1,5 +1,6 @@
 ---
 import '@fontsource-variable/inter';
+import '@fontsource-variable/manrope';
 import '@fontsource/noto-sans-thai';
 import '../styles/global.css';
 import ChatWidget from '../components/ChatWidget.astro';
@@ -227,6 +228,7 @@ const {
     ])} />
   </head>
   <body>
+    <div class="grain-overlay" aria-hidden="true"></div>
     <slot />
     <ChatWidget />
     <script>

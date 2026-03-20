@@ -8,6 +8,7 @@ const workExperience = (await getCollection('projects'))
 
 <section id="experience" class="experience">
   <div class="container">
+    <span class="section-label">Career</span>
     <h2>Work Experience</h2>
     <div class="timeline">
       {workExperience.map((work, index) => (
@@ -135,7 +136,9 @@ const workExperience = (await getCollection('projects'))
   }
 
   .work-header h3 {
+    font-family: var(--font-display);
     font-size: var(--text-2xl);
+    font-weight: 700;
     margin-bottom: var(--space-2);
     transition: color 0.3s ease;
   }
@@ -260,7 +263,7 @@ const workExperience = (await getCollection('projects'))
       font-size: var(--text-3xl);
     }
     .work-card {
-      padding: var(--space-5) 0;
+      padding: var(--space-6);
     }
   }
 
@@ -272,7 +275,7 @@ const workExperience = (await getCollection('projects'))
       font-size: var(--text-2xl);
     }
     .work-card {
-      padding: var(--space-4) 0;
+      padding: var(--space-4);
     }
     .work-header h3 {
       font-size: var(--text-xl);
@@ -282,10 +285,10 @@ const workExperience = (await getCollection('projects'))
       gap: var(--space-1);
     }
     .tech-stack {
-      gap: var(--space-1);
+      gap: var(--space-2);
     }
     .tech-tag {
-      font-size: 0.65rem;
+      font-size: 0.7rem;
       padding: var(--space-1) var(--space-2);
     }
     .results ul {
