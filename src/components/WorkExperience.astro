@@ -11,38 +11,43 @@ const workExperience = (await getCollection('projects'))
     <span class="section-label">Career</span>
     <h2>Work Experience</h2>
     <div class="timeline">
+      <div class="timeline-line" aria-hidden="true"></div>
       {workExperience.map((work, index) => (
-        <article class="work-card" data-index={index}>
-          <div class="work-header">
+        <article class={`timeline-item ${index % 2 === 0 ? 'timeline-left' : 'timeline-right'}`} data-index={index}>
+          <div class="timeline-dot" aria-hidden="true">
+            <span class="dot-ring"></span>
+          </div>
+          <div class="timeline-card">
+            <div class="card-accent" aria-hidden="true"></div>
+            <time class="period" datetime={work.data.period.includes('Present') ? `${work.data.period.split(' - ')[0]}/P${new Date().getFullYear() - parseInt(work.data.period.split(' - ')[0])}Y` : work.data.period}>{work.data.period}</time>
             <h3>{work.data.title}</h3>
-            <div class="meta">
-              <span class="company">{work.data.company}</span>
-              <time class="period" datetime={work.data.period.includes('Present') ? `${work.data.period.split(' - ')[0]}/P${new Date().getFullYear() - parseInt(work.data.period.split(' - ')[0])}Y` : work.data.period}>{work.data.period}</time>
-            </div>
-          </div>
-          
-          <div class="work-content">
-            <div class="section">
-              <strong>Challenge:</strong> {work.data.challenge}
-            </div>
-            <div class="section">
-              <strong>Solution:</strong> {work.data.solution}
-            </div>
-          </div>
+            <span class="company">{work.data.company}</span>
 
-          <div class="tech-stack">
-            {work.data.tech.map((tech) => (
-              <span class="tech-tag">{tech}</span>
-            ))}
-          </div>
+            <div class="work-content">
+              <div class="section">
+                <strong>Challenge</strong>
+                <p>{work.data.challenge}</p>
+              </div>
+              <div class="section">
+                <strong>Solution</strong>
+                <p>{work.data.solution}</p>
+              </div>
+            </div>
 
-          <div class="results">
-            <strong>Results:</strong>
-            <ul>
-              {work.data.results.map((result) => (
-                <li>{result}</li>
+            <div class="tech-stack">
+              {work.data.tech.map((tech) => (
+                <span class="tech-tag">{tech}</span>
               ))}
-            </ul>
+            </div>
+
+            <div class="results">
+              <strong>Results</strong>
+              <ul>
+                {work.data.results.map((result) => (
+                  <li>{result}</li>
+                ))}
+              </ul>
+            </div>
           </div>
         </article>
       ))}
@@ -59,47 +64,26 @@ const workExperience = (await getCollection('projects'))
         if (index) {
           setTimeout(() => {
             target.classList.add('animate');
-          }, parseInt(index) * 150);
+          }, parseInt(index) * 200);
         } else {
           target.classList.add('animate');
         }
         observer.unobserve(target);
       }
     });
-  }, { threshold: 0.1 });
+  }, { threshold: 0.15 });
 
-  document.querySelectorAll('#experience h2, .work-card').forEach(el => observer.observe(el));
+  document.querySelectorAll('#experience h2, .timeline-item').forEach(el => observer.observe(el));
 </script>
 
 <style>
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes slideInRight {
-    from {
-      opacity: 0;
-      transform: translateX(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
   .experience {
     padding: var(--space-16) 0;
   }
 
   h2 {
     font-size: var(--text-4xl);
-    margin-bottom: var(--space-8);
+    margin-bottom: var(--space-12);
     opacity: 0;
     transform: translateY(30px);
     transition: opacity 0.6s ease, transform 0.6s ease;
@@ -110,53 +94,173 @@ const workExperience = (await getCollection('projects'))
     transform: translateY(0);
   }
 
+  /* ---------- Timeline structure ---------- */
   .timeline {
+    position: relative;
+    padding: var(--space-4) 0;
+  }
+
+  .timeline-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      var(--color-border) 8%,
+      var(--color-primary) 50%,
+      var(--color-border) 92%,
+      transparent
+    );
+    transform: translateX(-50%);
+  }
+
+  /* ---------- Timeline item ---------- */
+  .timeline-item {
+    position: relative;
     display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: var(--space-8);
-  }
-
-  .work-card {
-    padding: var(--space-8);
-    background: var(--color-surface);
-    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-10);
     opacity: 0;
-    transform: translateX(30px);
-    transition: transform 0.3s ease, opacity 0.3s ease;
   }
 
-  .work-card.animate {
-    animation: none;
+  .timeline-item:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Animate in from left */
+  .timeline-left {
+    transform: translateX(-40px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Animate in from right */
+  .timeline-right {
+    transform: translateX(40px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .timeline-item.animate {
     opacity: 1;
     transform: translateX(0);
-    transition: transform 0.3s ease, opacity 0.6s ease;
   }
 
-  .work-card.animate:hover {
-    transform: translateX(-8px);
+  /* Card placement: left items put card in col 1, right items in col 2 */
+  .timeline-left .timeline-card {
+    grid-column: 1;
+    grid-row: 1;
+    text-align: right;
   }
 
-  .work-header h3 {
+  .timeline-right .timeline-card {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  /* ---------- Center dot ---------- */
+  .timeline-dot {
+    position: absolute;
+    left: 50%;
+    top: var(--space-6);
+    transform: translateX(-50%);
+    z-index: 2;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dot-ring {
+    width: 14px;
+    height: 14px;
+    border-radius: var(--radius-full);
+    background: var(--color-primary);
+    border: 3px solid var(--color-bg);
+    box-shadow: 0 0 0 2px var(--color-primary);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.3s ease;
+  }
+
+  .timeline-item:hover .dot-ring {
+    transform: scale(1.4);
+    box-shadow: 0 0 0 3px var(--color-primary), 0 0 16px rgba(0, 40, 142, 0.25);
+  }
+
+  /* ---------- Card ---------- */
+  .timeline-card {
+    position: relative;
+    padding: var(--space-6) var(--space-8);
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.35s ease,
+                border-color 0.35s ease;
+  }
+
+  .timeline-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-primary);
+    box-shadow: 0 12px 40px -8px rgba(0, 40, 142, 0.12),
+                0 4px 12px -2px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Top accent bar */
+  .card-accent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  .timeline-card:hover .card-accent {
+    opacity: 1;
+  }
+
+  /* ---------- Card contents ---------- */
+  .period {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-primary);
+    background: var(--color-primary-fixed);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    margin-bottom: var(--space-3);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  h3 {
     font-family: var(--font-display);
     font-size: var(--text-2xl);
     font-weight: 700;
-    margin-bottom: var(--space-2);
+    margin-bottom: var(--space-1);
+    color: var(--color-text);
     transition: color 0.3s ease;
   }
 
-  .work-card:hover .work-header h3 {
+  .timeline-card:hover h3 {
     color: var(--color-primary);
   }
 
-  .meta {
-    display: flex;
-    gap: var(--space-4);
+  .company {
+    display: block;
     font-size: var(--text-sm);
+    font-weight: 500;
     color: var(--color-text-muted);
     margin-bottom: var(--space-5);
-  }
-
-  .company {
-    font-weight: 500;
   }
 
   .work-content {
@@ -172,9 +276,29 @@ const workExperience = (await getCollection('projects'))
     color: var(--color-text-muted);
     font-size: var(--text-xs);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
     display: block;
     margin-bottom: var(--space-1);
+  }
+
+  .section p {
+    margin: 0;
+    color: var(--color-text);
+  }
+
+  /* Left-aligned cards need left-aligned text for tech/results */
+  .timeline-left .tech-stack {
+    justify-content: flex-end;
+  }
+
+  .timeline-left .results {
+    text-align: right;
+  }
+
+  .timeline-left .results ul {
+    padding-left: 0;
+    padding-right: var(--space-5);
+    list-style-position: inside;
   }
 
   .tech-stack {
@@ -185,7 +309,7 @@ const workExperience = (await getCollection('projects'))
   }
 
   .tech-tag {
-    padding: var(--space-2) var(--space-3);
+    padding: var(--space-1) var(--space-3);
     background: var(--color-secondary-container);
     color: var(--color-on-secondary-container);
     border-radius: var(--radius-full);
@@ -205,7 +329,7 @@ const workExperience = (await getCollection('projects'))
     color: var(--color-text-muted);
     font-size: var(--text-xs);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
   }
 
   .results ul {
@@ -220,77 +344,130 @@ const workExperience = (await getCollection('projects'))
     position: relative;
   }
 
-  .results li::before {
-    content: '';
-    position: absolute;
-    left: -20px;
-    top: 50%;
-    transform: translateY(-50%) scaleX(0);
-    width: 12px;
-    height: 2px;
-    background: var(--color-primary);
-    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
   .results li:hover {
-    transform: translateX(6px);
     color: var(--color-primary);
   }
 
-  .results li:hover::before {
-    transform: translateY(-50%) scaleX(1);
-  }
-
+  /* ---------- Reduced motion ---------- */
   @media (prefers-reduced-motion: reduce) {
     h2.animate,
-    .work-card.animate {
+    .timeline-item.animate {
       animation: none;
       opacity: 1;
       transform: none;
     }
-    .work-card:hover,
+    .timeline-card:hover,
     .tech-tag:hover,
-    .results li:hover {
+    .timeline-item:hover .dot-ring {
       transform: none;
     }
   }
 
+  /* ---------- Tablet: single-column left-aligned ---------- */
   @media (max-width: 768px) {
     .experience {
       padding: var(--space-12) 0;
     }
+
     h2 {
       font-size: var(--text-3xl);
+      margin-bottom: var(--space-8);
     }
-    .work-card {
-      padding: var(--space-6);
+
+    .timeline-line {
+      left: 20px;
+    }
+
+    .timeline-item {
+      display: block;
+      padding-left: 52px;
+      margin-bottom: var(--space-8);
+    }
+
+    .timeline-left,
+    .timeline-right {
+      transform: translateX(-30px);
+    }
+
+    .timeline-dot {
+      left: 20px;
+      top: var(--space-6);
+    }
+
+    .timeline-left .timeline-card,
+    .timeline-right .timeline-card {
+      text-align: left;
+    }
+
+    .timeline-left .tech-stack {
+      justify-content: flex-start;
+    }
+
+    .timeline-left .results {
+      text-align: left;
+    }
+
+    .timeline-left .results ul {
+      padding-left: var(--space-5);
+      padding-right: 0;
+      list-style-position: outside;
+    }
+
+    .timeline-card {
+      padding: var(--space-5) var(--space-6);
     }
   }
 
+  /* ---------- Mobile ---------- */
   @media (max-width: 480px) {
     .experience {
       padding: var(--space-8) 0;
     }
+
     h2 {
       font-size: var(--text-2xl);
     }
-    .work-card {
+
+    .timeline-line {
+      left: 14px;
+    }
+
+    .timeline-item {
+      padding-left: 40px;
+      margin-bottom: var(--space-6);
+    }
+
+    .timeline-dot {
+      left: 14px;
+    }
+
+    .dot-ring {
+      width: 12px;
+      height: 12px;
+    }
+
+    .timeline-card {
       padding: var(--space-4);
     }
-    .work-header h3 {
+
+    h3 {
       font-size: var(--text-xl);
     }
+
     .meta {
       flex-direction: column;
       gap: var(--space-1);
     }
+
     .tech-stack {
       gap: var(--space-2);
     }
+
     .tech-tag {
       font-size: 0.7rem;
       padding: var(--space-1) var(--space-2);
     }
+
     .results ul {
       padding-left: var(--space-4);
       font-size: var(--text-sm);
