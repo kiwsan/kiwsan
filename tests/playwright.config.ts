@@ -36,5 +36,8 @@ export default defineConfig({
     cwd: '../',
     url: 'http://localhost:4321',
     reuseExistingServer: !process.env.CI,
+    // Astro 7 auto-backgrounds `astro preview` in agent/CI environments and
+    // the parent process exits, which Playwright treats as a server crash.
+    env: { ASTRO_PREVIEW_BACKGROUND: 'false' },
   },
 });

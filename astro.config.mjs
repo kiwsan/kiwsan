@@ -12,10 +12,13 @@ export default defineConfig({
   build: {
     inlineStylesheets: 'auto',
   },
+  // Astro 7 defaults to 'jsx' whitespace compression; keep the v6 behavior.
+  compressHTML: true,
   vite: {
     build: {
       cssMinify: 'lightningcss',
-      minify: 'esbuild',
+      // Vite 8 no longer bundles esbuild; oxc is its native minifier.
+      minify: 'oxc',
     },
     plugins: [
       viteCompression({ algorithm: 'gzip', ext: '.gz' }),

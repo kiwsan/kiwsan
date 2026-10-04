@@ -10,18 +10,18 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.8",
-    "@astrojs/sitemap": "^3.7.1",
-    "@fontsource-variable/inter": "^5.2.8",
-    "@fontsource-variable/manrope": "^5.2.8",
-    "@fontsource/noto-sans-thai": "^5.2.8",
-    "astro": "^6.0.6",
+    "@astrojs/check": "^0.9.10",
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/manrope": "^5.3.0",
+    "@fontsource/noto-sans-thai": "^5.3.0",
+    "astro": "^7.3.5",
     "astro-google-analytics": "^1.0.3",
-    "astro-icon": "^1.1.5",
+    "astro-icon": "^1.2.0",
     "typescript": "^5.9.3"
   },
   "devDependencies": {
-    "lightningcss": "^1.32.0",
+    "lightningcss": "^1.33.0",
     "vite-plugin-compression": "^0.5.1"
   }
 }
