@@ -32,7 +32,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run build && npx astro preview',
+    command: 'npm run build && npx astro preview --ignore-lock',
     cwd: '../',
     url: 'http://localhost:4321',
     reuseExistingServer: !process.env.CI,
