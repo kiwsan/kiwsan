@@ -19,9 +19,11 @@
     "astro-google-analytics": "^1.0.3",
     "astro-icon": "^1.2.0",
     "gsap": "^3.15.0",
+    "three": "^0.186.1",
     "typescript": "^5.9.3"
   },
   "devDependencies": {
+    "@types/three": "^0.186.0",
     "lightningcss": "^1.33.0",
     "vite-plugin-compression": "^0.5.1"
   }
