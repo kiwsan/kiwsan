@@ -1,7 +1,7 @@
 ---
-title: "AI Manager"
+title: "Technical Lead"
 company: "MC Group (SET-listed)"
-period: "2022 - Present"
+period: "2022 - 2026"
 challenge: "Scale omnichannel operations across Shopee, Lazada, TikTok Shop with real-time inventory sync"
 solution: "Event-driven integration architecture connecting ERP, WMS, POS, and loyalty systems"
 tech: ["Node.js", "AWS", "Docker", "Event-Driven", "Zebra RFID", "Microservices"]
@@ -11,7 +11,7 @@ results: [
   "35% AWS cost reduction",
   "48h → 24h marketplace SLA compliance"
 ]
-order: 1
+order: 2
 type: "work"
 ---
 
