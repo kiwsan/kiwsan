@@ -18,6 +18,7 @@
     "astro": "^7.3.5",
     "astro-google-analytics": "^1.0.3",
     "astro-icon": "^1.2.0",
+    "gsap": "^3.15.0",
     "typescript": "^5.9.3"
   },
   "devDependencies": {
