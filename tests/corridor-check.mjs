@@ -7,7 +7,7 @@ import { spawn } from 'node:child_process';
 import { chromium } from '@playwright/test';
 
 const PORT = 4323;
-const server = spawn('npx', ['astro', 'preview', '--port', String(PORT), '--force'], {
+const server = spawn('npx', ['astro', 'preview', '--port', String(PORT), '--ignore-lock'], {
   cwd: new URL('..', import.meta.url).pathname,
   env: { ...process.env, ASTRO_PREVIEW_BACKGROUND: 'false' },
   stdio: 'ignore',
@@ -81,11 +81,11 @@ for (let k = 0; k <= 10; k++) {
   if (snap.readable.length < 1) report('readable', `scroll ${Math.round(y)}: no fully visible readable card`);
 }
 
-// 4. Camera must dolly forward (z strictly decreases) as scroll progresses.
+// 4. Camera must dolly forward (z never increases; hold segments stall it).
 const camZs = samples.map((s) => s.camZ);
-const monotonic = camZs.every((z, i) => i === 0 || z < camZs[i - 1]);
+const monotonic = camZs.every((z, i) => i === 0 || z <= camZs[i - 1]);
 console.log(`camZ over sweep: ${camZs[0].toFixed(0)} -> ${camZs[camZs.length - 1].toFixed(0)} (monotonic: ${monotonic})`);
-if (!monotonic) report('camera', 'camera z did not decrease monotonically with scroll');
+if (!monotonic) report('camera', 'camera z moved backward');
 
 // 5. rotateY sign via the projected transform: a card's world matrix embeds
 //    rotation.y = -lane * 20deg, so matrix3d value i (index 8) = sin(rotation)
@@ -167,10 +167,11 @@ console.log(`card surface dark=${darkBg} light=${lightBg}`);
 if (darkBg === lightBg) report('theme', 'card surface did not respond to the light theme');
 
 // The site's Layout CSS inlines a small font subset as a data: URI that the
-// page CSP blocks; that error predates the corridor and is unrelated to it.
-const knownCspFont = consoleErrors.filter((e) => e.includes('data:font/woff2'));
+// page CSP blocks, and the preview server CSP blocks the GTM tracking pixel.
+// Both predate the corridor and are unrelated to it.
+const knownCspFont = consoleErrors.filter((e) => e.includes('data:font/woff2') || e.includes('googletagmanager.com'));
 const otherErrors = consoleErrors.filter((e) => !knownCspFont.includes(e));
-if (knownCspFont.length) console.log(`ignored pre-existing CSP data:font errors: ${knownCspFont.length}`);
+if (knownCspFont.length) console.log(`ignored pre-existing CSP errors: ${knownCspFont.length}`);
 if (otherErrors.length) report('console', otherErrors.join(' | '));
 await context.close();
 
