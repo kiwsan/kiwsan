@@ -1,5 +1,5 @@
 ---
-title: "MC Group E-Commerce Backbone"
+title: "AI Manager"
 company: "MC Group (SET-listed)"
 period: "2022 - Present"
 challenge: "Scale omnichannel operations across Shopee, Lazada, TikTok Shop with real-time inventory sync"
