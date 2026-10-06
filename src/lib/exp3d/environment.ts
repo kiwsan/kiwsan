@@ -59,15 +59,24 @@ const FALLBACKS: ThemeColors = {
 };
 
 const HEX_COLOR = /^#[0-9a-f]{6}$/i;
+const SHORT_HEX = /^#([0-9a-f])([0-9a-f])([0-9a-f])$/i;
 
 // Boundary parse of CSS custom properties; falls back to the design tokens
-// when a variable is missing or not a color (boundary-discipline).
+// when a variable is missing or not a color (boundary-discipline). Browsers
+// serialize computed color tokens in shortest form, so #ffffff comes back as
+// #fff and must be normalized before the hex check.
+function normalizeColor(value: string): string | null {
+  const v = value.trim();
+  if (HEX_COLOR.test(v)) return v;
+  const short = SHORT_HEX.exec(v);
+  if (short) return `#${short[1]}${short[1]}${short[2]}${short[2]}${short[3]}${short[3]}`;
+  return null;
+}
+
 export function readThemeColors(section: HTMLElement): ThemeColors {
   const style = getComputedStyle(section);
-  const read = (name: string, fallback: string): string => {
-    const value = style.getPropertyValue(name).trim();
-    return HEX_COLOR.test(value) ? value : fallback;
-  };
+  const read = (name: string, fallback: string): string =>
+    normalizeColor(style.getPropertyValue(name)) ?? fallback;
   return {
     bg: read('--color-bg', FALLBACKS.bg),
     primary: read('--color-primary', FALLBACKS.primary),
@@ -128,7 +137,9 @@ export function createEnvironment(options: EnvironmentOptions): Environment {
   const { stage, scene, colors, tier } = options;
   let layout = options.layout;
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  const renderer = new THREE.WebGLRenderer({ antialias: false });
+  // No antialias: SwiftShader software rendering pays MSAA per frame, and the
+  // watchdog threshold is tighter than that cost on headless CI machines.
   const canvas = renderer.domElement;
   renderer.toneMapping = THREE.NoToneMapping;
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -297,7 +308,9 @@ export function createEnvironment(options: EnvironmentOptions): Environment {
       (edge.material as THREE.MeshBasicMaterial).color.set(colors.border);
     }
     if (floor instanceof Reflector) {
-      (floor.material as THREE.MeshStandardMaterial).color.set(colors.bg);
+      // Reflector's material is a ShaderMaterial whose tint lives in the
+      // color uniform; r186's Material base has no .color property.
+      (floor.material as THREE.ShaderMaterial).uniforms.color.value = new THREE.Color(colors.bg);
     } else {
       (floor.material as THREE.MeshBasicMaterial).color.set(colors.surface);
     }
