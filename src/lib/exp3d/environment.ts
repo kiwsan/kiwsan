@@ -42,6 +42,8 @@ export interface EnvironmentOptions {
 
 const WALL_GAP = 40;
 const WALL_HEIGHT = 1500;
+const FLOOR_Y = -220; // the floor sits below the camera/card plane; at y=0 it
+// would be edge-on to the y=0 camera and collapse to the horizon line
 const FLOOR_EXTRA = 60; // floor reaches past the walls so no seam shows at the edges
 const RAIL_Y = 24;
 const DUST_FULL = 800;
@@ -179,7 +181,7 @@ export function createEnvironment(options: EnvironmentOptions): Environment {
           new THREE.MeshBasicMaterial({ color: colors.surface })
         );
   floor.rotation.x = -Math.PI / 2;
-  floor.position.set(0, 0, corridorCenter(layout));
+  floor.position.set(0, FLOOR_Y, corridorCenter(layout));
   root.add(floor);
 
   // Walls at x = +/- (laneOffset + wallGap), surface with a faint border edge.
@@ -189,12 +191,16 @@ export function createEnvironment(options: EnvironmentOptions): Environment {
       new THREE.MeshBasicMaterial({ color: colors.surface, side: THREE.DoubleSide })
     );
     wall.rotation.y = side > 0 ? Math.PI / 2 : -Math.PI / 2; // face the corridor
-    wall.position.set(side * (layout.laneOffset + WALL_GAP), WALL_HEIGHT / 2, corridorCenter(layout));
+    wall.position.set(
+      side * (layout.laneOffset + WALL_GAP),
+      FLOOR_Y + WALL_HEIGHT / 2,
+      corridorCenter(layout)
+    );
     const edge = new THREE.Mesh(
       new THREE.BoxGeometry(2, 3, spanWithReach(layout)),
       new THREE.MeshBasicMaterial({ color: colors.border })
     );
-    edge.position.set(side * (layout.laneOffset + WALL_GAP), WALL_HEIGHT, corridorCenter(layout));
+    edge.position.set(side * (layout.laneOffset + WALL_GAP), FLOOR_Y + WALL_HEIGHT, corridorCenter(layout));
     root.add(wall, edge);
     return { wall, edge, side };
   };
@@ -204,7 +210,7 @@ export function createEnvironment(options: EnvironmentOptions): Environment {
   const makeRail = (side: 1 | -1): Rail => {
     const material = new THREE.MeshBasicMaterial({ color: colors.primary, transparent: true, opacity: 1 });
     const rail = new THREE.Mesh(new THREE.BoxGeometry(spanWithReach(layout), 4, 4), material);
-    rail.position.set(side * layout.laneOffset, RAIL_Y, corridorCenter(layout));
+    rail.position.set(side * layout.laneOffset, FLOOR_Y + RAIL_Y, corridorCenter(layout));
     root.add(rail);
     return { rail, material, side };
   };
@@ -221,7 +227,7 @@ export function createEnvironment(options: EnvironmentOptions): Environment {
     });
     const mesh = new THREE.Mesh(new THREE.PlaneGeometry(500, 36), material);
     mesh.rotation.x = -Math.PI / 2;
-    mesh.position.set(placement.x, 2, placement.z);
+    mesh.position.set(placement.x, FLOOR_Y + 2, placement.z);
     root.add(mesh);
     return { mesh, material, placement };
   });
@@ -276,23 +282,31 @@ export function createEnvironment(options: EnvironmentOptions): Environment {
     layout = next;
     floor.geometry.dispose();
     floor.geometry = new THREE.PlaneGeometry(floorWidth(layout), spanWithReach(layout));
-    floor.position.set(0, 0, corridorCenter(layout));
+    floor.position.set(0, FLOOR_Y, corridorCenter(layout));
     for (const { wall, edge, side } of walls) {
       wall.geometry.dispose();
       wall.geometry = new THREE.PlaneGeometry(spanWithReach(layout), WALL_HEIGHT);
-      wall.position.set(side * (layout.laneOffset + WALL_GAP), WALL_HEIGHT / 2, corridorCenter(layout));
+      wall.position.set(
+        side * (layout.laneOffset + WALL_GAP),
+        FLOOR_Y + WALL_HEIGHT / 2,
+        corridorCenter(layout)
+      );
       edge.geometry.dispose();
       edge.geometry = new THREE.BoxGeometry(2, 3, spanWithReach(layout));
-      edge.position.set(side * (layout.laneOffset + WALL_GAP), WALL_HEIGHT, corridorCenter(layout));
+      edge.position.set(
+        side * (layout.laneOffset + WALL_GAP),
+        FLOOR_Y + WALL_HEIGHT,
+        corridorCenter(layout)
+      );
     }
     for (const { rail, side } of rails) {
       rail.geometry.dispose();
       rail.geometry = new THREE.BoxGeometry(spanWithReach(layout), 4, 4);
-      rail.position.set(side * layout.laneOffset, RAIL_Y, corridorCenter(layout));
+      rail.position.set(side * layout.laneOffset, FLOOR_Y + RAIL_Y, corridorCenter(layout));
     }
     layout.placements.forEach((placement, i) => {
       underglows[i].placement = placement;
-      underglows[i].mesh.position.set(placement.x, 2, placement.z);
+      underglows[i].mesh.position.set(placement.x, FLOOR_Y + 2, placement.z);
     });
     seedDust();
   };
