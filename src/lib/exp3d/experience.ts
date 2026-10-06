@@ -109,8 +109,13 @@ function createHandle(section: HTMLElement): ExperienceHandle {
     Object.assign(window, { __exp3d: { mode: 'flat' } });
   };
 
+  // Last written debug values, so the theme observer can refresh the debug
+  // contract even while the frame loop is gated off.
+  let debugState: { p: number; pose: CameraPose } | null = null;
+
   const writeDebug = (p: number, pose: CameraPose): void => {
     if (exp.mode !== '3d') return;
+    debugState = { p, pose };
     const tier: 'full' | 'lite' | 'off' = exp.gl?.tier ?? 'off';
     window.__exp3d = {
       mode: '3d',
@@ -446,7 +451,10 @@ function createHandle(section: HTMLElement): ExperienceHandle {
   // data-theme re-reads the CSS custom properties and re-tints the env.
   const themeObserver = new MutationObserver(() => {
     colors = readThemeColors(section);
-    if (exp.mode === '3d') exp.gl?.setTheme(colors);
+    if (exp.mode === '3d') {
+      exp.gl?.setTheme(colors);
+      if (!loop.active && debugState) writeDebug(debugState.p, debugState.pose);
+    }
   });
   themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
