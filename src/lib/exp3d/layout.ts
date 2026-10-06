@@ -42,14 +42,14 @@ export interface Layout {
 }
 
 export const CORRIDOR = {
-  READ_DISTANCE: 800,
+  READ_DISTANCE: 700,
   SPACING: 950,
   FOV: 55,
   TURN: (20 * Math.PI) / 180, // rotateY toward the corridor center
   HOLD: 0.62, // fraction of each segment the camera parks at a card
   BILLBOARD_REACH: 2600, // camera units over which a card turns to face the camera
-  DIM_REACH: 2800, // camera units over which a card fades toward its floor
-  DIM_FLOOR: 0.55, // far cards stay legible
+  DIM_REACH: 2200, // camera units over which a card fades toward its floor
+  DIM_FLOOR: 0.75, // far cards stay legible
   CULL_DISTANCE: 120, // hide cards at/behind the camera plane
   MIN_3D_WIDTH: 769,
   LOOK_AHEAD: 1200,
