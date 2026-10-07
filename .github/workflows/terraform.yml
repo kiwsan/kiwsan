@@ -11,6 +11,8 @@ env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
   TF_DIR: ./terraform
   NODE_VERSION: '22'
+  # CDK-provisioned distribution (kiwsan.com, www.kiwsan.com)
+  CF_DISTRIBUTION_ID: E2CAAH31O3E38E
 
 jobs:
   # ──────────────────────────────────────────────
@@ -291,6 +293,9 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
         working-directory: ${{ env.TF_DIR }}
+
+      - name: Invalidate CloudFront Cache
+        run: aws cloudfront create-invalidation --distribution-id ${{ env.CF_DISTRIBUTION_ID }} --paths "/*"
 
   # ──────────────────────────────────────────────
   # Stage 6: Post-Deploy Verification
