@@ -1,0 +1,791 @@
+---
+/* The showroom floor map: six desks where the agent stack actually runs.
+   Static isometric art + a tiny selection script. No canvas, no deps. */
+
+type ZoneStatus = 'live' | '24/7' | 'recent';
+
+interface Zone {
+  id: string;
+  name: string;
+  headline: string;
+  detail: string;
+  tools: string[];
+  status: ZoneStatus;
+  accent: string;
+  spot: [number, number]; // scene coords for the hotspot
+}
+
+const zones: Zone[] = [
+  {
+    id: 'model-gateway',
+    name: 'Model Gateway',
+    headline: 'One door, many models.',
+    detail:
+      'GPT-5, o4-mini and DeepSeek deploy behind a single LiteLLM gateway, routed per task and cost.',
+    tools: ['LiteLLM', 'Azure AI Foundry', 'GPT-5', 'o4-mini', 'DeepSeek'],
+    status: 'live',
+    accent: '#7aa2f7',
+    spot: [440, 204],
+  },
+  {
+    id: 'mcp-wall',
+    name: 'MCP Tool Wall',
+    headline: 'Internal systems, exposed safely.',
+    detail:
+      'MCP toolboxes wrap ERP, OMS and WMS endpoints so agents call real business tools, not guessed APIs.',
+    tools: ['MCP', 'Toolboxes', 'ERP', 'OMS', 'WMS'],
+    status: 'live',
+    accent: '#bb9af7',
+    spot: [256, 208],
+  },
+  {
+    id: 'infra-bay',
+    name: 'Infra Bay',
+    headline: 'Azure infra as reviewed code.',
+    detail:
+      'Dev and production environments ship through Terraform, reviewed like any other change.',
+    tools: ['Terraform', 'Azure', 'Docker'],
+    status: '24/7',
+    accent: '#9ece6a',
+    spot: [616, 208],
+  },
+  {
+    id: 'ops-pipeline',
+    name: 'OPS Pipeline',
+    headline: 'Agents wired into daily ops.',
+    detail:
+      'Pipeline steps call the same gateways and tools the team uses, from order sync to marketplace SLA checks.',
+    tools: ['Event-Driven', 'Node.js', 'Webhooks'],
+    status: 'live',
+    accent: '#7dcfff',
+    spot: [348, 408],
+  },
+  {
+    id: 'agent-lounge',
+    name: 'Agent Lounge',
+    headline: 'Agents idle warm, not cold.',
+    detail:
+      'Between tasks agents park here: sessions hydrated, tools primed, no cold starts on the clock.',
+    tools: ['Agents', 'Sessions', 'MCP'],
+    status: 'recent',
+    accent: '#f7768e',
+    spot: [452, 368],
+  },
+  {
+    id: 'assist-desk',
+    name: 'Assist Desk',
+    headline: 'Group-wide daily assist.',
+    detail:
+      'The assistant answers "how do I..." for retail teams across the group, grounded on internal docs.',
+    tools: ['RAG', 'GPT-5', 'Prompting'],
+    status: 'live',
+    accent: '#e0af68',
+    spot: [586, 408],
+  },
+];
+
+const defaultZoneId = 'model-gateway';
+
+/* Compact labels for narrow screens, where the full names would collide. */
+const shortNames: Record<string, string> = {
+  'model-gateway': 'GATEWAY',
+  'mcp-wall': 'MCP TOOL',
+  'infra-bay': 'INFRA',
+  'ops-pipeline': 'OPS',
+  'agent-lounge': 'LOUNGE',
+  'assist-desk': 'ASSIST',
+};
+
+const statusClass: Record<ZoneStatus, string> = {
+  live: 'st-live',
+  '24/7': 'st-247',
+  recent: 'st-recent',
+};
+
+/* Isometric primitives. cx/cy is the centre of the top face. */
+const cube = (cx: number, cy: number, w: number, h: number, v: number) => ({
+  top: `M${cx},${cy - h} L${cx + w},${cy} L${cx},${cy + h} L${cx - w},${cy} Z`,
+  left: `M${cx - w},${cy} L${cx},${cy + h} L${cx},${cy + h + v} L${cx - w},${cy + v} Z`,
+  right: `M${cx + w},${cy} L${cx},${cy + h} L${cx},${cy + h + v} L${cx + w},${cy + v} Z`,
+  edge: `M${cx - w},${cy} L${cx},${cy - h} L${cx + w},${cy}`,
+  sides: `M${cx - w},${cy} L${cx - w},${cy + v} M${cx},${cy + h} L${cx},${cy + h + v} M${cx + w},${cy} L${cx + w},${cy + v}`,
+});
+
+const diamond = (cx: number, cy: number, w: number, h: number, scale = 1) =>
+  `M${cx},${cy - h * scale} L${cx + w * scale},${cy} L${cx},${cy + h * scale} L${cx - w * scale},${cy} Z`;
+
+const gateway = cube(440, 204, 60, 30, 22);
+const gatewayBays = [0.55, 0.35, 0.18].map((scale) => diamond(440, 204, 60, 30, scale));
+
+const mcpWall = cube(256, 208, 26, 13, 44);
+const mcpSlots = [0, 1, 2, 3].map((i) => {
+  const y = 220 + i * 8;
+  return `M234,${y} L248,${y + 7} L248,${y + 12} L234,${y + 5} Z`;
+});
+
+const infraUpper = cube(616, 188, 40, 20, 14);
+const infraLower = cube(616, 208, 40, 20, 14);
+
+const opsCubes = [312, 392, 472].map((cx) => cube(cx, 408, 26, 13, 12));
+const opsLinks = [
+  { line: 'M340 415 L360 415', head: 'M357 411 L365 415 L357 419 Z' },
+  { line: 'M420 415 L440 415', head: 'M437 411 L445 415 L437 419 Z' },
+];
+
+const lounge = cube(452, 368, 44, 22, 8);
+const desk = cube(586, 408, 40, 20, 10);
+
+/* Where each zone's agent hovers: just above the tallest point of its desk.
+   The lounge is absent on purpose: its three parked agents are its agents. */
+const agentAnchors: Record<string, [number, number]> = {
+  'model-gateway': [440, 192],
+  'mcp-wall': [256, 213],
+  'infra-bay': [616, 186],
+  'ops-pipeline': [392, 413],
+  'assist-desk': [586, 370],
+};
+---
+
+<section id="office" class="office-section" aria-labelledby="office-title">
+  <div class="office-stage">
+    <div class="office-head">
+      <span class="section-label">AI Office</span>
+      <h2 id="office-title">Inside the AI Office</h2>
+      <p class="office-caption">
+        The room the run report lives in. Select a desk to see what runs there.
+      </p>
+    </div>
+
+    <div class="scene">
+      <svg
+        class="scene-svg"
+        viewBox="0 0 880 500"
+        role="img"
+        aria-label="Isometric floor map of the AI office: model gateway, MCP tool wall and infra bay across the back, agent lounge in the middle, OPS pipeline and assist desk in front."
+      >
+        <defs>
+          <linearGradient id="ao-floor" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#1c2030" />
+            <stop offset="1" stop-color="#13151f" />
+          </linearGradient>
+          <radialGradient id="ao-halo" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0" stop-color="#7aa2f7" stop-opacity="0.16" />
+            <stop offset="1" stop-color="#7aa2f7" stop-opacity="0" />
+          </radialGradient>
+        </defs>
+
+        <path
+          d="M440 110 L820 300 L440 490 L60 300 Z"
+          fill="url(#ao-floor)"
+          stroke="#7aa2f7"
+          stroke-opacity="0.28"
+        />
+        <g stroke="#ffffff" stroke-opacity="0.045">
+          <path d="M136 276L516 466" /><path d="M212 252L592 442" /><path d="M288 229L668 419" />
+          <path d="M136 324L516 134" /><path d="M212 347L592 158" /><path d="M288 371L668 181" />
+        </g>
+
+        <ellipse cx="440" cy="204" rx="150" ry="64" fill="url(#ao-halo)" />
+
+        <!-- Packet lanes: the two routes the gateway feeds. -->
+        <g fill="none" stroke="#7aa2f7" stroke-opacity="0.16" stroke-dasharray="2 7">
+          <path d="M440 230 Q392 330 348 430" />
+          <path d="M440 230 Q348 222 256 214" />
+        </g>
+
+        <!-- Model Gateway: one cube, three nested model bays. -->
+        <g>
+          <path d={diamond(440, 226, 60, 30, 1.12)} fill="#7aa2f7" opacity="0.06" />
+          <path d={gateway.left} fill="#1b2030" />
+          <path d={gateway.right} fill="#161a26" />
+          <path d={gateway.top} fill="#262c3e" />
+          <ellipse cx="440" cy="204" rx="36" ry="15" fill="#7aa2f7" opacity="0.12" />
+          {gatewayBays.map((bay, i) => (
+            <path
+              d={bay}
+              fill="none"
+              stroke="#7aa2f7"
+              stroke-opacity={[0.5, 0.35, 0.2][i]}
+              stroke-width="1.2"
+            />
+          ))}
+          <path d={gateway.edge} fill="none" stroke="#7aa2f7" stroke-opacity="0.9" stroke-width="1.5" />
+          <path d={gateway.sides} fill="none" stroke="#7aa2f7" stroke-opacity="0.34" stroke-width="1.2" />
+          <text x="452" y="262">MODEL GATEWAY</text>
+        </g>
+
+        <!-- MCP Tool Wall: a tall rack with four live tool slots. -->
+        <g>
+          <path d={diamond(256, 252, 26, 13, 1.15)} fill="#bb9af7" opacity="0.06" />
+          <path d={mcpWall.left} fill="#1b2030" />
+          <path d={mcpWall.right} fill="#161a26" />
+          <path d={mcpWall.top} fill="#262c3e" />
+          {mcpSlots.map((slot) => (
+            <path d={slot} fill="#bb9af7" opacity="0.72" />
+          ))}
+          <path d={mcpWall.edge} fill="none" stroke="#bb9af7" stroke-opacity="0.85" stroke-width="1.5" />
+          <path d={mcpWall.sides} fill="none" stroke="#bb9af7" stroke-opacity="0.4" stroke-width="1.2" />
+          <text x="256" y="278">MCP WALL</text>
+        </g>
+
+        <!-- Infra Bay: two blocks, chevrons on the right face. -->
+        <g>
+          <path d={diamond(616, 222, 40, 20, 1.12)} fill="#9ece6a" opacity="0.06" />
+          <path d={infraUpper.left} fill="#1b2030" />
+          <path d={infraUpper.right} fill="#161a26" />
+          <path d={infraUpper.top} fill="#262c3e" />
+          <path d={infraUpper.edge} fill="none" stroke="#9ece6a" stroke-opacity="0.7" stroke-width="1.5" />
+          <path d={infraUpper.sides} fill="none" stroke="#9ece6a" stroke-opacity="0.3" stroke-width="1.2" />
+
+          <path d={infraLower.left} fill="#1b2030" />
+          <path d={infraLower.right} fill="#161a26" />
+          <path d={infraLower.top} fill="#262c3e" />
+          <path
+            d="M626 231 L636 221 L646 216 M626 236 L636 226 L646 221"
+            fill="none"
+            stroke="#9ece6a"
+            stroke-opacity="0.85"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path d={infraLower.edge} fill="none" stroke="#9ece6a" stroke-opacity="0.85" stroke-width="1.5" />
+          <path d={infraLower.sides} fill="none" stroke="#9ece6a" stroke-opacity="0.34" stroke-width="1.2" />
+          <text x="616" y="268">INFRA BAY</text>
+        </g>
+
+        <!-- Agent Lounge: low platform, three agents parked on it. -->
+        <g>
+          <path d={diamond(452, 376, 44, 22, 1.14)} fill="#f7768e" opacity="0.07" />
+          <path d={lounge.left} fill="#1b2030" />
+          <path d={lounge.right} fill="#161a26" />
+          <path d={lounge.top} fill="#262c3e" />
+          <ellipse cx="452" cy="368" rx="30" ry="12" fill="#f7768e" opacity="0.1" />
+          <path d={lounge.edge} fill="none" stroke="#f7768e" stroke-opacity="0.85" stroke-width="1.5" />
+          <path d={lounge.sides} fill="none" stroke="#f7768e" stroke-opacity="0.34" stroke-width="1.2" />
+          {[
+            [422, 344],
+            [452, 338],
+            [482, 344],
+          ].map(([x, y], i) => (
+            <g transform={`translate(${x},${y}) scale(0.62)`}>
+              <g class="agent" style={`animation-delay:${0.2 + i * 0.5}s`}>
+                <polygon points="0,-46 5,-38 0,-30 -5,-38" fill="#f7768e" opacity="0.75" />
+                <polygon points="0,-46 9,-38 0,-30 -9,-38" fill="#f7768e" opacity="0.12" />
+              </g>
+            </g>
+          ))}
+          <text x="452" y="420">AGENT LOUNGE</text>
+        </g>
+
+        <!-- OPS Pipeline: three stages on a dotted run. -->
+        <g>
+          {[312, 392, 472].map((cx) => (
+            <path d={diamond(cx, 420, 26, 13, 1.12)} fill="#7dcfff" opacity="0.06" />
+          ))}
+          {opsCubes.map((ops) => (
+            <>
+              <path d={ops.left} fill="#1b2030" />
+              <path d={ops.right} fill="#161a26" />
+              <path d={ops.top} fill="#262c3e" />
+              <path d={ops.edge} fill="none" stroke="#7dcfff" stroke-opacity="0.8" stroke-width="1.4" />
+              <path d={ops.sides} fill="none" stroke="#7dcfff" stroke-opacity="0.32" stroke-width="1.2" />
+            </>
+          ))}
+          {opsLinks.map((link) => (
+            <>
+              <path
+                d={link.line}
+                fill="none"
+                stroke="#7dcfff"
+                stroke-opacity="0.65"
+                stroke-width="1.2"
+                stroke-dasharray="2 4"
+              />
+              <path d={link.head} fill="#7dcfff" opacity="0.7" />
+            </>
+          ))}
+          <text x="392" y="452">OPS PIPELINE</text>
+        </g>
+
+        <!-- Assist Desk: flat desk, monitor standing on it. -->
+        <g>
+          <path d={diamond(586, 418, 40, 20, 1.12)} fill="#e0af68" opacity="0.06" />
+          <path d={desk.left} fill="#1b2030" />
+          <path d={desk.right} fill="#161a26" />
+          <path d={desk.top} fill="#262c3e" />
+          <path d={desk.edge} fill="none" stroke="#e0af68" stroke-opacity="0.85" stroke-width="1.5" />
+          <path d={desk.sides} fill="none" stroke="#e0af68" stroke-opacity="0.34" stroke-width="1.2" />
+          <rect x="576" y="382" width="20" height="16" rx="2" fill="#0e1018" stroke="#e0af68" stroke-opacity="0.85" />
+          <path d="M586 398 L586 404" stroke="#e0af68" stroke-opacity="0.6" stroke-width="1.5" />
+          <text x="586" y="452">ASSIST DESK</text>
+        </g>
+
+        <!-- One agent per desk, drifting above its structure. -->
+        {zones.filter((zone) => zone.id !== 'agent-lounge').map((zone, i) => {
+          const [agentX, agentY] = agentAnchors[zone.id] ?? [zone.spot[0], zone.spot[1] - 48];
+          return (
+            <g transform={`translate(${agentX},${agentY})`}>
+              <g class="agent" style={`animation-delay:${i * 0.45}s`}>
+                <polygon points="0,-46 5,-38 0,-30 -5,-38" fill={zone.accent} opacity="0.9" />
+                <polygon points="0,-46 9,-38 0,-30 -9,-38" fill={zone.accent} opacity="0.12" />
+              </g>
+            </g>
+          );
+        })}
+
+        <!-- Two packets leaving the gateway. -->
+        <circle class="packet packet-a" cx="0" cy="0" r="3" fill="#7aa2f7" />
+        <circle class="packet packet-b" cx="0" cy="0" r="3" fill="#bb9af7" />
+      </svg>
+
+      {zones.map((zone) => (
+        <button
+          type="button"
+          class:list={['hotspot', { 'is-active': zone.id === defaultZoneId }]}
+          data-zone={zone.id}
+          style={`left:${zone.spot[0] / 8.8}%; top:${zone.spot[1] / 5}%; --accent:${zone.accent}`}
+          aria-controls={`zone-panel-${zone.id}`}
+          aria-current={zone.id === defaultZoneId ? 'true' : undefined}
+        >
+          <span class="hotspot-label">
+            <span class="label-full">{zone.name}</span>
+            <span class="label-short">{shortNames[zone.id] ?? zone.name}</span>
+          </span>
+        </button>
+      ))}
+    </div>
+
+    <div class="ao-panels" aria-live="polite">
+      {zones.map((zone) => (
+        <article
+          id={`zone-panel-${zone.id}`}
+          class="zone-card"
+          role="group"
+          aria-labelledby={`zone-heading-${zone.id}`}
+          hidden={zone.id !== defaultZoneId}
+          style={`--accent:${zone.accent}`}
+        >
+          <div class="zone-head">
+            <span class="zone-dot" aria-hidden="true"></span>
+            <h3 id={`zone-heading-${zone.id}`}>{zone.name}</h3>
+            <span class:list={['zone-status', statusClass[zone.status]]}>{zone.status}</span>
+          </div>
+          <p class="zone-headline">{zone.headline}</p>
+          <p class="zone-detail">{zone.detail}</p>
+          <div class="zone-chips">
+            {zone.tools.map((tool) => <span class="zone-chip">{tool}</span>)}
+          </div>
+          <p class="zone-route">route {zone.id} · {zone.status}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  const stage = document.querySelector<HTMLElement>('#office .office-stage');
+
+  if (stage) {
+    const hotspots = Array.from(stage.querySelectorAll<HTMLButtonElement>('.hotspot'));
+    const cards = Array.from(stage.querySelectorAll<HTMLElement>('.zone-card'));
+
+    const activate = (id: string) => {
+      for (const hotspot of hotspots) {
+        const selected = hotspot.dataset.zone === id;
+        hotspot.classList.toggle('is-active', selected);
+        if (selected) {
+          hotspot.setAttribute('aria-current', 'true');
+        } else {
+          hotspot.removeAttribute('aria-current');
+        }
+      }
+
+      for (const card of cards) {
+        card.hidden = card.id !== `zone-panel-${id}`;
+      }
+    };
+
+    stage.addEventListener('click', (event) => {
+      const target = event.target as Element | null;
+      const hotspot = target?.closest<HTMLButtonElement>('.hotspot');
+      if (!hotspot || !stage.contains(hotspot)) return;
+
+      const id = hotspot.dataset.zone;
+      if (id) activate(id);
+    });
+  }
+</script>
+
+<style>
+  .office-section {
+    --ao-bg: #15161f;
+    --ao-fg: #c0caf5;
+    --ao-muted: #a9b1d6;
+    --ao-dim: #565f89;
+
+    width: calc(100% - 4rem);
+    max-width: 1136px;
+    margin: var(--space-16) auto;
+    border-radius: 16px;
+    background: var(--ao-bg);
+    box-shadow: 0 24px 64px -24px rgba(0, 0, 0, 0.45);
+    color: var(--ao-fg);
+    overflow: hidden;
+  }
+
+  .office-stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 28px;
+    padding: clamp(20px, 3vw, 36px);
+  }
+
+  .office-head {
+    grid-column: 1 / -1;
+  }
+
+  .office-head .section-label {
+    color: #7aa2f7;
+    margin-bottom: var(--space-2);
+  }
+
+  .office-head h2 {
+    color: var(--ao-fg);
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-3);
+  }
+
+  .office-caption {
+    margin: 0;
+    max-width: 62ch;
+    color: var(--ao-muted);
+    font-size: var(--text-sm);
+    line-height: 1.6;
+  }
+
+  /* Scene: viewBox 880x500 shrinks with the column, so the hotspots can be
+     placed with plain percentages of that box. */
+  .scene {
+    position: relative;
+    min-width: 0;
+  }
+
+  .scene-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .scene text {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-anchor: middle;
+    fill: #565f89;
+  }
+
+  .agent {
+    animation: ao-float 4.5s ease-in-out infinite alternate;
+  }
+
+  @keyframes ao-float {
+    to {
+      transform: translateY(-3px);
+    }
+  }
+
+  .packet {
+    animation: ao-packet-a 4s cubic-bezier(0.45, 0, 0.55, 1) infinite both;
+  }
+
+  .packet-b {
+    animation-name: ao-packet-b;
+    animation-duration: 5s;
+    animation-delay: 2s;
+  }
+
+  @keyframes ao-packet-a {
+    0% {
+      transform: translate(440px, 230px);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    50% {
+      transform: translate(392px, 330px);
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      transform: translate(348px, 430px);
+      opacity: 0;
+    }
+  }
+
+  @keyframes ao-packet-b {
+    0% {
+      transform: translate(440px, 230px);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    50% {
+      transform: translate(348px, 222px);
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      transform: translate(256px, 214px);
+      opacity: 0;
+    }
+  }
+
+  /* Each desk is a real button: invisible 96x56 hit area, always-visible pill. */
+  .hotspot {
+    position: absolute;
+    width: 96px;
+    height: 56px;
+    padding: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    transform: translate(-50%, -50%);
+    background: none;
+    border: 0;
+    border-radius: 14px;
+    outline: 1px solid transparent;
+    outline-offset: 2px;
+    color: var(--accent);
+    cursor: pointer;
+    transition: outline-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .hotspot-label {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    background: rgba(21, 22, 31, 0.85);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    line-height: 1.4;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .label-short {
+    display: none;
+  }
+
+  .hotspot:hover,
+  .hotspot:focus-visible {
+    outline: 1px solid color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+
+  .hotspot.is-active {
+    outline: 1px solid color-mix(in srgb, var(--accent) 85%, transparent);
+    box-shadow:
+      0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent),
+      0 0 22px -6px color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+
+  .hotspot.is-active .hotspot-label {
+    background: rgba(29, 32, 47, 0.95);
+    box-shadow: 0 0 12px -4px color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+
+  .ao-panels {
+    min-width: 0;
+    align-self: start;
+  }
+
+  .zone-card {
+    background: #191c28;
+    border: 1px solid rgba(192, 202, 245, 0.08);
+    border-left: 2px solid var(--accent);
+    border-radius: 0 12px 12px 0;
+    padding: 18px 20px;
+    color: var(--ao-fg);
+    font-family: var(--font-sans);
+  }
+
+  .zone-card[hidden] {
+    display: none;
+  }
+
+  .zone-card:not([hidden]) {
+    animation: ao-card-in 0.25s ease both;
+  }
+
+  @keyframes ao-card-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .zone-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .zone-dot {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--accent);
+    box-shadow: 0 0 10px -2px var(--accent);
+  }
+
+  .zone-head h3 {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    font-size: 18px;
+    letter-spacing: -0.01em;
+    color: var(--ao-fg);
+  }
+
+  .zone-status {
+    flex: none;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    line-height: 1.5;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .st-live { color: #9ece6a; }
+  .st-247 { color: #7dcfff; }
+  .st-recent { color: #e0af68; }
+
+  .zone-headline {
+    margin: 12px 0 6px;
+    color: var(--ao-fg);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.45;
+  }
+
+  .zone-detail {
+    margin: 0;
+    color: var(--ao-muted);
+    font-size: 13px;
+    line-height: 1.65;
+  }
+
+  .zone-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 14px;
+  }
+
+  .zone-chip {
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: #1d202f;
+    color: var(--ao-muted);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.6;
+  }
+
+  .zone-route {
+    margin: 14px 0 0;
+    padding-top: 12px;
+    border-top: 1px solid rgba(192, 202, 245, 0.08);
+    color: var(--ao-dim);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    overflow-wrap: anywhere;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .agent {
+      animation: none;
+    }
+
+    .packet {
+      display: none;
+    }
+
+    .zone-card:not([hidden]) {
+      animation: none;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .office-section {
+      width: calc(100% - 3rem);
+    }
+  }
+
+  @media (max-width: 900px) {
+    .office-stage {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .office-section {
+      margin: var(--space-12) auto;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .office-section {
+      width: calc(100% - 2.5rem);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hotspot {
+      width: 76px;
+      height: 44px;
+    }
+
+    .hotspot-label {
+      padding: 2px 6px;
+      font-size: 8px;
+    }
+
+    .label-full {
+      display: none;
+    }
+
+    .label-short {
+      display: inline;
+    }
+
+    .office-head h2 {
+      font-size: var(--text-3xl);
+    }
+
+    .zone-card {
+      padding: 16px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .office-section {
+      width: calc(100% - 2rem);
+    }
+  }
+</style>
