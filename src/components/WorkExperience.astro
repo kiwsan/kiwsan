@@ -4,73 +4,170 @@ import { getCollection } from 'astro:content';
 const workExperience = (await getCollection('projects'))
   .filter(p => p.data.type === 'work')
   .sort((a, b) => a.data.order - b.data.order);
+
+const runs = workExperience.map((work) => ({
+  title: work.data.title,
+  company: work.data.company,
+  period: work.data.period,
+  datetime: /^\d{4}/.test(work.data.period) ? work.data.period.slice(0, 4) : work.data.period,
+  challenge: work.data.challenge,
+  solution: work.data.solution,
+  tech: work.data.tech,
+  results: work.data.results,
+  command: `agent run --org "${work.data.company}" --role "${work.data.title}"`,
+}));
 ---
+
+<script is:inline>
+  // Runs during parse, before first paint, so the reveal gate is never missed.
+  document.documentElement.dataset.trace = 'pending';
+</script>
 
 <section id="experience" class="experience">
   <div class="container">
     <span class="section-label">Career</span>
     <h2>Work Experience</h2>
-    <div class="timeline">
-      <div class="timeline-line" aria-hidden="true"></div>
-      {workExperience.map((work, index) => (
-        <article class={`timeline-item ${index % 2 === 0 ? 'timeline-left' : 'timeline-right'}`}>
-          <div class="timeline-dot" aria-hidden="true">
-            <span class="dot-ring"></span>
-          </div>
-          <div class="timeline-card work-card">
-            <div class="card-accent" aria-hidden="true"></div>
-            <time class="period" datetime={work.data.period.includes('Present') ? `${work.data.period.split(' - ')[0]}/P${new Date().getFullYear() - parseInt(work.data.period.split(' - ')[0])}Y` : work.data.period}>{work.data.period}</time>
-            <h3>{work.data.title}</h3>
-            <span class="company">{work.data.company}</span>
+    <p class="trace-caption">A run report, newest first. Every line is shipped work.</p>
 
-            <div class="work-content">
-              <div class="section">
-                <strong>Challenge</strong>
-                <p>{work.data.challenge}</p>
-              </div>
-              <div class="section">
-                <strong>Solution</strong>
-                <p>{work.data.solution}</p>
-              </div>
+    <div class="terminal">
+      <div class="term-bar">
+        <span class="dot dot-red" aria-hidden="true"></span>
+        <span class="dot dot-yellow" aria-hidden="true"></span>
+        <span class="dot dot-green" aria-hidden="true"></span>
+        <span class="term-title">kiwsan@career:~ — agent trace</span>
+      </div>
+
+      <div class="term-body">
+        {runs.map((run) => (
+          <article class="trace-block work-card">
+            <div class="trace-line trace-cmd" style="--i:0" aria-label={`$ ${run.command}`}>
+              <span class="prompt" aria-hidden="true">$</span>
+              <span class="cmd" aria-hidden="true" data-cmd>{run.command}</span>
+              <span class="cursor" aria-hidden="true"></span>
             </div>
 
-            <div class="tech-stack">
-              {work.data.tech.map((tech) => (
-                <span class="tech-tag">{tech}</span>
+            <div class="trace-line trace-kv" style="--i:1">
+              <span class="k">role</span>
+              <h3>{run.title}</h3>
+            </div>
+
+            <div class="trace-line trace-kv" style="--i:2">
+              <span class="k">org</span>
+              <span class="company">{run.company}</span>
+            </div>
+
+            <div class="trace-line trace-kv" style="--i:3">
+              <span class="k">period</span>
+              <time class="period" datetime={run.datetime}>{run.period}</time>
+            </div>
+
+            <div class="trace-line trace-kv" style="--i:4">
+              <span class="k">task</span>
+              <p class="prose">{run.challenge}</p>
+            </div>
+
+            <div class="trace-line trace-kv" style="--i:5">
+              <span class="k">impl</span>
+              <p class="prose">{run.solution}</p>
+            </div>
+
+            <div class="trace-line trace-tool" style="--i:6">
+              <span class="arrow" aria-hidden="true">▸</span>
+              <span class="tool-label">tool_call({run.tech.length})</span>
+            </div>
+
+            <div class="trace-line trace-chips" style="--i:7">
+              {run.tech.map((tech) => <span class="tech-tag">{tech}</span>)}
+            </div>
+
+            <ul class="results">
+              {run.results.map((result, i) => (
+                <li class="trace-line" style={`--i:${8 + i}`}>
+                  <span class="ok" aria-hidden="true">✔</span>
+                  <span>{result}</span>
+                </li>
               ))}
-            </div>
+            </ul>
+          </article>
+        ))}
 
-            <div class="results">
-              <strong>Results</strong>
-              <ul>
-                {work.data.results.map((result) => (
-                  <li>{result}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </article>
-      ))}
+        <p class="eof" aria-hidden="true">-- EOF --</p>
+      </div>
     </div>
-  </div>
-  <!-- The 3D corridor re-parents the .timeline-card elements into .stage and
-       drives the camera from this scroll runway. In flat mode (no JS, reduced
-       motion, narrow viewport) the runway stays hidden and the timeline above
-       is the whole section. -->
-  <div class="runway" hidden>
-    <div class="stage"></div>
   </div>
 </section>
 
 <script>
-  import { mountExperience } from '../lib/exp3d/experience';
+  const blocks = Array.from(document.querySelectorAll<HTMLElement>('#experience .trace-block'));
+  const root = document.documentElement;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  const section = document.getElementById('experience') as HTMLElement;
-  const handle = mountExperience(section);
+  const timers = new Set<number>();
+  let observer: IntersectionObserver | null = null;
+  let pending = blocks.length;
 
-  // Astro's client router may swap pages; release the 3D world before the
-  // section dies. destroy() is idempotent.
-  document.addEventListener('astro:before-swap', () => handle.destroy(), { once: true });
+  const cleanup = () => {
+    observer?.disconnect();
+    observer = null;
+    timers.forEach((timer) => clearInterval(timer));
+    timers.clear();
+    document.removeEventListener('astro:before-swap', cleanup);
+  };
+
+  const finish = () => {
+    root.dataset.trace = 'done';
+    cleanup();
+  };
+
+  const typeCommand = (block: HTMLElement) => {
+    const cmd = block.querySelector<HTMLElement>('[data-cmd]');
+    const done = () => {
+      block.classList.add('is-done');
+      pending -= 1;
+      if (pending <= 0) finish();
+    };
+
+    const text = cmd?.textContent ?? '';
+    if (!cmd || text.length === 0) {
+      done();
+      return;
+    }
+
+    const step = Math.min(16, 700 / text.length);
+    let shown = 0;
+    cmd.textContent = '';
+
+    const timer = window.setInterval(() => {
+      shown += 1;
+      cmd.textContent = text.slice(0, shown);
+      if (shown >= text.length) {
+        clearInterval(timer);
+        timers.delete(timer);
+        done();
+      }
+    }, step);
+    timers.add(timer);
+  };
+
+  document.addEventListener('astro:before-swap', cleanup);
+
+  if (blocks.length === 0 || reducedMotion.matches || typeof IntersectionObserver === 'undefined') {
+    finish();
+  } else {
+    observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const block = entry.target as HTMLElement;
+          observer?.unobserve(block);
+          block.classList.add('is-live');
+          typeCommand(block);
+        }
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -10% 0px' }
+    );
+    blocks.forEach((block) => observer?.observe(block));
+  }
 </script>
 
 <style>
@@ -80,371 +177,286 @@ const workExperience = (await getCollection('projects'))
 
   h2 {
     font-size: var(--text-4xl);
-    margin-bottom: var(--space-12);
+    margin-bottom: var(--space-3);
   }
 
-  /* ---------- Flat timeline ---------- */
-  .timeline {
+  .trace-caption {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    line-height: 1.6;
+    margin: 0 0 var(--space-8);
+  }
+
+  /* One dark terminal on both themes: a deliberate contrast object in light
+     mode, a natural Tokyo Night surface in dark mode. */
+  .terminal {
+    --t-bg: #15161f;
+    --t-fg: #c0caf5;
+    --t-dim: #565f89;
+    --t-muted: #a9b1d6;
+    --t-blue: #7aa2f7;
+    --t-purple: #bb9af7;
+    --t-green: #9ece6a;
+    --t-chip: #1d202f;
+
     position: relative;
-    padding: var(--space-4) 0;
+    overflow: hidden;
+    border-radius: 14px;
+    background: var(--t-bg);
+    box-shadow: 0 24px 64px -24px rgba(0, 0, 0, 0.45);
+    color: var(--t-fg);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.75;
   }
 
-  .timeline-line {
+  .terminal::after {
+    content: '';
     position: absolute;
-    left: 50%;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: linear-gradient(
-      to bottom,
-      transparent,
-      var(--color-border) 8%,
-      var(--color-primary) 50%,
-      var(--color-border) 92%,
-      transparent
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background: repeating-linear-gradient(
+      rgba(255, 255, 255, 0.015) 0 1px,
+      transparent 1px 3px
     );
-    transform: translateX(-50%);
   }
 
-  .timeline-item {
-    position: relative;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-8);
-    margin-bottom: var(--space-10);
-  }
-
-  .timeline-item:last-child {
-    margin-bottom: 0;
-  }
-
-  .timeline-left .timeline-card {
-    grid-column: 1;
-    grid-row: 1;
-    text-align: right;
-  }
-
-  .timeline-right .timeline-card {
-    grid-column: 2;
-    grid-row: 1;
-  }
-
-  .timeline-dot {
-    position: absolute;
-    left: 50%;
-    top: var(--space-6);
-    transform: translateX(-50%);
-    z-index: 2;
-    width: 16px;
-    height: 16px;
+  .term-bar {
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 8px;
+    padding: 14px clamp(20px, 4vw, 40px) 0;
   }
 
-  .dot-ring {
-    width: 14px;
-    height: 14px;
+  .dot {
+    width: 10px;
+    height: 10px;
     border-radius: var(--radius-full);
-    background: var(--color-primary);
-    border: 3px solid var(--color-bg);
-    box-shadow: 0 0 0 2px var(--color-primary);
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-                box-shadow 0.3s ease;
+    flex: none;
   }
 
-  .timeline-item:hover .dot-ring {
-    transform: scale(1.4);
-    box-shadow: 0 0 0 3px var(--color-primary), 0 0 16px rgba(0, 40, 142, 0.25);
-  }
+  .dot-red { background: #f7768e; }
+  .dot-yellow { background: #e0af68; }
+  .dot-green { background: #9ece6a; }
 
-  .timeline-card {
-    position: relative;
-    padding: var(--space-6) var(--space-8);
-    background: var(--color-surface);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--color-border);
-    overflow: hidden;
-    transition: translate 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-                box-shadow 0.35s ease,
-                border-color 0.35s ease;
-  }
-
-  .timeline-card:hover {
-    translate: 0 -4px;
-    border-color: var(--color-primary);
-    box-shadow: 0 12px 40px -8px rgba(0, 40, 142, 0.12),
-                0 4px 12px -2px rgba(0, 0, 0, 0.06);
-  }
-
-  .card-accent {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
-    opacity: 0;
-    transition: opacity 0.35s ease;
-  }
-
-  .timeline-card:hover .card-accent {
-    opacity: 1;
-  }
-
-  .period {
-    display: inline-block;
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-primary);
-    background: var(--color-primary-fixed);
-    padding: var(--space-1) var(--space-3);
-    border-radius: var(--radius-full);
-    margin-bottom: var(--space-3);
-    font-weight: 500;
+  .term-title {
+    margin-left: auto;
+    color: var(--t-dim);
+    font-size: 12px;
     letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  .term-body {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 34px;
+    padding: clamp(20px, 4vw, 40px);
+  }
+
+  .trace-block {
+    display: block;
+  }
+
+  .trace-line {
+    display: block;
+  }
+
+  .trace-cmd {
+    color: var(--t-fg);
+    overflow-wrap: anywhere;
+  }
+
+  .prompt {
+    color: var(--t-blue);
+    margin-right: 0.75ch;
+  }
+
+  .cmd {
+    white-space: pre-wrap;
+  }
+
+  .cursor {
+    display: none;
+    width: 0.6ch;
+    height: 1.05em;
+    margin-left: 2px;
+    vertical-align: -0.15em;
+    background: var(--t-fg);
+    animation: trace-blink 0.9s steps(2, start) infinite;
+  }
+
+  :global([data-trace='pending']) .trace-block.is-live:not(.is-done) .cursor {
+    display: inline-block;
+  }
+
+  @keyframes trace-blink {
+    50% { opacity: 0; }
+  }
+
+  .trace-kv {
+    display: grid;
+    grid-template-columns: 84px minmax(0, 1fr);
+    column-gap: 18px;
+    align-items: baseline;
+  }
+
+  .k {
+    color: var(--t-dim);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
   }
 
   h3 {
-    font-family: var(--font-display);
-    font-size: var(--text-2xl);
-    font-weight: 700;
-    margin-bottom: var(--space-1);
-    color: var(--color-text);
-    transition: color 0.3s ease;
-  }
-
-  .timeline-card:hover h3 {
-    color: var(--color-primary);
-  }
-
-  .company {
-    display: block;
-    font-size: var(--text-sm);
-    font-weight: 500;
-    color: var(--color-text-muted);
-    margin-bottom: var(--space-5);
-  }
-
-  .work-content {
-    margin-bottom: var(--space-5);
-  }
-
-  .section {
-    margin-bottom: var(--space-4);
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 600;
     line-height: 1.6;
+    letter-spacing: 0;
+    color: var(--t-fg);
   }
 
-  .section strong {
-    color: var(--color-text-muted);
-    font-size: var(--text-xs);
+  .company,
+  .period {
+    color: var(--t-fg);
+  }
+
+  .prose {
+    margin: 0;
+    max-width: 68ch;
+    color: var(--t-muted);
+  }
+
+  .trace-tool {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75ch;
+    margin-top: 4px;
+  }
+
+  .arrow {
+    color: var(--t-purple);
+  }
+
+  .tool-label {
+    color: var(--t-dim);
+    font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    display: block;
-    margin-bottom: var(--space-1);
   }
 
-  .section p {
-    margin: 0;
-    color: var(--color-text);
-  }
-
-  .timeline-left .tech-stack {
-    justify-content: flex-end;
-  }
-
-  .timeline-left .results {
-    text-align: right;
-  }
-
-  .timeline-left .results ul {
-    padding-left: 0;
-    padding-right: var(--space-5);
-    list-style-position: inside;
-  }
-
-  .tech-stack {
+  .trace-chips {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-2);
-    margin-bottom: var(--space-5);
+    gap: 6px;
+    padding-left: 2ch;
   }
 
   .tech-tag {
-    padding: var(--space-1) var(--space-3);
-    background: var(--color-secondary-container);
-    color: var(--color-on-secondary-container);
-    border-radius: var(--radius-full);
-    font-size: var(--text-xs);
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: var(--t-chip);
+    color: var(--t-muted);
     font-family: var(--font-mono);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 11px;
+    line-height: 1.6;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s ease;
   }
 
   .tech-tag:hover {
-    background: var(--color-primary);
-    color: white;
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 40, 142, 0.2);
+    transform: translateY(-2px);
+    color: var(--t-purple);
   }
 
-  .results strong {
-    color: var(--color-text-muted);
-    font-size: var(--text-xs);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-
-  .results ul {
-    margin-top: var(--space-2);
-    padding-left: var(--space-5);
+  .results {
+    list-style: none;
+    margin: 6px 0 0;
+    padding: 0 0 0 2ch;
   }
 
   .results li {
-    margin-bottom: var(--space-1);
-    color: var(--color-text);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75ch;
+    color: var(--t-muted);
   }
 
-  .results li:hover {
-    color: var(--color-primary);
+  .ok {
+    color: var(--t-green);
   }
 
-  /* ---------- 3D corridor ---------- */
-  .experience.is-3d {
-    padding-bottom: 0;
+  .eof {
+    margin: 0;
+    color: var(--t-dim);
+    font-size: 12px;
   }
 
-  .experience.is-3d .timeline {
-    display: none;
+  /* Reveal gate: only while the inline script says 'pending'. No JS leaves the
+     attribute unset, so the whole trace stays visible. */
+  :global([data-trace='pending']) .trace-line {
+    opacity: 0;
+    transform: translateY(6px);
   }
 
-  /* Scroll runway: 300vh of scrub travel after the 100vh stage un-pins. */
-  .experience.is-3d .runway {
-    height: 400vh;
+  :global([data-trace='pending']) .trace-block.is-live .trace-line {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: calc(120ms + var(--i) * 70ms);
   }
 
-  .stage {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow: hidden;
+  @keyframes trace-pop {
+    from { transform: scale(0.86); }
+    to { transform: scale(1); }
   }
 
-  .experience.is-3d .timeline-card {
-    width: clamp(340px, 38vw, 560px);
-    will-change: transform, opacity;
+  :global([data-trace='pending']) .trace-block.is-live .results li {
+    animation: trace-pop 0.36s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(120ms + var(--i) * 70ms);
   }
 
-  /* ---------- Reduced motion ---------- */
   @media (prefers-reduced-motion: reduce) {
-    .timeline-card:hover {
-      translate: none;
+    .tech-tag:hover {
+      transform: none;
     }
-    .tech-tag:hover,
-    .timeline-item:hover .dot-ring {
+
+    /* Belt and suspenders: even if the script never runs, reduced motion
+       users see the full trace. */
+    :global([data-trace='pending']) .trace-line {
+      opacity: 1;
       transform: none;
     }
   }
 
-  /* ---------- Tablet: single-column left-aligned ---------- */
-  @media (max-width: 768px) {
+  @media (max-width: 640px) {
     .experience {
       padding: var(--space-12) 0;
     }
 
     h2 {
       font-size: var(--text-3xl);
-      margin-bottom: var(--space-8);
     }
 
-    .timeline-line {
-      left: 20px;
+    .terminal {
+      font-size: 12px;
     }
 
-    .timeline-item {
-      display: block;
-      padding-left: 52px;
-      margin-bottom: var(--space-8);
-    }
-
-    .timeline-dot {
-      left: 20px;
-      top: var(--space-6);
-    }
-
-    .timeline-left .timeline-card,
-    .timeline-right .timeline-card {
-      text-align: left;
-    }
-
-    .timeline-left .tech-stack {
-      justify-content: flex-start;
-    }
-
-    .timeline-left .results {
-      text-align: left;
-    }
-
-    .timeline-left .results ul {
-      padding-left: var(--space-5);
-      padding-right: 0;
-      list-style-position: outside;
-    }
-
-    .timeline-card {
-      padding: var(--space-5) var(--space-6);
-    }
-  }
-
-  /* ---------- Mobile ---------- */
-  @media (max-width: 480px) {
-    .experience {
-      padding: var(--space-8) 0;
-    }
-
-    h2 {
-      font-size: var(--text-2xl);
-    }
-
-    .timeline-line {
-      left: 14px;
-    }
-
-    .timeline-item {
-      padding-left: 40px;
-      margin-bottom: var(--space-6);
-    }
-
-    .timeline-dot {
-      left: 14px;
-    }
-
-    .dot-ring {
-      width: 12px;
-      height: 12px;
-    }
-
-    .timeline-card {
-      padding: var(--space-4);
+    .trace-kv {
+      grid-template-columns: 62px minmax(0, 1fr);
+      column-gap: 12px;
     }
 
     h3 {
-      font-size: var(--text-xl);
+      font-size: 13px;
     }
 
-    .tech-stack {
-      gap: var(--space-2);
-    }
-
-    .tech-tag {
-      font-size: 0.7rem;
-      padding: var(--space-1) var(--space-2);
-    }
-
-    .results ul {
-      padding-left: var(--space-4);
-      font-size: var(--text-sm);
+    .term-title {
+      font-size: 11px;
     }
   }
 </style>
