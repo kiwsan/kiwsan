@@ -12,7 +12,8 @@ interface Zone {
   tools: string[];
   status: ZoneStatus;
   accent: string;
-  spot: [number, number]; // scene coords for the hotspot
+  spot: [number, number]; // scene coords of the structure
+  label: [number, number]; // scene coords of the hotspot pill, below the structure
 }
 
 const zones: Zone[] = [
@@ -26,6 +27,7 @@ const zones: Zone[] = [
     status: 'live',
     accent: '#7aa2f7',
     spot: [440, 204],
+    label: [440, 278],
   },
   {
     id: 'mcp-wall',
@@ -37,6 +39,7 @@ const zones: Zone[] = [
     status: 'live',
     accent: '#bb9af7',
     spot: [256, 208],
+    label: [256, 288],
   },
   {
     id: 'infra-bay',
@@ -48,6 +51,7 @@ const zones: Zone[] = [
     status: '24/7',
     accent: '#9ece6a',
     spot: [616, 208],
+    label: [616, 272],
   },
   {
     id: 'ops-pipeline',
@@ -59,6 +63,7 @@ const zones: Zone[] = [
     status: 'live',
     accent: '#7dcfff',
     spot: [348, 408],
+    label: [392, 460],
   },
   {
     id: 'agent-lounge',
@@ -69,7 +74,8 @@ const zones: Zone[] = [
     tools: ['Agents', 'Sessions', 'MCP'],
     status: 'recent',
     accent: '#f7768e',
-    spot: [452, 368],
+    spot: [548, 296],
+    label: [548, 360],
   },
   {
     id: 'assist-desk',
@@ -81,6 +87,7 @@ const zones: Zone[] = [
     status: 'live',
     accent: '#e0af68',
     spot: [586, 408],
+    label: [586, 458],
   },
 ];
 
@@ -132,7 +139,7 @@ const opsLinks = [
   { line: 'M420 415 L440 415', head: 'M437 411 L445 415 L437 419 Z' },
 ];
 
-const lounge = cube(452, 368, 44, 22, 8);
+const lounge = cube(548, 296, 44, 22, 8);
 const desk = cube(586, 408, 40, 20, 10);
 
 /* Where each zone's agent hovers: just above the tallest point of its desk.
@@ -211,7 +218,6 @@ const agentAnchors: Record<string, [number, number]> = {
           ))}
           <path d={gateway.edge} fill="none" stroke="#7aa2f7" stroke-opacity="0.9" stroke-width="1.5" />
           <path d={gateway.sides} fill="none" stroke="#7aa2f7" stroke-opacity="0.34" stroke-width="1.2" />
-          <text x="452" y="262">MODEL GATEWAY</text>
         </g>
 
         <!-- MCP Tool Wall: a tall rack with four live tool slots. -->
@@ -225,7 +231,6 @@ const agentAnchors: Record<string, [number, number]> = {
           ))}
           <path d={mcpWall.edge} fill="none" stroke="#bb9af7" stroke-opacity="0.85" stroke-width="1.5" />
           <path d={mcpWall.sides} fill="none" stroke="#bb9af7" stroke-opacity="0.4" stroke-width="1.2" />
-          <text x="256" y="278">MCP WALL</text>
         </g>
 
         <!-- Infra Bay: two blocks, chevrons on the right face. -->
@@ -251,22 +256,21 @@ const agentAnchors: Record<string, [number, number]> = {
           />
           <path d={infraLower.edge} fill="none" stroke="#9ece6a" stroke-opacity="0.85" stroke-width="1.5" />
           <path d={infraLower.sides} fill="none" stroke="#9ece6a" stroke-opacity="0.34" stroke-width="1.2" />
-          <text x="616" y="268">INFRA BAY</text>
         </g>
 
         <!-- Agent Lounge: low platform, three agents parked on it. -->
         <g>
-          <path d={diamond(452, 376, 44, 22, 1.14)} fill="#f7768e" opacity="0.07" />
+          <path d={diamond(548, 304, 44, 22, 1.14)} fill="#f7768e" opacity="0.07" />
           <path d={lounge.left} fill="#1b2030" />
           <path d={lounge.right} fill="#161a26" />
           <path d={lounge.top} fill="#262c3e" />
-          <ellipse cx="452" cy="368" rx="30" ry="12" fill="#f7768e" opacity="0.1" />
+          <ellipse cx="548" cy="296" rx="30" ry="12" fill="#f7768e" opacity="0.1" />
           <path d={lounge.edge} fill="none" stroke="#f7768e" stroke-opacity="0.85" stroke-width="1.5" />
           <path d={lounge.sides} fill="none" stroke="#f7768e" stroke-opacity="0.34" stroke-width="1.2" />
           {[
-            [422, 344],
-            [452, 338],
-            [482, 344],
+            [522, 306],
+            [548, 298],
+            [574, 306],
           ].map(([x, y], i) => (
             <g transform={`translate(${x},${y}) scale(0.62)`}>
               <g class="agent" style={`animation-delay:${0.2 + i * 0.5}s`}>
@@ -275,7 +279,6 @@ const agentAnchors: Record<string, [number, number]> = {
               </g>
             </g>
           ))}
-          <text x="452" y="420">AGENT LOUNGE</text>
         </g>
 
         <!-- OPS Pipeline: three stages on a dotted run. -->
@@ -305,7 +308,6 @@ const agentAnchors: Record<string, [number, number]> = {
               <path d={link.head} fill="#7dcfff" opacity="0.7" />
             </>
           ))}
-          <text x="392" y="452">OPS PIPELINE</text>
         </g>
 
         <!-- Assist Desk: flat desk, monitor standing on it. -->
@@ -318,7 +320,6 @@ const agentAnchors: Record<string, [number, number]> = {
           <path d={desk.sides} fill="none" stroke="#e0af68" stroke-opacity="0.34" stroke-width="1.2" />
           <rect x="576" y="382" width="20" height="16" rx="2" fill="#0e1018" stroke="#e0af68" stroke-opacity="0.85" />
           <path d="M586 398 L586 404" stroke="#e0af68" stroke-opacity="0.6" stroke-width="1.5" />
-          <text x="586" y="452">ASSIST DESK</text>
         </g>
 
         <!-- One agent per desk, drifting above its structure. -->
@@ -339,21 +340,27 @@ const agentAnchors: Record<string, [number, number]> = {
         <circle class="packet packet-b" cx="0" cy="0" r="3" fill="#bb9af7" />
       </svg>
 
-      {zones.map((zone) => (
-        <button
-          type="button"
-          class:list={['hotspot', { 'is-active': zone.id === defaultZoneId }]}
-          data-zone={zone.id}
-          style={`left:${zone.spot[0] / 8.8}%; top:${zone.spot[1] / 5}%; --accent:${zone.accent}`}
-          aria-controls={`zone-panel-${zone.id}`}
-          aria-current={zone.id === defaultZoneId ? 'true' : undefined}
-        >
-          <span class="hotspot-label">
-            <span class="label-full">{zone.name}</span>
-            <span class="label-short">{shortNames[zone.id] ?? zone.name}</span>
-          </span>
-        </button>
-      ))}
+      {zones.map((zone) => {
+        /* Hit box: from 44 scene units above the structure down to just
+           under the pill, so both the art and the label click as one. */
+        const boxTop = zone.spot[1] - 44;
+        const boxHeight = zone.label[1] + 16 - boxTop;
+        return (
+          <button
+            type="button"
+            class:list={['hotspot', { 'is-active': zone.id === defaultZoneId }]}
+            data-zone={zone.id}
+            style={`left:${zone.spot[0] / 8.8}%; top:${boxTop / 5}%; width:17%; height:${boxHeight / 5}%; --accent:${zone.accent}`}
+            aria-controls={`zone-panel-${zone.id}`}
+            aria-current={zone.id === defaultZoneId ? 'true' : undefined}
+          >
+            <span class="hotspot-label">
+              <span class="label-full">{zone.name}</span>
+              <span class="label-short">{shortNames[zone.id] ?? zone.name}</span>
+            </span>
+          </button>
+        );
+      })}
     </div>
 
     <div class="ao-panels" aria-live="polite">
@@ -477,14 +484,6 @@ const agentAnchors: Record<string, [number, number]> = {
     height: auto;
   }
 
-  .scene text {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    text-anchor: middle;
-    fill: #565f89;
-  }
-
   .agent {
     animation: ao-float 4.5s ease-in-out infinite alternate;
   }
@@ -545,16 +544,15 @@ const agentAnchors: Record<string, [number, number]> = {
     }
   }
 
-  /* Each desk is a real button: invisible 96x56 hit area, always-visible pill. */
+  /* Each desk is a real button: a scaled hit box over the art with one
+     always-visible pill at its bottom. % sizes track the scene box. */
   .hotspot {
     position: absolute;
-    width: 96px;
-    height: 56px;
     padding: 0;
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
     background: none;
     border: 0;
     border-radius: 14px;
@@ -756,11 +754,6 @@ const agentAnchors: Record<string, [number, number]> = {
   }
 
   @media (max-width: 640px) {
-    .hotspot {
-      width: 76px;
-      height: 44px;
-    }
-
     .hotspot-label {
       padding: 2px 6px;
       font-size: 8px;
