@@ -5,7 +5,11 @@ const workExperience = (await getCollection('projects'))
   .filter(p => p.data.type === 'work')
   .sort((a, b) => a.data.order - b.data.order);
 
-const runs = workExperience.map((work) => ({
+/* Tokyo Night rotation: one color per run so each job reads as its own
+   card at a glance. */
+const accents = ['#7aa2f7', '#bb9af7', '#f7768e', '#7dcfff', '#9ece6a', '#e0af68', '#ff9e64'];
+
+const runs = workExperience.map((work, index) => ({
   title: work.data.title,
   company: work.data.company,
   period: work.data.period,
@@ -15,6 +19,9 @@ const runs = workExperience.map((work) => ({
   tech: work.data.tech,
   results: work.data.results,
   command: `agent run --org "${work.data.company}" --role "${work.data.title}"`,
+  accent: accents[index % accents.length],
+  runNo: String(index + 1).padStart(2, '0'),
+  total: String(workExperience.length).padStart(2, '0'),
 }));
 ---
 
@@ -39,11 +46,12 @@ const runs = workExperience.map((work) => ({
 
       <div class="term-body">
         {runs.map((run) => (
-          <article class="trace-block work-card">
+          <article class="trace-block work-card" style={`--accent:${run.accent}`}>
             <div class="trace-line trace-cmd" style="--i:0" aria-label={`$ ${run.command}`}>
               <span class="prompt" aria-hidden="true">$</span>
               <span class="cmd" aria-hidden="true" data-cmd>{run.command}</span>
               <span class="cursor" aria-hidden="true"></span>
+              <span class="run-no" aria-hidden="true"><b>{run.runNo}</b>/{run.total}</span>
             </div>
 
             <div class="trace-line trace-kv" style="--i:1">
@@ -252,12 +260,20 @@ const runs = workExperience.map((work) => ({
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 34px;
+    gap: 18px;
     padding: clamp(20px, 4vw, 40px);
   }
 
+  /* Each run is its own raised sheet: tonal lift on the terminal body, an
+     accent rail in the run's rotation color, and a numbered chip on the
+     right so separate jobs never blur together. */
   .trace-block {
     display: block;
+    position: relative;
+    background: #191c28;
+    border-left: 3px solid var(--accent);
+    border-radius: 0 12px 12px 0;
+    padding: 16px 22px;
   }
 
   .trace-line {
@@ -267,15 +283,34 @@ const runs = workExperience.map((work) => ({
   .trace-cmd {
     color: var(--t-fg);
     overflow-wrap: anywhere;
-  }
-
-  .prompt {
-    color: var(--t-blue);
-    margin-right: 0.75ch;
+    display: flex;
+    align-items: baseline;
+    column-gap: 0.75ch;
   }
 
   .cmd {
     white-space: pre-wrap;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .run-no {
+    flex: none;
+    color: var(--t-dim);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .run-no b {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .prompt {
+    color: var(--accent);
+    margin-right: 0;
+    flex: none;
   }
 
   .cursor {
@@ -317,12 +352,7 @@ const runs = workExperience.map((work) => ({
     font-weight: 600;
     line-height: 1.6;
     letter-spacing: 0;
-    color: var(--t-fg);
-  }
-
-  .company,
-  .period {
-    color: var(--t-fg);
+    color: var(--accent);
   }
 
   .prose {
@@ -444,6 +474,11 @@ const runs = workExperience.map((work) => ({
 
     .terminal {
       font-size: 12px;
+    }
+
+    .trace-block {
+      padding: 14px 16px;
+      border-left-width: 2px;
     }
 
     .trace-kv {
