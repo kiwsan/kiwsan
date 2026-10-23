@@ -9,20 +9,6 @@ const workExperience = (await getCollection('projects'))
    desk at a glance. */
 const accents = ['#7aa2f7', '#bb9af7', '#f7768e', '#7dcfff', '#9ece6a', '#e0af68', '#ff9e64'];
 
-/* Desk anchors inside the isometric office: back row first, then front row.
-   Works for any job count; with six jobs the rows are even (3 + 3). */
-const layoutDesks = (n: number): [number, number][] => {
-  const backCount = Math.ceil(n / 2);
-  const frontCount = n - backCount;
-  const row = (count: number, y: number, x0: number, step: number) =>
-    Array.from({ length: count }, (_, i) => [x0 + i * step, y] as [number, number]);
-
-  return [
-    ...row(backCount, 206, 440 - (backCount - 1) * 76, 152),
-    ...row(frontCount, 400, 328 + (frontCount === backCount ? 0 : 76), 152),
-  ];
-};
-
 /* Desk pill: companies drop their legal suffix and the SET note. */
 const deskLabel = (company: string) =>
   company
@@ -35,7 +21,9 @@ const deskLabel = (company: string) =>
     .slice(0, 2)
     .join(' ');
 
-/* Isometric primitives. cx/cy is the centre of the desk's top face. */
+/* Isometric primitives for one mini desk. cx/cy is the centre of the top face;
+   the desk sits at 100,88 inside a 200x150 viewBox so it stays centred on the
+   timeline spine. */
 const cube = (cx: number, cy: number, w: number, h: number, v: number) => ({
   top: `M${cx},${cy - h} L${cx + w},${cy} L${cx},${cy + h} L${cx - w},${cy} Z`,
   left: `M${cx - w},${cy} L${cx},${cy + h} L${cx},${cy + h + v} L${cx - w},${cy + v} Z`,
@@ -47,10 +35,13 @@ const cube = (cx: number, cy: number, w: number, h: number, v: number) => ({
 const diamond = (cx: number, cy: number, w: number, h: number, scale = 1) =>
   `M${cx},${cy - h * scale} L${cx + w * scale},${cy} L${cx},${cy + h * scale} L${cx - w * scale},${cy} Z`;
 
-const positions = layoutDesks(workExperience.length);
+const deskBody = cube(100, 88, 44, 22, 13);
+const deskHalo = diamond(100, 88, 44, 22, 1.15);
+
+/* Display-only: the run periods read better with a real dash on the rail. */
+const railPeriod = (period: string) => period.replace(/\s+-\s+/g, ' — ');
 
 const runs = workExperience.map((work, index) => {
-  const [deskX, deskY] = positions[index] ?? [440, 206];
   const name = deskLabel(work.data.company);
 
   return {
@@ -58,8 +49,8 @@ const runs = workExperience.map((work, index) => {
     title: work.data.title,
     company: work.data.company,
     name: name || work.data.company,
-    shortName: name.split(/\s+/)[0] || work.data.company,
     period: work.data.period,
+    railPeriod: railPeriod(work.data.period),
     datetime: /^\d{4}/.test(work.data.period) ? work.data.period.slice(0, 4) : work.data.period,
     challenge: work.data.challenge,
     solution: work.data.solution,
@@ -69,38 +60,11 @@ const runs = workExperience.map((work, index) => {
     accent: accents[index % accents.length],
     runNo: String(index + 1).padStart(2, '0'),
     total: String(workExperience.length).padStart(2, '0'),
-    deskX,
-    deskY,
-    pillY: deskY + 66,
+    floatDelay: `${(index * 0.45).toFixed(2)}s`,
   };
 });
 
-const defaultZone = runs[0]?.zone ?? '';
-
-/* One route through the desks in career order (01 -> 06). */
-const routePath = positions.map(([x, y], i) => `${i === 0 ? 'M' : 'L'}${x} ${y}`).join(' ');
-const lastDesk = positions[positions.length - 1] ?? [440, 206];
-
-/* The packet keyframes follow the same points, so the loop stays in sync
-   with the shape of the floor for any job count. The fade at both ends
-   hides the jump back to the first desk. */
-const packetCss = `
-@keyframes office-packet {
-  0% { transform: translate(${positions[0]?.[0] ?? 440}px, ${positions[0]?.[1] ?? 206}px); opacity: 0; }
-  3% { opacity: 1; }
-${positions
-  .map(
-    ([x, y], i) =>
-      `  ${(4 + (i / Math.max(positions.length - 1, 1)) * 91).toFixed(2)}% { transform: translate(${x}px, ${y}px); }`
-  )
-  .join('\n')}
-  95% { opacity: 1; }
-  100% { transform: translate(${lastDesk[0]}px, ${lastDesk[1]}px); opacity: 0; }
-}
-.office-packet {
-  animation: office-packet 9s linear infinite both;
-}
-`;
+const onlineCount = String(workExperience.length).padStart(2, '0');
 ---
 
 <script is:inline>
@@ -114,68 +78,33 @@ ${positions
       <span class="section-label">Career</span>
       <h2 id="experience-title">Work Experience</h2>
       <p class="trace-caption">
-        The office floor every run shipped from. Pick a desk to open its trace.
+        Every shipped run, oldest to newest. The office floor scrolls with the story.
       </p>
     </div>
 
     <div class="office-stage">
-      <div class="scene">
-        <div class="scene-meta" aria-hidden="true">
-          <span class="meta-line">career floor</span>
-          <span class="meta-chip"><i class="meta-dot"></i>agents online · {String(workExperience.length).padStart(2, '0')}</span>
-        </div>
-        <svg
-          class="scene-svg"
-          viewBox="0 0 880 500"
-          role="img"
-          aria-label="Isometric office floor with one desk per role in the career timeline, newest at the back left. Selecting a desk opens that role's agent trace."
-        >
-          <defs>
-            <linearGradient id="wx-floor" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#1c2030"></stop>
-              <stop offset="1" stop-color="#13151f"></stop>
-            </linearGradient>
-          </defs>
+      <div class="scene-meta" aria-hidden="true">
+        <span class="meta-line">career floor</span>
+        <span class="meta-chip"><i class="meta-dot"></i>agents online · {onlineCount}</span>
+      </div>
 
-          <path
-            d="M440 110 L820 300 L440 490 L60 300 Z"
-            fill="url(#wx-floor)"
-            stroke="#7aa2f7"
-            stroke-opacity="0.28"></path>
-          <g stroke="#ffffff" stroke-opacity="0.045">
-            <path d="M136 276L516 466"></path><path d="M212 252L592 442"></path><path
-              d="M288 229L668 419"
-            ></path>
-            <path d="M136 324L516 134"></path><path d="M212 347L592 158"></path><path
-              d="M288 371L668 181"
-            ></path>
-          </g>
+      <div class="timeline">
+        <div class="timeline-spine" aria-hidden="true"></div>
+        <div class="timeline-packet" aria-hidden="true"></div>
 
-          <!-- Career route: the path a run walks from first job to current one. -->
-          <path
-            d={routePath}
-            fill="none"
-            stroke="#7aa2f7"
-            stroke-opacity="0.18"
-            stroke-width="1"
-            stroke-dasharray="2 6"></path>
-          <circle class="office-packet" cx="0" cy="0" r="3" fill="#7aa2f7"></circle>
+        {runs.map((run) => (
+          <div class="tl-row" data-zone={run.zone} style={`--accent:${run.accent}`}>
+            <div class="tl-rail">
+              <span class="tl-period">{run.railPeriod}</span>
 
-          {runs.map((run, i) => {
-            const body = cube(run.deskX, run.deskY, 40, 20, 12);
-            return (
-              <g>
-                <path
-                  d={diamond(run.deskX, run.deskY + 12, 40, 20, 1.12)}
-                  fill={run.accent}
-                  opacity="0.06"
-                />
-                <path d={body.left} fill="#1b2030" />
-                <path d={body.right} fill="#161a26" />
-                <path d={body.top} fill="#262c3e" />
+              <svg class="tl-desk" viewBox="0 0 200 150" aria-hidden="true">
+                <path d={deskHalo} fill={run.accent} opacity="0.06" />
+                <path d={deskBody.left} fill="#1b2030" />
+                <path d={deskBody.right} fill="#161a26" />
+                <path d={deskBody.top} fill="#262c3e" />
                 <rect
-                  x={run.deskX - 10}
-                  y={run.deskY - 26}
+                  x="90"
+                  y="52"
                   width="20"
                   height="16"
                   rx="2"
@@ -184,156 +113,110 @@ ${positions
                   stroke-opacity="0.85"
                 />
                 <path
-                  d={`M${run.deskX} ${run.deskY - 10} L${run.deskX} ${run.deskY - 4}`}
+                  d="M100 68 L100 80"
                   stroke={run.accent}
                   stroke-opacity="0.55"
                   stroke-width="1.5"
                 />
                 <path
-                  d={body.edge}
+                  d={deskBody.edge}
                   fill="none"
                   stroke={run.accent}
                   stroke-opacity="0.85"
                   stroke-width="1.5"
                 />
                 <path
-                  d={body.sides}
+                  d={deskBody.sides}
                   fill="none"
                   stroke={run.accent}
                   stroke-opacity="0.34"
                   stroke-width="1.2"
                 />
-                <g transform={`translate(${run.deskX},${run.deskY - 8})`}>
-                  <g class="agent" style={`animation-delay:${i * 0.45}s`}>
+                <g transform="translate(100,80)">
+                  <g class="agent" style={`animation-delay:${run.floatDelay}`}>
                     <polygon points="0,-46 5,-38 0,-30 -5,-38" fill={run.accent} opacity="0.9" />
                     <polygon points="0,-46 9,-38 0,-30 -9,-38" fill={run.accent} opacity="0.12" />
                   </g>
                 </g>
-              </g>
-            );
-          })}
-        </svg>
+              </svg>
 
-        {runs.map((run) => {
-          /* Hit box: from 44 scene units above the desk down to just under the
-             pill, so art and label click as one target. */
-          const boxTop = run.deskY - 44;
-          const boxHeight = run.pillY + 16 - boxTop;
-          return (
-            <button
-              type="button"
-              class:list={['desk', { 'is-active': run.zone === defaultZone }]}
-              data-zone={run.zone}
-              style={`left:${(run.deskX / 8.8).toFixed(3)}%; top:${((boxTop / 500) * 100).toFixed(3)}%; width:15%; height:${((boxHeight / 500) * 100).toFixed(3)}%; --accent:${run.accent}`}
-              aria-controls={`run-panel-${run.zone}`}
-              aria-current={run.zone === defaultZone ? 'true' : undefined}
-              aria-label={`Open trace: ${run.title} at ${run.company}`}
-            >
-              <span class="desk-pill">
+              <span class="tl-node" aria-hidden="true"></span>
+
+              <span class="tl-pill desk-pill">
                 <span class="desk-name">{run.name}</span>
-                <span class="desk-mini">{run.shortName}</span>
                 <span class="desk-period">{run.period}</span>
               </span>
-            </button>
-          );
-        })}
-      </div>
-
-      <div class="run-panels" aria-live="polite">
-        {runs.map((run) => (
-          <article
-            id={`run-panel-${run.zone}`}
-            class="trace-block work-card"
-            data-zone={run.zone}
-            style={`--accent:${run.accent}`}
-            aria-labelledby={`run-role-${run.zone}`}
-            hidden={run.zone !== defaultZone}
-          >
-            <div class="trace-line trace-cmd" style="--i:0" aria-label={`$ ${run.command}`}>
-              <span class="prompt" aria-hidden="true">$</span>
-              <span class="cmd" aria-hidden="true" data-cmd data-full={run.command}>{run.command}</span>
-              <span class="cursor" aria-hidden="true"></span>
-              <span class="run-no" aria-hidden="true">
-                <svg class="desk-glyph" viewBox="0 0 12 10" width="12" height="10">
-                  <polygon points="6,0 11,3 6,6 1,3" fill="currentColor" opacity="0.9" />
-                  <polygon points="1,3 6,6 6,9 1,6" fill="currentColor" opacity="0.45" />
-                  <polygon points="11,3 6,6 6,9 11,6" fill="currentColor" opacity="0.28" />
-                </svg>
-                <b>{run.runNo}</b>/{run.total}
-              </span>
             </div>
 
-            <div class="trace-line trace-kv" style="--i:1">
-              <span class="k">role</span>
-              <h3 id={`run-role-${run.zone}`}>{run.title}</h3>
-            </div>
+            <article
+              class="trace-block work-card"
+              data-zone={run.zone}
+              style={`--accent:${run.accent}`}
+              aria-labelledby={`run-role-${run.zone}`}
+            >
+              <div class="trace-line trace-cmd" style="--i:0" aria-label={`$ ${run.command}`}>
+                <span class="prompt" aria-hidden="true">$</span>
+                <span class="cmd" aria-hidden="true" data-cmd data-full={run.command}>{run.command}</span>
+                <span class="cursor" aria-hidden="true"></span>
+                <span class="run-no" aria-hidden="true">
+                  <svg class="desk-glyph" viewBox="0 0 12 10" width="12" height="10">
+                    <polygon points="6,0 11,3 6,6 1,3" fill="currentColor" opacity="0.9" />
+                    <polygon points="1,3 6,6 6,9 1,6" fill="currentColor" opacity="0.45" />
+                    <polygon points="11,3 6,6 6,9 11,6" fill="currentColor" opacity="0.28" />
+                  </svg>
+                  <b>{run.runNo}</b>/{run.total}
+                </span>
+              </div>
 
-            <div class="trace-line trace-kv" style="--i:2">
-              <span class="k">org</span>
-              <span class="company">{run.company}</span>
-            </div>
+              <div class="trace-line trace-kv" style="--i:1">
+                <span class="k">role</span>
+                <h3 id={`run-role-${run.zone}`}>{run.title}</h3>
+              </div>
 
-            <div class="trace-line trace-kv" style="--i:3">
-              <span class="k">period</span>
-              <time class="period" datetime={run.datetime}>{run.period}</time>
-            </div>
+              <div class="trace-line trace-kv" style="--i:2">
+                <span class="k">org</span>
+                <span class="company">{run.company}</span>
+              </div>
 
-            <div class="trace-line trace-kv" style="--i:4">
-              <span class="k">task</span>
-              <p class="prose">{run.challenge}</p>
-            </div>
+              <div class="trace-line trace-kv" style="--i:3">
+                <span class="k">period</span>
+                <time class="period" datetime={run.datetime}>{run.period}</time>
+              </div>
 
-            <div class="trace-line trace-kv" style="--i:5">
-              <span class="k">impl</span>
-              <p class="prose">{run.solution}</p>
-            </div>
+              <div class="trace-line trace-kv" style="--i:4">
+                <span class="k">task</span>
+                <p class="prose">{run.challenge}</p>
+              </div>
 
-            <div class="trace-line trace-tool" style="--i:6">
-              <span class="arrow" aria-hidden="true">▸</span>
-              <span class="tool-label">tool_call({run.tech.length})</span>
-            </div>
+              <div class="trace-line trace-kv" style="--i:5">
+                <span class="k">impl</span>
+                <p class="prose">{run.solution}</p>
+              </div>
 
-            <div class="trace-line trace-chips" style="--i:7">
-              {run.tech.map((tech) => <span class="tech-tag">{tech}</span>)}
-            </div>
+              <div class="trace-line trace-tool" style="--i:6">
+                <span class="arrow" aria-hidden="true">▸</span>
+                <span class="tool-label">tool_call({run.tech.length})</span>
+              </div>
 
-            <ul class="results">
-              {run.results.map((result, i) => (
-                <li class="trace-line" style={`--i:${8 + i}`}>
-                  <span class="ok" aria-hidden="true">✔</span>
-                  <span>{result}</span>
-                </li>
-              ))}
-            </ul>
-          </article>
-        ))}
-      </div>
+              <div class="trace-line trace-chips" style="--i:7">
+                {run.tech.map((tech) => <span class="tech-tag">{tech}</span>)}
+              </div>
 
-      <div class="run-chips" role="group" aria-label="Jump to a role">
-        {runs.map((run) => (
-          <button
-            type="button"
-            class:list={['run-chip', { 'is-active': run.zone === defaultZone }]}
-            data-zone={run.zone}
-            style={`--accent:${run.accent}`}
-            aria-controls={`run-panel-${run.zone}`}
-            aria-current={run.zone === defaultZone ? 'true' : undefined}
-          >
-            <span class="chip-no">{run.runNo}</span>
-            <span class="chip-sep" aria-hidden="true">·</span>
-            <span class="chip-name">{run.name}</span>
-            <span class="chip-tail">
-              <span class="chip-sep" aria-hidden="true">·</span>
-              <span class="chip-period">{run.period}</span>
-            </span>
-          </button>
+              <ul class="results">
+                {run.results.map((result, i) => (
+                  <li class="trace-line" style={`--i:${8 + i}`}>
+                    <span class="ok" aria-hidden="true">✔</span>
+                    <span>{result}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          </div>
         ))}
       </div>
     </div>
   </div>
 </section>
-
-<style is:inline set:html={packetCss}></style>
 
 <script>
   const stage = document.querySelector<HTMLElement>('#experience .office-stage');
@@ -341,47 +224,45 @@ ${positions
   if (stage) {
     const root = document.documentElement;
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const desks = Array.from(stage.querySelectorAll<HTMLButtonElement>('.desk'));
-    const chips = Array.from(stage.querySelectorAll<HTMLButtonElement>('.run-chip'));
     const cards = Array.from(stage.querySelectorAll<HTMLElement>('.work-card'));
-
-    const timers = new Set<number>();
+    const timeline = stage.querySelector<HTMLElement>('.timeline');
+    const spine = stage.querySelector<HTMLElement>('.timeline-spine');
+    const lastNode = stage.querySelector<HTMLElement>('.tl-row:last-child .tl-node');
+    const timers = new Map<HTMLElement, number>();
     let observer: IntersectionObserver | null = null;
 
-    const stopTimers = () => {
-      timers.forEach((timer) => clearInterval(timer));
-      timers.clear();
+    /* Trim the spine to the last node (CSS stretches it to the floor when
+       this never runs, e.g. with JS off). */
+    const sizeSpine = () => {
+      if (!timeline || !spine || !lastNode) return;
+      const box = timeline.getBoundingClientRect();
+      const node = lastNode.getBoundingClientRect();
+      if (box.height === 0 || node.height === 0) return;
+      timeline.style.setProperty('--spine-h', `${Math.max(0, node.top + node.height / 2 - box.top - 8)}px`);
     };
 
-    const fullCommand = (card: HTMLElement) =>
-      card.querySelector<HTMLElement>('[data-cmd]')?.dataset.full ?? '';
+    sizeSpine();
+    window.addEventListener('resize', sizeSpine);
+    document.fonts?.ready.then(sizeSpine);
 
-    /* No typing left half-finished when the visitor moves to another desk. */
-    const settle = () => {
-      stopTimers();
-      for (const card of cards) {
-        const cmd = card.querySelector<HTMLElement>('[data-cmd]');
-        if (cmd) cmd.textContent = cmd.dataset.full ?? cmd.textContent;
-        card.classList.add('is-done');
-      }
-    };
+    if (typeof ResizeObserver !== 'undefined' && timeline) {
+      new ResizeObserver(sizeSpine).observe(timeline);
+    }
 
+    const commandOf = (card: HTMLElement) => card.querySelector<HTMLElement>('[data-cmd]');
+
+    /* Type once per card, capped at 620ms however long the command is. */
     const typeCommand = (card: HTMLElement) => {
-      const cmd = card.querySelector<HTMLElement>('[data-cmd]');
-      const text = fullCommand(card);
-      const finishTyping = () => {
-        card.classList.add('is-done');
-        if (root.dataset.trace !== 'done') root.dataset.trace = 'done';
-      };
+      const cmd = commandOf(card);
+      const text = cmd?.dataset.full ?? '';
 
-      if (!cmd || text.length === 0 || reducedMotion.matches) {
-        if (cmd) cmd.textContent = text;
-        finishTyping();
+      if (!cmd || text.length === 0) {
+        card.classList.add('is-done');
         return;
       }
 
-      card.classList.remove('is-done');
       cmd.textContent = '';
+      card.classList.remove('is-done');
 
       const step = Math.max(6, Math.min(16, 620 / text.length));
       let shown = 0;
@@ -391,81 +272,92 @@ ${positions
         cmd.textContent = text.slice(0, shown);
         if (shown >= text.length) {
           clearInterval(timer);
-          timers.delete(timer);
-          finishTyping();
+          timers.delete(card);
+          card.classList.add('is-done');
         }
       }, step);
-      timers.add(timer);
+      timers.set(card, timer);
+    };
+
+    /* Finish any typing in flight so a card never gets left half-written. */
+    const settle = (card: HTMLElement) => {
+      const timer = timers.get(card);
+      if (timer !== undefined) {
+        clearInterval(timer);
+        timers.delete(card);
+      }
+      const cmd = commandOf(card);
+      if (cmd) cmd.textContent = cmd.dataset.full ?? '';
+      card.classList.add('is-done');
     };
 
     const reveal = (card: HTMLElement) => {
-      /* Restart the line stagger even after the parse-time gate is done. */
-      card.classList.remove('is-live');
-      void card.offsetWidth;
+      if (card.dataset.revealed === 'true') return;
+      card.dataset.revealed = 'true';
       card.classList.add('is-live');
       typeCommand(card);
     };
 
-    const activate = (zone: string) => {
-      const current = cards.find((card) => card.dataset.zone === zone);
-      if (!current) return;
-
-      observer?.disconnect();
-      observer = null;
-      settle();
-
-      for (const desk of desks) {
-        const selected = desk.dataset.zone === zone;
-        desk.classList.toggle('is-active', selected);
-        if (selected) desk.setAttribute('aria-current', 'true');
-        else desk.removeAttribute('aria-current');
-      }
-
-      for (const chip of chips) {
-        const selected = chip.dataset.zone === zone;
-        chip.classList.toggle('is-active', selected);
-        if (selected) chip.setAttribute('aria-current', 'true');
-        else chip.removeAttribute('aria-current');
-      }
-
+    /* No motion budget or no observer: everything is already live. */
+    const revealAll = () => {
       for (const card of cards) {
-        card.hidden = card !== current;
-      }
-
-      reveal(current);
-    };
-
-    const firstCard = cards.find((card) => !card.hidden);
-
-    if (reducedMotion.matches || typeof IntersectionObserver === 'undefined' || !firstCard) {
-      if (firstCard) {
-        firstCard.classList.add('is-live');
-        reveal(firstCard);
+        card.classList.add('is-live');
+        settle(card);
       }
       root.dataset.trace = 'done';
+    };
+
+    /* If a visitor jumps past runs, mark the ones above the landing card as
+       already read so their text never stays hidden. Runs below the landing
+       card keep waiting for their own intersection. */
+    const passThrough = (landed: HTMLElement) => {
+      const index = cards.indexOf(landed);
+      if (index < 1) return;
+
+      for (let i = 0; i < index; i += 1) {
+        const card = cards[i];
+        if (card.dataset.revealed === 'true') continue;
+        card.dataset.revealed = 'true';
+        card.classList.add('is-live');
+        settle(card);
+      }
+    };
+
+    if (reducedMotion.matches || typeof IntersectionObserver === 'undefined' || cards.length === 0) {
+      revealAll();
     } else {
       observer = new IntersectionObserver(
         (entries) => {
-          if (!entries.some((entry) => entry.isIntersecting)) return;
-          observer?.disconnect();
-          observer = null;
-          reveal(firstCard);
+          for (const entry of entries) {
+            if (!entry.isIntersecting) continue;
+            const card = entry.target as HTMLElement;
+            observer?.unobserve(card);
+            passThrough(card);
+            reveal(card);
+          }
         },
-        { threshold: 0.1, rootMargin: '0px 0px -8% 0px' }
+        { rootMargin: '0px 0px -18% 0px', threshold: 0.05 }
       );
-      observer.observe(stage);
+
+      for (const card of cards) observer.observe(card);
+
+      window.addEventListener('pagehide', () => {
+        for (const card of cards) settle(card);
+      });
     }
 
-    stage.addEventListener('click', (event) => {
-      const target = (event.target as Element | null)?.closest<HTMLButtonElement>('.desk, .run-chip');
-      if (!target || !stage.contains(target)) return;
-      const zone = target.dataset.zone;
-      if (zone) activate(zone);
+    reducedMotion.addEventListener('change', (event) => {
+      if (!event.matches) return;
+      observer?.disconnect();
+      observer = null;
+      revealAll();
     });
 
     document.addEventListener('astro:before-swap', () => {
       observer?.disconnect();
-      stopTimers();
+      observer = null;
+      timers.forEach((timer) => clearInterval(timer));
+      timers.clear();
     });
   }
 </script>
@@ -492,8 +384,8 @@ ${positions
     margin: 0;
   }
 
-  /* One dark floor for the whole section: the office and the open trace share
-     the same surface, so selecting a desk feels like walking up to it. */
+  /* One dark floor holds the whole run history: rail on the left, trace on
+     the right, both scrolling down the career. */
   .office-stage {
     --t-bg: #15161f;
     --t-fg: #c0caf5;
@@ -503,9 +395,6 @@ ${positions
     --t-green: #9ece6a;
     --t-chip: #1d202f;
 
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 380px;
-    gap: 28px;
     padding: clamp(20px, 3vw, 36px);
     border-radius: 16px;
     background: var(--t-bg);
@@ -516,23 +405,12 @@ ${positions
     line-height: 1.75;
   }
 
-  /* Scene: viewBox 880x500 shrinks with the column, so the hotspots can be
-     placed with plain percentages of that box. */
-  .scene {
-    position: relative;
-    min-width: 0;
-    align-self: center;
-  }
-
   .scene-meta {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+    margin-bottom: clamp(24px, 3vw, 36px);
     font-family: var(--font-mono);
     font-size: 10px;
     letter-spacing: 0.14em;
@@ -570,10 +448,115 @@ ${positions
     }
   }
 
-  .scene-svg {
+  /* The spine lives in the left rail column and runs from the first node to
+     the end of the floor, fading out under the last card. */
+  .timeline {
+    --spine-x: 110px;
+
+    position: relative;
+    display: grid;
+    gap: 48px;
+  }
+
+  .timeline-spine {
+    position: absolute;
+    top: 8px;
+    bottom: 0;
+    height: var(--spine-h, auto);
+    left: calc(var(--spine-x) - 1px);
+    width: 2px;
+    border-radius: 2px;
+    background: linear-gradient(
+      180deg,
+      #7aa2f7 0%,
+      #bb9af7 52%,
+      rgba(247, 118, 142, 0.55) 88%,
+      rgba(247, 118, 142, 0) 100%
+    );
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  /* One run at a time travels the rail, so the floor keeps a pulse even
+     when the visitor stops scrolling. */
+  .timeline-packet {
+    position: absolute;
+    top: 8px;
+    left: calc(var(--spine-x) - 5px);
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: #7aa2f7;
+    box-shadow:
+      0 0 10px 2px rgba(122, 162, 247, 0.5),
+      0 0 26px 6px rgba(122, 162, 247, 0.18);
+    animation: timeline-packet 11s linear infinite both;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  @keyframes timeline-packet {
+    0% {
+      top: 8px;
+      opacity: 0;
+    }
+    8% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      top: calc(var(--spine-h, 100%) - 4px);
+      opacity: 0;
+    }
+  }
+
+  .tl-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    column-gap: 40px;
+    align-items: start;
+  }
+
+  .tl-rail {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .tl-period {
+    max-width: 100px;
+    font-size: 10.5px;
+    line-height: 1.6;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: #565f89;
+  }
+
+  .tl-desk {
     display: block;
-    width: 100%;
+    width: 200px;
+    max-width: 100%;
     height: auto;
+    margin: 2px auto 0;
+  }
+
+  /* Node: sits on the spine at the run card's top edge. */
+  .tl-node {
+    position: absolute;
+    top: 2px;
+    left: calc(var(--spine-x) - 6px);
+    width: 12px;
+    height: 12px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent) 65%, #15161f);
+    box-shadow:
+      0 0 0 2px color-mix(in srgb, var(--accent) 26%, transparent),
+      0 0 16px -2px color-mix(in srgb, var(--accent) 55%, transparent);
+    z-index: 3;
   }
 
   .agent {
@@ -586,41 +569,22 @@ ${positions
     }
   }
 
-  /* Each desk is a real button: a scaled hit box over the art with one
-     always-visible pill at its bottom. % sizes track the scene box. */
-  .desk {
-    position: absolute;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    padding: 0;
-    border: 0;
-    border-radius: 14px;
-    outline: 1px solid transparent;
-    outline-offset: 2px;
-    background: none;
-    color: var(--accent);
-    cursor: pointer;
-    transform: translateX(-50%);
-    transition: outline-color 0.2s ease, box-shadow 0.2s ease;
-  }
-
-  .desk-pill {
+  /* Pill under the desk: tonal plate, accent glow, no hit target anymore. */
+  .tl-pill {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1px;
-    padding: 3px 8px;
+    width: fit-content;
+    margin: 4px auto 0;
+    padding: 3px 10px;
     border-radius: 999px;
-    outline: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
-    outline-offset: -1px;
-    background: rgba(18, 19, 28, 0.88);
+    background: #1d202f;
     text-align: center;
-    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 10px 22px -14px color-mix(in srgb, var(--accent) 65%, transparent);
   }
 
-  .desk-name,
-  .desk-mini {
+  .desk-name {
     font-size: 9px;
     line-height: 1.35;
     font-weight: 500;
@@ -629,49 +593,12 @@ ${positions
     color: var(--accent);
   }
 
-  .desk-mini {
-    display: none;
-  }
-
   .desk-period {
     font-size: 7.5px;
     line-height: 1.3;
     letter-spacing: 0.02em;
     white-space: nowrap;
     color: var(--t-dim);
-  }
-
-  .desk:hover .desk-pill,
-  .desk:focus-visible .desk-pill {
-    background: rgba(29, 32, 47, 0.95);
-  }
-
-  .desk:hover .desk-period,
-  .desk:focus-visible .desk-period,
-  .desk.is-active .desk-period {
-    color: color-mix(in srgb, var(--accent) 70%, #565f89);
-  }
-
-  .desk:hover,
-  .desk:focus-visible {
-    outline-color: color-mix(in srgb, var(--accent) 60%, transparent);
-  }
-
-  .desk.is-active {
-    outline-color: color-mix(in srgb, var(--accent) 85%, transparent);
-    box-shadow:
-      0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent),
-      0 0 22px -6px color-mix(in srgb, var(--accent) 55%, transparent);
-  }
-
-  .desk.is-active .desk-pill {
-    background: rgba(29, 32, 47, 0.96);
-    box-shadow: 0 0 12px -4px color-mix(in srgb, var(--accent) 60%, transparent);
-  }
-
-  .run-panels {
-    min-width: 0;
-    align-self: start;
   }
 
   /* Each run is its own raised sheet: tonal lift on the floor, an accent rail
@@ -683,21 +610,6 @@ ${positions
     border-left: 3px solid var(--accent);
     border-radius: 0 12px 12px 0;
     padding: 16px 22px;
-  }
-
-  .work-card[hidden] {
-    display: none;
-  }
-
-  .work-card:not([hidden]) {
-    animation: card-in 0.28s cubic-bezier(0.16, 1, 0.3, 1) backwards;
-  }
-
-  @keyframes card-in {
-    from {
-      opacity: 0;
-      transform: translateY(8px);
-    }
   }
 
   .trace-line {
@@ -852,69 +764,9 @@ ${positions
     color: var(--t-green);
   }
 
-  /* Quick index for scanning: number, company and period, no card needed. */
-  .run-chips {
-    grid-column: 1 / -1;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding-top: 4px;
-  }
-
-  .run-chip {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 0.55ch;
-    min-height: 34px;
-    padding: 6px 12px;
-    border: 0;
-    border-radius: 999px;
-    outline: 1px solid transparent;
-    background: var(--t-chip);
-    color: var(--t-muted);
-    font-family: var(--font-mono);
-    font-size: 11px;
-    line-height: 1.5;
-    cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease, outline-color 0.2s ease;
-  }
-
-  .chip-no {
-    color: var(--t-dim);
-    transition: color 0.2s ease;
-  }
-
-  .chip-sep {
-    color: var(--t-dim);
-  }
-
-  .chip-period {
-    color: var(--t-dim);
-  }
-
-  .run-chip:hover,
-  .run-chip:focus-visible {
-    background: #242838;
-    color: var(--t-fg);
-  }
-
-  .run-chip:focus-visible {
-    outline-color: color-mix(in srgb, var(--accent) 55%, transparent);
-  }
-
-  .run-chip.is-active {
-    background: color-mix(in srgb, var(--accent) 15%, #1d202f);
-    color: var(--accent);
-    outline-color: color-mix(in srgb, var(--accent) 40%, transparent);
-  }
-
-  .run-chip.is-active .chip-no,
-  .run-chip.is-active .chip-period {
-    color: color-mix(in srgb, var(--accent) 72%, #565f89);
-  }
-
   /* Reveal gate: only while the inline script says 'pending'. No JS leaves the
-     attribute unset, so the whole trace stays visible. */
+     attribute unset, so the whole trace stays visible. Each card opens on its
+     own intersection, so cards further down keep waiting their turn. */
   :global([data-trace='pending']) .trace-line {
     opacity: 0;
     transform: translateY(6px);
@@ -938,14 +790,12 @@ ${positions
   }
 
   @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-    .trace-block {
-      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-                  background-color 0.25s ease;
+    .tl-desk {
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .trace-block:hover {
-      transform: perspective(1000px) rotateX(0.6deg) rotateY(-1.2deg) translateY(-2px);
-      background: #1b1f2e;
+    .tl-row:hover .tl-desk {
+      transform: translateY(-2px);
     }
   }
 
@@ -955,17 +805,21 @@ ${positions
     }
 
     .agent,
-    .office-packet,
+    .timeline-packet,
     .meta-dot {
       animation: none;
     }
 
-    .office-packet {
+    .timeline-packet {
       display: none;
     }
 
-    .work-card:not([hidden]) {
-      animation: none;
+    .tl-desk {
+      transition: none;
+    }
+
+    .tl-row:hover .tl-desk {
+      transform: none;
     }
 
     /* Belt and suspenders: even if the script never runs, reduced motion
@@ -976,37 +830,48 @@ ${positions
     }
   }
 
-  /* Two columns need room for six legible desk pills. Below this the floor
-     gets its own full-width row, with the index and the open trace under it. */
-  @media (max-width: 1180px) {
-    .office-stage {
-      grid-template-columns: minmax(0, 1fr);
-    }
-
-    .run-chips {
-      order: 2;
-    }
-
-    .run-panels {
-      order: 3;
-    }
-  }
-
   @media (max-width: 900px) {
     .experience {
       padding: var(--space-12) 0;
     }
 
-    .desk-name {
-      display: none;
+    /* Portrait rail: the spine hugs the stage edge, the desk stacks above
+       its own card. */
+    .timeline {
+      --spine-x: 6px;
+      gap: 40px;
     }
 
-    .desk-mini {
-      display: inline;
+    .tl-row {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 20px;
     }
 
-    .desk-period {
-      font-size: 7px;
+    .tl-rail {
+      padding-left: 26px;
+      align-items: center;
+    }
+
+    .tl-period {
+      max-width: none;
+      text-align: center;
+    }
+
+    .tl-desk {
+      width: 100%;
+      margin: 4px auto 0;
+    }
+
+    .tl-node {
+      top: 0;
+    }
+
+    .tl-pill {
+      margin: 6px auto 0;
+    }
+
+    .work-card {
+      margin-left: 26px;
     }
   }
 
@@ -1017,31 +882,19 @@ ${positions
 
     .office-stage {
       font-size: 12px;
-      gap: 20px;
       padding: 20px 18px;
     }
 
+    .tl-pill {
+      padding: 2px 8px;
+    }
+
     .desk-name {
-      display: none;
-    }
-
-    .desk-pill {
-      padding: 2px 6px;
-    }
-
-    /* A 15% box on a 375px floor is under 44px: enforce the tap target. */
-    .desk {
-      min-width: 44px;
-      min-height: 44px;
-    }
-
-    .desk-name,
-    .desk-mini {
-      font-size: 8px;
+      font-size: 8.5px;
     }
 
     .desk-period {
-      display: none;
+      font-size: 7.5px;
     }
 
     .trace-block {
@@ -1056,16 +909,6 @@ ${positions
 
     h3 {
       font-size: 13px;
-    }
-
-    .run-chip {
-      min-height: 44px;
-      padding: 10px 12px;
-      font-size: 10px;
-    }
-
-    .chip-tail {
-      display: none;
     }
   }
 </style>
