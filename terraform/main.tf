@@ -52,6 +52,8 @@ resource "aws_s3_object" "website_files" {
     ? "public, max-age=0, must-revalidate"
     : startswith(each.value, "_astro/")
     ? "public, max-age=31536000, immutable"
+    : can(regex("^images/(og-image|social/)", each.value))
+    ? "public, max-age=300"
     : can(regex("\\.(png|jpg|jpeg|svg|webp|avif|ico|woff2?)$", each.value))
     ? "public, max-age=31536000, immutable"
     : "public, max-age=3600"

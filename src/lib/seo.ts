@@ -20,7 +20,7 @@ export const buildProfileSchema = ({ role, company }: ProfileSchemaInput) => ({
       name: companyName(company),
     },
     url: SITE.url,
-    image: `${SITE.url}/images/og-image.png`,
+    image: `${SITE.url}/images/og-image.png?v=2`,
     description: SITE.description,
     email: SITE.email,
     address: {
