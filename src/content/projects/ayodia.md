@@ -12,6 +12,7 @@ results: [
 ]
 order: 5
 type: "work"
+companySize: "small"
 ---
 
 Software house — custom ERP and web solutions for SME clients, onshore-offshore coordination.

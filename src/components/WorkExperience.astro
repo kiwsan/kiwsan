@@ -1,16 +1,20 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+type WorkEntry = CollectionEntry<'projects'> & {
+  data: { type: 'work' };
+};
 
 const workExperience = (await getCollection('projects'))
-  .filter((p) => p.data.type === 'work')
+  .filter((p): p is WorkEntry => p.data.type === 'work')
   .sort((a, b) => a.data.order - b.data.order);
 
 /* Tokyo Night rotation: one color per run so each job reads as its own
-   desk at a glance. */
+   office at a glance. */
 const accents = ['#7aa2f7', '#bb9af7', '#f7768e', '#7dcfff', '#9ece6a', '#e0af68', '#ff9e64'];
 
-/* Desk pill: companies drop their legal suffix and the SET note. */
-const deskLabel = (company: string) =>
+/* Office pill: companies drop their legal suffix and the SET note. */
+const officeLabel = (company: string) =>
   company
     .replace(/\([^)]*\)/g, '')
     .replace(/(Co\.,?|Ltd\.,?|Company|Co\b)/gi, '')
@@ -21,28 +25,156 @@ const deskLabel = (company: string) =>
     .slice(0, 2)
     .join(' ');
 
-/* Isometric primitives for one mini desk. cx/cy is the centre of the top face;
-   the desk sits at 100,88 inside a 200x150 viewBox so it stays centred on the
-   timeline spine. */
+/* Isometric primitives for one office block. cx/cy is the centre of the top
+   face; every tower sits on a shared base line inside a 200x150 viewBox so the
+   cluster stays centred on the timeline spine. */
 const cube = (cx: number, cy: number, w: number, h: number, v: number) => ({
   top: `M${cx},${cy - h} L${cx + w},${cy} L${cx},${cy + h} L${cx - w},${cy} Z`,
   left: `M${cx - w},${cy} L${cx},${cy + h} L${cx},${cy + h + v} L${cx - w},${cy + v} Z`,
   right: `M${cx + w},${cy} L${cx},${cy + h} L${cx},${cy + h + v} L${cx + w},${cy + v} Z`,
-  edge: `M${cx - w},${cy} L${cx},${cy - h} L${cx + w},${cy}`,
-  sides: `M${cx - w},${cy} L${cx - w},${cy + v} M${cx},${cy + h} L${cx},${cy + h + v} M${cx + w},${cy} L${cx + w},${cy + v}`,
 });
 
-const diamond = (cx: number, cy: number, w: number, h: number, scale = 1) =>
-  `M${cx},${cy - h * scale} L${cx + w * scale},${cy} L${cx},${cy + h * scale} L${cx - w * scale},${cy} Z`;
+const BASE_Y = 116;
+const GROUND_Y = 144;
+const CENTER_X = 100;
 
-const deskBody = cube(100, 88, 44, 22, 13);
-const deskHalo = diamond(100, 88, 44, 22, 1.15);
+interface TowerSpec {
+  cx: number;
+  halfWidth: number;
+  height: number;
+  roof?: 'setback' | 'antenna';
+}
+
+interface OfficeProfile {
+  pad: number;
+  floors: number;
+  label: string;
+  towers: TowerSpec[];
+}
+
+/* Company size is editorial data, so the drawing grammar lives in one table:
+   small is one low block, enterprise is a three-tower campus. */
+const OFFICE_PROFILES = {
+  small: {
+    pad: 28,
+    floors: 6,
+    label: 'SMALL',
+    towers: [{ cx: 100, halfWidth: 17, height: 38 }],
+  },
+  medium: {
+    pad: 38,
+    floors: 10,
+    label: 'MEDIUM',
+    towers: [
+      { cx: 84, halfWidth: 15, height: 32 },
+      { cx: 118, halfWidth: 19, height: 50, roof: 'setback' },
+    ],
+  },
+  large: {
+    pad: 46,
+    floors: 14,
+    label: 'LARGE',
+    towers: [
+      { cx: 68, halfWidth: 14, height: 34 },
+      { cx: 100, halfWidth: 18, height: 56 },
+      { cx: 132, halfWidth: 14, height: 42 },
+    ],
+  },
+  enterprise: {
+    pad: 48,
+    floors: 20,
+    label: 'ENTERPRISE',
+    towers: [
+      { cx: 64, halfWidth: 13, height: 36 },
+      { cx: 100, halfWidth: 22, height: 66, roof: 'antenna' },
+      { cx: 136, halfWidth: 13, height: 46 },
+    ],
+  },
+} satisfies Record<string, OfficeProfile>;
+
+/* Windows follow each wall's isometric basis. One path holds every pane on a
+   face, so a three-tower campus stays cheap to render. */
+const faceWindows = (
+  cx: number,
+  topY: number,
+  halfWidth: number,
+  depth: number,
+  height: number,
+  side: 'left' | 'right'
+) => {
+  const rows = Math.min(4, Math.max(2, Math.round(height / 16)));
+  const cols = Math.min(3, Math.max(2, Math.round(halfWidth / 8)));
+  const uStart = 0.13;
+  const uSpan = 0.74;
+  const vStart = 0.11;
+  const vSpan = 0.78;
+  const cellW = uSpan / cols;
+  const cellH = vSpan / rows;
+  const winW = cellW * 0.56;
+  const winH = cellH * 0.46;
+  const point = (u: number, v: number) =>
+    side === 'left'
+      ? ([cx - halfWidth + u * halfWidth, topY + u * depth + v * height] as const)
+      : ([cx + u * halfWidth, topY + depth - u * depth + v * height] as const);
+  const panes: string[] = [];
+  const lit: string[] = [];
+  const offset = side === 'left' ? 0 : 2;
+
+  for (let row = 0; row < rows; row += 1) {
+    for (let col = 0; col < cols; col += 1) {
+      const u0 = uStart + col * cellW + (cellW - winW) / 2;
+      const u1 = u0 + winW;
+      const v0 = vStart + row * cellH + (cellH - winH) / 2;
+      const v1 = v0 + winH;
+      const [x0, y0] = point(u0, v0);
+      const [x1, y1] = point(u1, v0);
+      const [x2, y2] = point(u1, v1);
+      const [x3, y3] = point(u0, v1);
+      const pane = `M${x0.toFixed(1)} ${y0.toFixed(1)} L${x1.toFixed(1)} ${y1.toFixed(1)} L${x2.toFixed(1)} ${y2.toFixed(1)} L${x3.toFixed(1)} ${y3.toFixed(1)} Z`;
+      panes.push(pane);
+      if ((row + col + offset) % 3 === 0) lit.push(pane);
+    }
+  }
+
+  return { panes: panes.join(' '), lit: lit.join(' ') };
+};
+
+const buildTower = (spec: TowerSpec) => {
+  const depth = spec.halfWidth * 0.5;
+  const topY = BASE_Y - spec.height;
+  const body = cube(spec.cx, topY, spec.halfWidth, depth, spec.height);
+  const setbackWidth = spec.halfWidth * 0.56;
+  const setback =
+    spec.roof === 'setback'
+      ? cube(spec.cx, topY - 6, setbackWidth, setbackWidth * 0.5, 6)
+      : null;
+  const antenna =
+    spec.roof === 'antenna'
+      ? { x: spec.cx, base: topY - depth - 1, tip: topY - depth - 12 }
+      : null;
+
+  return {
+    ...spec,
+    topY,
+    depth,
+    body,
+    setback,
+    antenna,
+    windows: {
+      left: faceWindows(spec.cx, topY, spec.halfWidth, depth, spec.height, 'left'),
+      right: faceWindows(spec.cx, topY, spec.halfWidth, depth, spec.height, 'right'),
+    },
+  };
+};
 
 /* Display-only: the run periods read better with a real dash on the rail. */
 const railPeriod = (period: string) => period.replace(/\s+-\s+/g, ' — ');
 
 const runs = workExperience.map((work, index) => {
-  const name = deskLabel(work.data.company);
+  const name = officeLabel(work.data.company);
+  const profile = OFFICE_PROFILES[work.data.companySize];
+  const towers = profile.towers.map(buildTower);
+  const tallest = towers.reduce((a, b) => (a.height > b.height ? a : b));
 
   return {
     zone: `run-${String(index + 1).padStart(2, '0')}`,
@@ -60,7 +192,11 @@ const runs = workExperience.map((work, index) => {
     accent: accents[index % accents.length],
     runNo: String(index + 1).padStart(2, '0'),
     total: String(workExperience.length).padStart(2, '0'),
-    floatDelay: `${(index * 0.45).toFixed(2)}s`,
+    sizeLabel: profile.label,
+    floors: profile.floors,
+    pad: cube(CENTER_X, BASE_Y + 2, profile.pad, profile.pad * 0.5, 3),
+    towers,
+    peakTop: tallest.topY - tallest.depth,
   };
 });
 
@@ -98,73 +234,66 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
             <div class="tl-rail">
               <span class="tl-period">{run.railPeriod}</span>
 
-              <svg class="tl-desk" viewBox="0 0 200 150" aria-hidden="true">
+              <svg class="tl-skyline" viewBox="0 0 200 150" aria-hidden="true">
                 <defs>
                   <pattern id={`bp-grid-${run.zone}`} width="10" height="10" patternUnits="userSpaceOnUse">
                     <circle class="bp-dot" cx="1" cy="1" r="0.8" />
                   </pattern>
                 </defs>
-                <rect class="bp-grid" x="48" y="62" width="104" height="68" rx="4" fill={`url(#bp-grid-${run.zone})`} />
-                <path class="accent-stroke bp-axis" d="M100 22 L100 134" stroke-dasharray="3 5" />
-                <path class="accent-stroke bp-axis" d="M48 88 L152 88" stroke-dasharray="3 5" />
+                <rect class="skyline-bg" width="200" height="150" />
+                <rect class="bp-grid" x="40" y="48" width="120" height="92" rx="4" fill={`url(#bp-grid-${run.zone})`} />
                 <g class="bp-cross">
-                  <path d="M100 62 L100 70 M96 66 L104 66" />
-                  <path d="M56 84 L56 92 M52 88 L60 88" />
-                  <path d="M144 84 L144 92 M140 88 L148 88" />
-                  <path d="M100 106 L100 114 M96 110 L104 110" />
+                  <path d="M100 48 L100 56 M96 52 L104 52" />
+                  <path d="M44 64 L44 72 M40 68 L48 68" />
+                  <path d="M156 64 L156 72 M152 68 L160 68" />
+                  <path d="M100 132 L100 140 M96 136 L104 136" />
                 </g>
-                <path class="accent-stroke bp-dim" d="M36 24 L164 24 M36 20 L36 28 M164 20 L164 28" />
-                <path class="accent-stroke bp-dim" d="M176 66 L176 110 M172 66 L180 66 M172 110 L180 110" />
-                <text class="bp-dim-label" x="100" y="18" text-anchor="middle">88</text>
-                <text class="bp-dim-label" x="180" y="94">44</text>
-                <path class="accent-stroke bp-floor" d="M30 138 L170 138" />
-                <path class="accent-stroke bp-tick" d="M50 134 L50 142 M80 134 L80 142 M110 134 L110 142 M140 134 L140 142" />
-                <path class="accent-fill" d={deskHalo} opacity="0.06" />
-                <path class="desk-left" d={deskBody.left} />
-                <path class="desk-right" d={deskBody.right} />
-                <path class="desk-top" d={deskBody.top} />
-                <rect
-                  class="desk-screen accent-stroke"
-                  x="90"
-                  y="52"
-                  width="20"
-                  height="16"
-                  rx="2"
-                  stroke-opacity="0.85"
-                />
+                <path class="accent-stroke bp-dim" d="M36 20 L164 20 M36 16 L36 24 M164 16 L164 24" />
+                <text class="bp-dim-label" x="100" y="14" text-anchor="middle">{run.sizeLabel}</text>
                 <path
-                  class="accent-stroke"
-                  d="M100 68 L100 80"
-                  stroke-opacity="0.55"
-                  stroke-width="1.5"
+                  class="accent-stroke bp-dim"
+                  d={`M178 ${run.peakTop} L178 ${BASE_Y} M174 ${run.peakTop} L182 ${run.peakTop} M174 ${BASE_Y} L182 ${BASE_Y}`}
                 />
+                <text class="bp-dim-label" x="184" y={(run.peakTop + BASE_Y) / 2 + 2}>{run.floors}F</text>
+                <path class="accent-stroke bp-floor" d={`M28 ${GROUND_Y} L172 ${GROUND_Y}`} />
                 <path
-                  class="accent-stroke"
-                  d={deskBody.edge}
-                  fill="none"
-                  stroke-opacity="0.85"
-                  stroke-width="1.5"
+                  class="accent-stroke bp-tick"
+                  d={`M50 ${GROUND_Y - 4} L50 ${GROUND_Y + 4} M80 ${GROUND_Y - 4} L80 ${GROUND_Y + 4} M110 ${GROUND_Y - 4} L110 ${GROUND_Y + 4} M140 ${GROUND_Y - 4} L140 ${GROUND_Y + 4}`}
                 />
-                <path
-                  class="accent-stroke"
-                  d={deskBody.sides}
-                  fill="none"
-                  stroke-opacity="0.34"
-                  stroke-width="1.2"
-                />
-                <g transform="translate(100,80)">
-                  <g class="agent" style={`animation-delay:${run.floatDelay}`}>
-                    <polygon class="accent-fill" points="0,-46 5,-38 0,-30 -5,-38" opacity="0.9" />
-                    <polygon class="accent-fill" points="0,-46 9,-38 0,-30 -9,-38" opacity="0.12" />
+                <path class="pad-left" d={run.pad.left} />
+                <path class="pad-right" d={run.pad.right} />
+                <path class="pad-top accent-fill" d={run.pad.top} />
+                {run.towers.map((tower) => (
+                  <g class="tower">
+                    <path class="tower-left" d={tower.body.left} />
+                    <path class="tower-right" d={tower.body.right} />
+                    <path class="tower-top" d={tower.body.top} />
+                    <path class="tower-win" d={tower.windows.left.panes} />
+                    <path class="tower-win" d={tower.windows.right.panes} />
+                    <path class="tower-win-lit" d={tower.windows.left.lit} />
+                    <path class="tower-win-lit" d={tower.windows.right.lit} />
+                    {tower.setback && (
+                      <g class="tower-setback">
+                        <path class="tower-left" d={tower.setback.left} />
+                        <path class="tower-right" d={tower.setback.right} />
+                        <path class="tower-top" d={tower.setback.top} />
+                      </g>
+                    )}
+                    {tower.antenna && (
+                      <g class="antenna">
+                        <path d={`M${tower.antenna.x} ${tower.antenna.base} L${tower.antenna.x} ${tower.antenna.tip}`} />
+                        <circle cx={tower.antenna.x} cy={tower.antenna.tip} r="1.6" />
+                      </g>
+                    )}
                   </g>
-                </g>
+                ))}
               </svg>
 
               <span class="tl-node" aria-hidden="true"></span>
 
-              <span class="tl-pill desk-pill">
-                <span class="desk-name">{run.name}</span>
-                <span class="desk-period">{run.period}</span>
+              <span class="tl-pill office-pill">
+                <span class="office-name">{run.name}</span>
+                <span class="office-period">{run.period}</span>
               </span>
             </div>
 
@@ -179,7 +308,7 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
                 <span class="cmd" aria-hidden="true" data-cmd data-full={run.command}>{run.command}</span>
                 <span class="cursor" aria-hidden="true"></span>
                 <span class="run-no" aria-hidden="true">
-                  <svg class="desk-glyph" viewBox="0 0 12 10" width="12" height="10">
+                  <svg class="tower-glyph" viewBox="0 0 12 10" width="12" height="10">
                     <polygon points="6,0 11,3 6,6 1,3" fill="currentColor" opacity="0.9" />
                     <polygon points="1,3 6,6 6,9 1,6" fill="currentColor" opacity="0.45" />
                     <polygon points="11,3 6,6 6,9 11,6" fill="currentColor" opacity="0.28" />
@@ -419,11 +548,10 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
     --t-chip: #e6ebf2;
     --t-card: #ffffff;
     --t-raised: #ffffff;
-    --t-screen: #1e293b;
     --t-grid: color-mix(in srgb, var(--color-text-muted) 22%, transparent);
-    --desk-top: #fbfcfe;
-    --desk-left: #d5deea;
-    --desk-right: #c2cedf;
+    --tower-top: #fbfcfe;
+    --tower-left: #d5deea;
+    --tower-right: #c2cedf;
     --t-stage-shadow: 0 28px 64px -32px rgba(16, 24, 40, 0.18);
     --t-raised-shadow: 0 8px 24px -12px rgba(16, 24, 40, 0.18);
     --t-spine: linear-gradient(
@@ -461,10 +589,9 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
     --t-chip: #1d202f;
     --t-card: #191c28;
     --t-raised: #1d202f;
-    --t-screen: #0e1018;
-    --desk-top: #262c3e;
-    --desk-left: #1b2030;
-    --desk-right: #161a26;
+    --tower-top: #262c3e;
+    --tower-left: #1b2030;
+    --tower-right: #161a26;
     --t-stage-shadow: 0 24px 64px -24px rgba(0, 0, 0, 0.45);
     --t-raised-shadow: 0 8px 24px -12px rgba(0, 0, 0, 0.5);
     --t-spine: linear-gradient(
@@ -494,10 +621,9 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
       --t-chip: #1d202f;
       --t-card: #191c28;
       --t-raised: #1d202f;
-      --t-screen: #0e1018;
-      --desk-top: #262c3e;
-      --desk-left: #1b2030;
-      --desk-right: #161a26;
+      --tower-top: #262c3e;
+      --tower-left: #1b2030;
+      --tower-right: #161a26;
       --t-stage-shadow: 0 24px 64px -24px rgba(0, 0, 0, 0.45);
       --t-raised-shadow: 0 8px 24px -12px rgba(0, 0, 0, 0.5);
       --t-spine: linear-gradient(
@@ -599,7 +725,6 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
     box-shadow: var(--t-packet-shadow);
     animation: timeline-packet 11s linear infinite both;
     pointer-events: none;
-    z-index: 2;
   }
 
   @keyframes timeline-packet {
@@ -656,7 +781,7 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
     color: var(--t-dim);
   }
 
-  .tl-desk {
+  .tl-skyline {
     display: block;
     width: 200px;
     max-width: 100%;
@@ -664,31 +789,74 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
     margin: 2px auto 0;
   }
 
-  .desk-left {
-    fill: var(--desk-left);
+  .tower-left {
+    fill: var(--tower-left);
+    stroke: var(--accent-ink);
+    stroke-opacity: 0.12;
+    stroke-width: 0.6;
   }
 
-  .desk-right {
-    fill: var(--desk-right);
+  .tower-right {
+    fill: var(--tower-right);
+    stroke: var(--accent-ink);
+    stroke-opacity: 0.12;
+    stroke-width: 0.6;
   }
 
-  .desk-top {
-    fill: var(--desk-top);
+  .tower-top {
+    fill: var(--tower-top);
+    stroke: var(--accent-ink);
+    stroke-opacity: 0.38;
+    stroke-width: 0.8;
   }
 
-  .desk-screen {
-    fill: var(--t-screen);
+  .tower-win {
+    fill: var(--accent-ink);
+    opacity: 0.28;
   }
 
-  /* Blueprint layer: plotting-grid dots, dashed centre axes, corner
-     crosshairs, dimension lines and a ground line — all drawn in the run's
-     accent ink at low opacity so the desk stays the hero. */
+  .tower-win-lit {
+    fill: var(--accent-ink);
+    opacity: 0.62;
+  }
+
+  .tower-setback .tower-top {
+    stroke-opacity: 0.55;
+  }
+
+  .pad-left {
+    fill: var(--tower-left);
+    opacity: 0.6;
+  }
+
+  .pad-right {
+    fill: var(--tower-right);
+    opacity: 0.75;
+  }
+
+  .pad-top {
+    opacity: 0.06;
+  }
+
+  .antenna path {
+    stroke: var(--accent-ink);
+    stroke-width: 1.2;
+    fill: none;
+  }
+
+  .antenna circle {
+    fill: var(--accent-ink);
+  }
+
+  /* Blueprint layer: plotting-grid dots, corner crosshairs, dimension lines
+     and a ground line — all drawn in the run's accent ink at low opacity so
+     the tower cluster stays the hero. */
   .bp-dot {
     fill: var(--t-grid);
   }
 
-  .bp-axis {
-    stroke-opacity: 0.25;
+  .skyline-bg {
+    fill: var(--t-bg);
   }
 
   .bp-cross {
@@ -737,17 +905,7 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
     z-index: 3;
   }
 
-  .agent {
-    animation: agent-float 4.5s ease-in-out infinite alternate;
-  }
-
-  @keyframes agent-float {
-    to {
-      transform: translateY(-3px);
-    }
-  }
-
-  /* Pill under the desk: tonal plate, accent glow, no hit target anymore. */
+  /* Pill under the office: tonal plate, accent glow, no hit target anymore. */
   .tl-pill {
     display: flex;
     flex-direction: column;
@@ -762,7 +920,7 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
     box-shadow: 0 10px 22px -14px color-mix(in srgb, var(--accent-ink) var(--t-pill-shadow-strength), transparent);
   }
 
-  .desk-name {
+  .office-name {
     font-size: 9px;
     line-height: 1.35;
     font-weight: 500;
@@ -771,7 +929,7 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
     color: var(--accent-ink);
   }
 
-  .desk-period {
+  .office-period {
     font-size: 7.5px;
     line-height: 1.3;
     letter-spacing: 0.02em;
@@ -820,7 +978,7 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
     text-transform: uppercase;
   }
 
-  .desk-glyph {
+  .tower-glyph {
     color: var(--accent-ink);
   }
 
@@ -968,12 +1126,25 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
   }
 
   @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-    .tl-desk {
+    .tl-skyline {
       transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .tl-row:hover .tl-desk {
+    .tl-row:hover .tl-skyline {
       transform: translateY(-2px);
+    }
+
+    .tower-win,
+    .tower-win-lit {
+      transition: opacity 0.3s ease;
+    }
+
+    .tl-row:hover .tower-win {
+      opacity: 0.42;
+    }
+
+    .tl-row:hover .tower-win-lit {
+      opacity: 0.9;
     }
   }
 
@@ -982,7 +1153,6 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
       transform: none;
     }
 
-    .agent,
     .timeline-packet,
     .meta-dot {
       animation: none;
@@ -992,11 +1162,11 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
       display: none;
     }
 
-    .tl-desk {
+    .tl-skyline {
       transition: none;
     }
 
-    .tl-row:hover .tl-desk {
+    .tl-row:hover .tl-skyline {
       transform: none;
     }
 
@@ -1013,7 +1183,7 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
       padding: var(--space-12) 0;
     }
 
-    /* Portrait rail: the spine hugs the stage edge, the desk stacks above
+    /* Portrait rail: the spine hugs the stage edge, the office stacks above
        its own card. */
     .timeline {
       --spine-x: 6px;
@@ -1035,7 +1205,7 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
       text-align: center;
     }
 
-    .tl-desk {
+    .tl-skyline {
       width: 100%;
       margin: 4px auto 0;
     }
@@ -1067,11 +1237,11 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
       padding: 2px 8px;
     }
 
-    .desk-name {
+    .office-name {
       font-size: 8.5px;
     }
 
-    .desk-period {
+    .office-period {
       font-size: 7.5px;
     }
 
