@@ -57,7 +57,93 @@
       </div>
 
       <div class="hero-illustration animate-fade-in-up stagger-5">
-        <img src="/hero-illustration.svg" alt="Ekkachai at a desk, connected to a network" width="350" height="350" loading="eager" fetchpriority="high" />
+        <!-- Inlined so the drawing reads the theme tokens directly; the old
+             <img> needed an invert() filter to survive dark mode. The line
+             language matches the blueprint desks in #experience. -->
+        <svg
+          class="hero-figure"
+          viewBox="420 40 720 380"
+          xmlns="http://www.w3.org/2000/svg"
+          role="img"
+          aria-label="Ekkachai at a desk, connected to a network"
+        >
+          <defs>
+            <pattern id="hero-bp-grid" width="12" height="12" patternUnits="userSpaceOnUse">
+              <circle class="hi-grid-dot" cx="1" cy="1" r="0.9" />
+            </pattern>
+          </defs>
+
+          <!-- plotting grid behind the mesh -->
+          <rect class="hi-grid" x="724" y="54" width="348" height="248" rx="6" fill="url(#hero-bp-grid)" />
+
+          <!-- glow -->
+          <circle class="hi-glow" cx="900" cy="180" r="120" />
+
+          <!-- construction mesh -->
+          <g class="hi-mesh">
+            <path d="M760 110 L900 70 L1050 160 L930 270 L770 210 Z" />
+            <path d="M900 70 L930 270" />
+            <path d="M760 110 L1050 160" />
+          </g>
+
+          <!-- node crosshairs -->
+          <g class="hi-cross">
+            <path d="M754 110 L766 110 M760 104 L760 116" />
+            <path d="M894 70 L906 70 M900 64 L900 76" />
+            <path d="M1044 160 L1056 160 M1050 154 L1050 166" />
+            <path d="M924 270 L936 270 M930 264 L930 276" />
+            <path d="M764 210 L776 210 M770 204 L770 216" />
+          </g>
+
+          <!-- network nodes -->
+          <circle class="hi-node" style="--d:0s" cx="760" cy="110" r="4.5" />
+          <circle class="hi-node" style="--d:.3s" cx="900" cy="70" r="4.5" />
+          <circle class="hi-node" style="--d:.6s" cx="1050" cy="160" r="4.5" />
+          <circle class="hi-node" style="--d:.9s" cx="930" cy="270" r="4.5" />
+          <circle class="hi-node" style="--d:1.2s" cx="770" cy="210" r="4.5" />
+
+          <!-- leaders: the laptop ships to the floating panels -->
+          <g class="hi-leader">
+            <path d="M690 302 L846 322" />
+            <path d="M690 268 L956 242" />
+            <path d="M690 330 L1026 319" />
+          </g>
+          <circle class="hi-leader-dot" cx="846" cy="322" r="2.5" />
+          <circle class="hi-leader-dot" cx="956" cy="242" r="2.5" />
+          <circle class="hi-leader-dot" cx="1026" cy="319" r="2.5" />
+
+          <!-- desk + dimension -->
+          <rect class="hi-panel hi-fade" style="--d:.2s" x="470" y="340" width="260" height="8" rx="4" />
+          <path class="hi-dim" d="M470 366 L730 366 M470 361 L470 371 M730 361 L730 371" />
+
+          <!-- laptop -->
+          <path class="hi-main hi-draw" style="--d:.45s" pathLength="1" d="M540 260 h130 a10 10 0 0 1 10 10 v60 a10 10 0 0 1 -10 10 h-130 a10 10 0 0 1 -10 -10 v-60 a10 10 0 0 1 10 -10 Z" />
+          <rect class="hi-panel hi-fade" style="--d:.5s" x="520" y="340" width="170" height="8" rx="4" />
+
+          <!-- code symbol -->
+          <polyline class="hi-main hi-draw" style="--d:.8s" pathLength="1" points="565,300 545,315 565,330" />
+          <polyline class="hi-main hi-draw" style="--d:.9s" pathLength="1" points="645,300 665,315 645,330" />
+
+          <!-- developer -->
+          <path class="hi-main hi-draw" style="--d:.15s" pathLength="1" d="M588 215 a22 22 0 1 0 44 0 a22 22 0 1 0 -44 0" />
+          <path class="hi-main hi-draw" style="--d:.3s" pathLength="1" d="M570 255 c15 -32 80 -32 90 0" />
+          <path class="hi-main hi-draw" style="--d:.5s" pathLength="1" d="M575 255 L545 305" />
+          <path class="hi-main hi-draw" style="--d:.55s" pathLength="1" d="M645 255 L675 305" />
+
+          <!-- floating panels -->
+          <g class="hi-float" style="--d:.9s">
+            <rect class="hi-panel" x="850" y="300" width="80" height="44" rx="10" />
+            <path class="hi-panel-line" d="M865 320 L915 320 M865 330 L900 330" />
+          </g>
+          <g class="hi-float" style="--d:1.15s">
+            <rect class="hi-panel" x="960" y="220" width="80" height="44" rx="10" />
+            <path class="hi-panel-line" d="M975 240 L1025 240 M975 250 L1010 250" />
+          </g>
+          <g class="hi-float" style="--d:1.4s">
+            <rect class="hi-panel" x="1030" y="300" width="70" height="38" rx="10" />
+            <path class="hi-panel-line" d="M1045 318 L1080 318" />
+          </g>
+        </svg>
       </div>
     </div>
   </div>
@@ -123,16 +209,13 @@
     background-image: radial-gradient(circle, rgba(122,162,247,0.08) 1px, transparent 1px);
   }
 
-  /* The decorative SVG is drawn for a light canvas: keep it as a quiet glow
-     on dark, and lift the line illustration's dark strokes. */
+  /* The decorative bg shapes are drawn for a light canvas: keep them as a
+     quiet glow on dark. The line figure needs no filter — it reads the
+     theme tokens directly now. */
   @media (min-width: 769px) {
     :global([data-theme="dark"]) .hero-bg-shapes {
       opacity: 0.35;
     }
-  }
-
-  :global([data-theme="dark"]) .hero-illustration img {
-    filter: invert(1) grayscale(1) brightness(1.15);
   }
 
   @media (prefers-color-scheme: dark) {
@@ -142,9 +225,6 @@
     }
     :global(:root:not([data-theme="light"])) .hero-bg-grid {
       background-image: radial-gradient(circle, rgba(122,162,247,0.08) 1px, transparent 1px);
-    }
-    :global(:root:not([data-theme="light"])) .hero-illustration img {
-      filter: invert(1) grayscale(1) brightness(1.15);
     }
     @media (min-width: 769px) {
       :global(:root:not([data-theme="light"])) .hero-bg-shapes {
@@ -176,10 +256,122 @@
     align-items: center;
   }
 
-  .hero-illustration img {
+  .hero-figure {
     width: 100%;
     height: auto;
     max-width: 380px;
+    aspect-ratio: 720 / 380;
+    animation: float 7s ease-in-out infinite;
+  }
+
+  /* Blueprint line language — same family as the #experience desks.
+     Ink lines, brand-blue construction marks, tonal panels. */
+  .hi-main {
+    fill: none;
+    stroke: var(--color-text);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .hi-mesh path {
+    fill: none;
+    stroke: var(--color-accent);
+    stroke-width: 1.3;
+    stroke-dasharray: 4 6;
+    opacity: 0.5;
+  }
+
+  .hi-cross path {
+    fill: none;
+    stroke: var(--color-accent);
+    stroke-width: 1;
+    opacity: 0.45;
+  }
+
+  .hi-node {
+    fill: var(--color-accent);
+    animation: hi-pulse 3s ease-in-out infinite;
+    animation-delay: var(--d, 0s);
+  }
+
+  .hi-glow {
+    fill: var(--color-accent);
+    opacity: 0.09;
+  }
+
+  .hi-leader path {
+    fill: none;
+    stroke: var(--color-accent);
+    stroke-width: 1.2;
+    stroke-dasharray: 2 5;
+    opacity: 0.5;
+  }
+
+  .hi-leader-dot {
+    fill: var(--color-accent);
+    opacity: 0.65;
+  }
+
+  .hi-grid-dot {
+    fill: color-mix(in srgb, var(--color-accent) 24%, transparent);
+  }
+
+  .hi-panel {
+    fill: var(--color-surface);
+  }
+
+  .hi-panel-line {
+    fill: none;
+    stroke: color-mix(in srgb, var(--color-text) 32%, transparent);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+  }
+
+  .hi-dim {
+    fill: none;
+    stroke: color-mix(in srgb, var(--color-text) 45%, transparent);
+    stroke-width: 1;
+  }
+
+  /* Draw-on: pathLength="1" normalises every stroke so one keyframe fits all. */
+  .hi-draw {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: hi-draw 0.9s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0s) forwards;
+  }
+
+  .hi-fade {
+    opacity: 0;
+    animation: hi-fade 0.7s ease var(--d, 0s) forwards;
+  }
+
+  .hi-float {
+    opacity: 0;
+    animation-name: hi-fade, hi-bob;
+    animation-duration: 0.7s, 4.2s;
+    animation-timing-function: ease, ease-in-out;
+    animation-delay: var(--d, 0s), calc(var(--d, 0s) + 0.9s);
+    animation-iteration-count: 1, infinite;
+    animation-direction: normal, alternate;
+    animation-fill-mode: forwards, none;
+  }
+
+  @keyframes hi-draw {
+    to { stroke-dashoffset: 0; }
+  }
+
+  @keyframes hi-fade {
+    to { opacity: 1; }
+  }
+
+  @keyframes hi-bob {
+    from { transform: translateY(0); }
+    to { transform: translateY(-5px); }
+  }
+
+  @keyframes hi-pulse {
+    50% { opacity: 0.45; }
   }
 
   /* Editorial label */
@@ -337,10 +529,6 @@
   .stagger-4 { animation-delay: 0.55s; }
   .stagger-5 { animation-delay: 0.7s; }
 
-  .hero-illustration img {
-    animation: float 6s ease-in-out infinite;
-  }
-
   @keyframes float {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-16px); }
@@ -351,7 +539,7 @@
     .hero-content {
       gap: var(--space-8);
     }
-    .hero-illustration img {
+    .hero-figure {
       max-width: 300px;
     }
     h1 {
@@ -405,7 +593,7 @@
     .cta {
       justify-content: center;
     }
-    .hero-illustration img {
+    .hero-figure {
       animation: none;
     }
   }
@@ -444,7 +632,10 @@
 
   @media (prefers-reduced-motion: reduce) {
     .animate-fade-in-up { animation: none; opacity: 1; }
-    .hero-illustration img { animation: none; }
+    .hero-figure { animation: none; }
+    .hi-draw { animation: none; stroke-dashoffset: 0; }
+    .hi-fade, .hi-float { animation: none; opacity: 1; }
+    .hi-node { animation: none; }
     .stagger-1, .stagger-2, .stagger-2-5, .stagger-3, .stagger-4, .stagger-5 { opacity: 1; }
   }
 </style>
