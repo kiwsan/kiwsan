@@ -66,7 +66,7 @@ export class HomePage extends BasePage {
     this.heading = page.locator('h1');
     this.heroLabel = page.locator('.hero-label');
     this.heroDescription = page.locator('.hero-description');
-    this.heroIllustration = page.locator('.hero-illustration img');
+    this.heroIllustration = page.locator('.hero-illustration svg');
     this.viewMyWorkBtn = page.locator('a.btn-primary', { hasText: 'View My Work' });
     this.getInTouchBtn = page.locator('a.btn-secondary', { hasText: 'Get in Touch' });
     this.heroTags = page.locator('.hero .tags span');
