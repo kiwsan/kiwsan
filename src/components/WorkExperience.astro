@@ -99,6 +99,26 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
               <span class="tl-period">{run.railPeriod}</span>
 
               <svg class="tl-desk" viewBox="0 0 200 150" aria-hidden="true">
+                <defs>
+                  <pattern id={`bp-grid-${run.zone}`} width="10" height="10" patternUnits="userSpaceOnUse">
+                    <circle class="bp-dot" cx="1" cy="1" r="0.8" />
+                  </pattern>
+                </defs>
+                <rect class="bp-grid" x="48" y="62" width="104" height="68" rx="4" fill={`url(#bp-grid-${run.zone})`} />
+                <path class="accent-stroke bp-axis" d="M100 22 L100 134" stroke-dasharray="3 5" />
+                <path class="accent-stroke bp-axis" d="M48 88 L152 88" stroke-dasharray="3 5" />
+                <g class="bp-cross">
+                  <path d="M100 62 L100 70 M96 66 L104 66" />
+                  <path d="M56 84 L56 92 M52 88 L60 88" />
+                  <path d="M144 84 L144 92 M140 88 L148 88" />
+                  <path d="M100 106 L100 114 M96 110 L104 110" />
+                </g>
+                <path class="accent-stroke bp-dim" d="M36 24 L164 24 M36 20 L36 28 M164 20 L164 28" />
+                <path class="accent-stroke bp-dim" d="M176 66 L176 110 M172 66 L180 66 M172 110 L180 110" />
+                <text class="bp-dim-label" x="100" y="18" text-anchor="middle">88</text>
+                <text class="bp-dim-label" x="180" y="94">44</text>
+                <path class="accent-stroke bp-floor" d="M30 138 L170 138" />
+                <path class="accent-stroke bp-tick" d="M50 134 L50 142 M80 134 L80 142 M110 134 L110 142 M140 134 L140 142" />
                 <path class="accent-fill" d={deskHalo} opacity="0.06" />
                 <path class="desk-left" d={deskBody.left} />
                 <path class="desk-right" d={deskBody.right} />
@@ -400,6 +420,7 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
     --t-card: #ffffff;
     --t-raised: #ffffff;
     --t-screen: #1e293b;
+    --t-grid: color-mix(in srgb, var(--color-text-muted) 22%, transparent);
     --desk-top: #fbfcfe;
     --desk-left: #d5deea;
     --desk-right: #c2cedf;
@@ -657,6 +678,40 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
 
   .desk-screen {
     fill: var(--t-screen);
+  }
+
+  /* Blueprint layer: plotting-grid dots, dashed centre axes, corner
+     crosshairs, dimension lines and a ground line — all drawn in the run's
+     accent ink at low opacity so the desk stays the hero. */
+  .bp-dot {
+    fill: var(--t-grid);
+  }
+
+  .bp-axis {
+    stroke-opacity: 0.25;
+  }
+
+  .bp-cross {
+    stroke-opacity: 0.55;
+  }
+
+  .bp-dim {
+    stroke-opacity: 0.45;
+  }
+
+  .bp-floor {
+    stroke-opacity: 0.22;
+  }
+
+  .bp-tick {
+    stroke-opacity: 0.35;
+  }
+
+  .bp-dim-label {
+    fill: var(--t-dim);
+    font-family: var(--font-mono);
+    font-size: 7px;
+    letter-spacing: 0.08em;
   }
 
   .accent-fill {
