@@ -2,26 +2,47 @@
   "name": "portfolio",
   "type": "module",
   "version": "0.0.1",
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "typecheck": "astro check",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test:unit": "vitest run",
+    "test:e2e": "npm --prefix tests test",
+    "test:e2e:chromium": "npm --prefix tests run test:chromium",
+    "test:e2e:ui": "npm --prefix tests run test:ui",
+    "test:live": "npm --prefix tests run test:live",
+    "test": "npm run test:unit && npm run test:e2e",
+    "cloudfront:plan": "node scripts/apply-cloudfront.mjs",
+    "cloudfront:apply": "node scripts/apply-cloudfront.mjs --apply"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.10",
     "@astrojs/sitemap": "^3.7.4",
     "@fontsource-variable/inter": "^5.3.0",
     "@fontsource-variable/manrope": "^5.3.0",
-    "@fontsource/noto-sans-thai": "^5.3.0",
-    "astro": "^7.3.5",
-    "astro-google-analytics": "^1.0.3",
-    "astro-icon": "^1.2.0",
-    "typescript": "^5.9.3"
+    "astro": "^7.3.5"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@eslint/js": "^10.0.1",
+    "astro-eslint-parser": "^3.2.0",
+    "eslint": "^10.13.0",
+    "eslint-plugin-astro": "^3.2.1",
+    "globals": "^17.13.0",
     "lightningcss": "^1.33.0",
-    "vite-plugin-compression": "^0.5.1"
+    "prettier": "^3.9.10",
+    "prettier-plugin-astro": "^1.1.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.72.0",
+    "vitest": "^5.0.5"
   }
 }

@@ -64,3 +64,9 @@ data.md
 diagrams/
 /.claude
 /.playwright-mcp
+
+# Local tooling and test output
+.cloudfront/
+test-results/
+.bbu/
+state/

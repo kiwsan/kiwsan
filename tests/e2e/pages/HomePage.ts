@@ -124,6 +124,12 @@ export class HomePage extends BasePage {
     return await this.heading.textContent();
   }
 
+  async openMobileMenu() {
+    if (await this.menuToggle.isVisible()) {
+      await this.menuToggle.click();
+    }
+  }
+
   async openChat() {
     await this.chatToggle.click();
     // First click initializes, second opens — the widget handles this internally

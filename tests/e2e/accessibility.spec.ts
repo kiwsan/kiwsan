@@ -11,7 +11,7 @@ test.describe('Accessibility Tests', () => {
     expect(headings.length).toBeGreaterThan(0);
     let lastLevel = 0;
     for (const heading of headings) {
-      const tag = await heading.evaluate(el => el.tagName.toLowerCase());
+      const tag = await heading.evaluate((el) => el.tagName.toLowerCase());
       const level = parseInt(tag.replace('h', ''));
       if (lastLevel > 0) {
         expect(level).toBeLessThanOrEqual(lastLevel + 1);
@@ -29,7 +29,9 @@ test.describe('Accessibility Tests', () => {
     }
   });
 
-  test('should have aria-labels on interactive elements without visible text', async ({ homePage }) => {
+  test('should have aria-labels on interactive elements without visible text', async ({
+    homePage,
+  }) => {
     await expect(homePage.logo).toHaveAttribute('aria-label', /home/i);
     await expect(homePage.menuToggle).toHaveAttribute('aria-label', /menu/i);
     await expect(homePage.themeToggle).toHaveAttribute('aria-label', /dark mode|theme/i);
@@ -66,7 +68,9 @@ test.describe('Accessibility Tests', () => {
 
   test('external links should have rel="noopener noreferrer"', async ({ homePage }) => {
     await homePage.scrollToSection('footer');
-    const externalLinks = await homePage.page.locator('header a[target="_blank"], main a[target="_blank"], footer a[target="_blank"]').all();
+    const externalLinks = await homePage.page
+      .locator('header a[target="_blank"], main a[target="_blank"], footer a[target="_blank"]')
+      .all();
     expect(externalLinks.length).toBeGreaterThan(0);
     for (const link of externalLinks) {
       const href = await link.getAttribute('href');

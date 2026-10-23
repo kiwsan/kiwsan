@@ -3,7 +3,7 @@ import { test, expect } from './fixtures';
 test.describe('Navigation Tests', () => {
   test('should display fixed header', async ({ homePage }) => {
     await expect(homePage.header).toBeVisible();
-    const position = await homePage.header.evaluate(el => getComputedStyle(el).position);
+    const position = await homePage.header.evaluate((el) => getComputedStyle(el).position);
     expect(position).toBe('fixed');
   });
 
@@ -13,16 +13,19 @@ test.describe('Navigation Tests', () => {
   });
 
   test('should navigate to experience section', async ({ homePage }) => {
+    await homePage.openMobileMenu();
     await homePage.navExperience.click();
     await expect(homePage.experienceSection).toBeInViewport();
   });
 
   test('should navigate to projects section', async ({ homePage }) => {
+    await homePage.openMobileMenu();
     await homePage.navProjects.click();
     await expect(homePage.projectsSection).toBeInViewport();
   });
 
   test('should navigate to contact section', async ({ homePage }) => {
+    await homePage.openMobileMenu();
     await homePage.navContact.click();
     await expect(homePage.contactSection).toBeInViewport();
   });
@@ -37,7 +40,7 @@ test.describe('Theme Toggle Tests', () => {
   test('should toggle dark mode on click', async ({ homePage }) => {
     const htmlEl = homePage.page.locator('html');
 
-    // Click theme toggle
+    await homePage.openMobileMenu();
     await homePage.themeToggle.click();
     const themeAfterClick = await htmlEl.getAttribute('data-theme');
     expect(themeAfterClick).toBeTruthy();
@@ -50,9 +53,12 @@ test.describe('Theme Toggle Tests', () => {
   });
 
   test('should persist dark mode visual change', async ({ homePage }) => {
+    await homePage.openMobileMenu();
     await homePage.themeToggle.click();
     // Verify background color changed (dark mode has different bg)
-    const bgColor = await homePage.page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+    const bgColor = await homePage.page.evaluate(
+      () => getComputedStyle(document.body).backgroundColor
+    );
     expect(bgColor).toBeTruthy();
   });
 });

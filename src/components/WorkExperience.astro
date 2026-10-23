@@ -1,5 +1,7 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { BASE_Y, GROUND_Y, buildOfficeScene } from '../lib/experience/office';
+import { officeLabel, railPeriod } from '../lib/experience/labels';
 
 type WorkEntry = CollectionEntry<'projects'> & {
   data: { type: 'work' };
@@ -13,168 +15,8 @@ const workExperience = (await getCollection('projects'))
    office at a glance. */
 const accents = ['#7aa2f7', '#bb9af7', '#f7768e', '#7dcfff', '#9ece6a', '#e0af68', '#ff9e64'];
 
-/* Office pill: companies drop their legal suffix and the SET note. */
-const officeLabel = (company: string) =>
-  company
-    .replace(/\([^)]*\)/g, '')
-    .replace(/(Co\.,?|Ltd\.,?|Company|Co\b)/gi, '')
-    .replace(/[^A-Za-z0-9 .&-]/g, '')
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .join(' ');
-
-/* Isometric primitives for one office block. cx/cy is the centre of the top
-   face; every tower sits on a shared base line inside a 200x150 viewBox so the
-   cluster stays centred on the timeline spine. */
-const cube = (cx: number, cy: number, w: number, h: number, v: number) => ({
-  top: `M${cx},${cy - h} L${cx + w},${cy} L${cx},${cy + h} L${cx - w},${cy} Z`,
-  left: `M${cx - w},${cy} L${cx},${cy + h} L${cx},${cy + h + v} L${cx - w},${cy + v} Z`,
-  right: `M${cx + w},${cy} L${cx},${cy + h} L${cx},${cy + h + v} L${cx + w},${cy + v} Z`,
-});
-
-const BASE_Y = 116;
-const GROUND_Y = 144;
-const CENTER_X = 100;
-
-interface TowerSpec {
-  cx: number;
-  halfWidth: number;
-  height: number;
-  roof?: 'setback' | 'antenna';
-}
-
-interface OfficeProfile {
-  pad: number;
-  floors: number;
-  label: string;
-  towers: TowerSpec[];
-}
-
-/* Company size is editorial data, so the drawing grammar lives in one table:
-   small is one low block, enterprise is a three-tower campus. */
-const OFFICE_PROFILES = {
-  small: {
-    pad: 28,
-    floors: 6,
-    label: 'SMALL',
-    towers: [{ cx: 100, halfWidth: 17, height: 38 }],
-  },
-  medium: {
-    pad: 38,
-    floors: 10,
-    label: 'MEDIUM',
-    towers: [
-      { cx: 84, halfWidth: 15, height: 32 },
-      { cx: 118, halfWidth: 19, height: 50, roof: 'setback' },
-    ],
-  },
-  large: {
-    pad: 46,
-    floors: 14,
-    label: 'LARGE',
-    towers: [
-      { cx: 68, halfWidth: 14, height: 34 },
-      { cx: 100, halfWidth: 18, height: 56 },
-      { cx: 132, halfWidth: 14, height: 42 },
-    ],
-  },
-  enterprise: {
-    pad: 48,
-    floors: 20,
-    label: 'ENTERPRISE',
-    towers: [
-      { cx: 64, halfWidth: 13, height: 36 },
-      { cx: 100, halfWidth: 22, height: 66, roof: 'antenna' },
-      { cx: 136, halfWidth: 13, height: 46 },
-    ],
-  },
-} satisfies Record<string, OfficeProfile>;
-
-/* Windows follow each wall's isometric basis. One path holds every pane on a
-   face, so a three-tower campus stays cheap to render. */
-const faceWindows = (
-  cx: number,
-  topY: number,
-  halfWidth: number,
-  depth: number,
-  height: number,
-  side: 'left' | 'right'
-) => {
-  const rows = Math.min(4, Math.max(2, Math.round(height / 16)));
-  const cols = Math.min(3, Math.max(2, Math.round(halfWidth / 8)));
-  const uStart = 0.13;
-  const uSpan = 0.74;
-  const vStart = 0.11;
-  const vSpan = 0.78;
-  const cellW = uSpan / cols;
-  const cellH = vSpan / rows;
-  const winW = cellW * 0.56;
-  const winH = cellH * 0.46;
-  const point = (u: number, v: number) =>
-    side === 'left'
-      ? ([cx - halfWidth + u * halfWidth, topY + u * depth + v * height] as const)
-      : ([cx + u * halfWidth, topY + depth - u * depth + v * height] as const);
-  const panes: string[] = [];
-  const lit: string[] = [];
-  const offset = side === 'left' ? 0 : 2;
-
-  for (let row = 0; row < rows; row += 1) {
-    for (let col = 0; col < cols; col += 1) {
-      const u0 = uStart + col * cellW + (cellW - winW) / 2;
-      const u1 = u0 + winW;
-      const v0 = vStart + row * cellH + (cellH - winH) / 2;
-      const v1 = v0 + winH;
-      const [x0, y0] = point(u0, v0);
-      const [x1, y1] = point(u1, v0);
-      const [x2, y2] = point(u1, v1);
-      const [x3, y3] = point(u0, v1);
-      const pane = `M${x0.toFixed(1)} ${y0.toFixed(1)} L${x1.toFixed(1)} ${y1.toFixed(1)} L${x2.toFixed(1)} ${y2.toFixed(1)} L${x3.toFixed(1)} ${y3.toFixed(1)} Z`;
-      panes.push(pane);
-      if ((row + col + offset) % 3 === 0) lit.push(pane);
-    }
-  }
-
-  return { panes: panes.join(' '), lit: lit.join(' ') };
-};
-
-const buildTower = (spec: TowerSpec) => {
-  const depth = spec.halfWidth * 0.5;
-  const topY = BASE_Y - spec.height;
-  const body = cube(spec.cx, topY, spec.halfWidth, depth, spec.height);
-  const setbackWidth = spec.halfWidth * 0.56;
-  const setback =
-    spec.roof === 'setback'
-      ? cube(spec.cx, topY - 6, setbackWidth, setbackWidth * 0.5, 6)
-      : null;
-  const antenna =
-    spec.roof === 'antenna'
-      ? { x: spec.cx, base: topY - depth - 1, tip: topY - depth - 12 }
-      : null;
-
-  return {
-    ...spec,
-    topY,
-    depth,
-    body,
-    setback,
-    antenna,
-    windows: {
-      left: faceWindows(spec.cx, topY, spec.halfWidth, depth, spec.height, 'left'),
-      right: faceWindows(spec.cx, topY, spec.halfWidth, depth, spec.height, 'right'),
-    },
-  };
-};
-
-/* Display-only: the run periods read better with a real dash on the rail. */
-const railPeriod = (period: string) => period.replace(/\s+-\s+/g, ' — ');
-
 const runs = workExperience.map((work, index) => {
   const name = officeLabel(work.data.company);
-  const profile = OFFICE_PROFILES[work.data.companySize];
-  const towers = profile.towers.map(buildTower);
-  const tallest = towers.reduce((a, b) => (a.height > b.height ? a : b));
 
   return {
     zone: `run-${String(index + 1).padStart(2, '0')}`,
@@ -192,11 +34,7 @@ const runs = workExperience.map((work, index) => {
     accent: accents[index % accents.length],
     runNo: String(index + 1).padStart(2, '0'),
     total: String(workExperience.length).padStart(2, '0'),
-    sizeLabel: profile.label,
-    floors: profile.floors,
-    pad: cube(CENTER_X, BASE_Y + 2, profile.pad, profile.pad * 0.5, 3),
-    towers,
-    peakTop: tallest.topY - tallest.depth,
+    office: buildOfficeScene(work.data.companySize),
   };
 });
 
@@ -222,7 +60,10 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
     <div class="office-stage">
       <div class="scene-meta" aria-hidden="true">
         <span class="meta-line">career floor</span>
-        <span class="meta-chip"><i class="meta-dot"></i>{onlineCount} roles · {firstYear} — now</span>
+        <span class="meta-chip">
+          <i class="meta-dot"></i>
+          {onlineCount} roles · {firstYear} — now
+        </span>
       </div>
 
       <div class="timeline">
@@ -236,34 +77,54 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
 
               <svg class="tl-skyline" viewBox="0 0 200 150" aria-hidden="true">
                 <defs>
-                  <pattern id={`bp-grid-${run.zone}`} width="10" height="10" patternUnits="userSpaceOnUse">
+                  <pattern
+                    id={`bp-grid-${run.zone}`}
+                    width="10"
+                    height="10"
+                    patternUnits="userSpaceOnUse"
+                  >
                     <circle class="bp-dot" cx="1" cy="1" r="0.8" />
                   </pattern>
                 </defs>
                 <rect class="skyline-bg" width="200" height="150" />
-                <rect class="bp-grid" x="40" y="48" width="120" height="92" rx="4" fill={`url(#bp-grid-${run.zone})`} />
+                <rect
+                  class="bp-grid"
+                  x="40"
+                  y="48"
+                  width="120"
+                  height="92"
+                  rx="4"
+                  fill={`url(#bp-grid-${run.zone})`}
+                />
                 <g class="bp-cross">
                   <path d="M100 48 L100 56 M96 52 L104 52" />
                   <path d="M44 64 L44 72 M40 68 L48 68" />
                   <path d="M156 64 L156 72 M152 68 L160 68" />
                   <path d="M100 132 L100 140 M96 136 L104 136" />
                 </g>
-                <path class="accent-stroke bp-dim" d="M36 20 L164 20 M36 16 L36 24 M164 16 L164 24" />
-                <text class="bp-dim-label" x="100" y="14" text-anchor="middle">{run.sizeLabel}</text>
                 <path
                   class="accent-stroke bp-dim"
-                  d={`M178 ${run.peakTop} L178 ${BASE_Y} M174 ${run.peakTop} L182 ${run.peakTop} M174 ${BASE_Y} L182 ${BASE_Y}`}
+                  d="M36 20 L164 20 M36 16 L36 24 M164 16 L164 24"
                 />
-                <text class="bp-dim-label" x="184" y={(run.peakTop + BASE_Y) / 2 + 2}>{run.floors}F</text>
+                <text class="bp-dim-label" x="100" y="14" text-anchor="middle">
+                  {run.office.sizeLabel}
+                </text>
+                <path
+                  class="accent-stroke bp-dim"
+                  d={`M178 ${run.office.peakTop} L178 ${BASE_Y} M174 ${run.office.peakTop} L182 ${run.office.peakTop} M174 ${BASE_Y} L182 ${BASE_Y}`}
+                />
+                <text class="bp-dim-label" x="184" y={(run.office.peakTop + BASE_Y) / 2 + 2}>
+                  {run.office.floors}F
+                </text>
                 <path class="accent-stroke bp-floor" d={`M28 ${GROUND_Y} L172 ${GROUND_Y}`} />
                 <path
                   class="accent-stroke bp-tick"
                   d={`M50 ${GROUND_Y - 4} L50 ${GROUND_Y + 4} M80 ${GROUND_Y - 4} L80 ${GROUND_Y + 4} M110 ${GROUND_Y - 4} L110 ${GROUND_Y + 4} M140 ${GROUND_Y - 4} L140 ${GROUND_Y + 4}`}
                 />
-                <path class="pad-left" d={run.pad.left} />
-                <path class="pad-right" d={run.pad.right} />
-                <path class="pad-top accent-fill" d={run.pad.top} />
-                {run.towers.map((tower) => (
+                <path class="pad-left" d={run.office.pad.left} />
+                <path class="pad-right" d={run.office.pad.right} />
+                <path class="pad-top accent-fill" d={run.office.pad.top} />
+                {run.office.towers.map((tower) => (
                   <g class="tower">
                     <path class="tower-left" d={tower.body.left} />
                     <path class="tower-right" d={tower.body.right} />
@@ -281,7 +142,9 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
                     )}
                     {tower.antenna && (
                       <g class="antenna">
-                        <path d={`M${tower.antenna.x} ${tower.antenna.base} L${tower.antenna.x} ${tower.antenna.tip}`} />
+                        <path
+                          d={`M${tower.antenna.x} ${tower.antenna.base} L${tower.antenna.x} ${tower.antenna.tip}`}
+                        />
                         <circle cx={tower.antenna.x} cy={tower.antenna.tip} r="1.6" />
                       </g>
                     )}
@@ -303,9 +166,18 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
               style={`--accent:${run.accent}`}
               aria-labelledby={`run-role-${run.zone}`}
             >
-              <div class="trace-line trace-cmd" style="--i:0" aria-label={`$ ${run.command}`}>
-                <span class="prompt" aria-hidden="true">$</span>
-                <span class="cmd" aria-hidden="true" data-cmd data-full={run.command}>{run.command}</span>
+              <div
+                class="trace-line trace-cmd"
+                style="--i:0"
+                role="group"
+                aria-label={`$ ${run.command}`}
+              >
+                <span class="prompt" aria-hidden="true">
+                  $
+                </span>
+                <span class="cmd" aria-hidden="true" data-cmd data-full={run.command}>
+                  {run.command}
+                </span>
                 <span class="cursor" aria-hidden="true"></span>
                 <span class="run-no" aria-hidden="true">
                   <svg class="tower-glyph" viewBox="0 0 12 10" width="12" height="10">
@@ -329,7 +201,9 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
 
               <div class="trace-line trace-kv" style="--i:3">
                 <span class="k">period</span>
-                <time class="period" datetime={run.datetime}>{run.period}</time>
+                <time class="period" datetime={run.datetime}>
+                  {run.period}
+                </time>
               </div>
 
               <div class="trace-line trace-kv" style="--i:4">
@@ -343,18 +217,24 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
               </div>
 
               <div class="trace-line trace-tool" style="--i:6">
-                <span class="arrow" aria-hidden="true">▸</span>
+                <span class="arrow" aria-hidden="true">
+                  ▸
+                </span>
                 <span class="tool-label">tool_call({run.tech.length})</span>
               </div>
 
               <div class="trace-line trace-chips" style="--i:7">
-                {run.tech.map((tech) => <span class="tech-tag">{tech}</span>)}
+                {run.tech.map((tech) => (
+                  <span class="tech-tag">{tech}</span>
+                ))}
               </div>
 
               <ul class="results">
                 {run.results.map((result, i) => (
                   <li class="trace-line" style={`--i:${8 + i}`}>
-                    <span class="ok" aria-hidden="true">✔</span>
+                    <span class="ok" aria-hidden="true">
+                      ✔
+                    </span>
                     <span>{result}</span>
                   </li>
                 ))}
@@ -387,7 +267,10 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
       const box = timeline.getBoundingClientRect();
       const node = lastNode.getBoundingClientRect();
       if (box.height === 0 || node.height === 0) return;
-      timeline.style.setProperty('--spine-h', `${Math.max(0, node.top + node.height / 2 - box.top - 8)}px`);
+      timeline.style.setProperty(
+        '--spine-h',
+        `${Math.max(0, node.top + node.height / 2 - box.top - 8)}px`
+      );
     };
 
     sizeSpine();
@@ -472,7 +355,11 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
       }
     };
 
-    if (reducedMotion.matches || typeof IntersectionObserver === 'undefined' || cards.length === 0) {
+    if (
+      reducedMotion.matches ||
+      typeof IntersectionObserver === 'undefined' ||
+      cards.length === 0
+    ) {
       revealAll();
     } else {
       observer = new IntersectionObserver(
@@ -563,9 +450,7 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
     );
     --t-spine-opacity: 0.6;
     --t-packet: #3d5a9e;
-    --t-packet-shadow:
-      0 0 10px 2px rgba(61, 90, 158, 0.35),
-      0 0 26px 6px rgba(61, 90, 158, 0.12);
+    --t-packet-shadow: 0 0 10px 2px rgba(61, 90, 158, 0.35), 0 0 26px 6px rgba(61, 90, 158, 0.12);
     --t-node-weight: 88%;
     --t-node-ring: 30%;
     --t-node-glow: 40%;
@@ -582,7 +467,7 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
     line-height: 1.75;
   }
 
-  :global([data-theme="dark"]) .office-stage {
+  :global([data-theme='dark']) .office-stage {
     --t-bg: #15161f;
     --t-purple: #bb9af7;
     --t-green: #9ece6a;
@@ -604,8 +489,7 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
     --t-spine-opacity: 0.35;
     --t-packet: #7aa2f7;
     --t-packet-shadow:
-      0 0 10px 2px rgba(122, 162, 247, 0.5),
-      0 0 26px 6px rgba(122, 162, 247, 0.18);
+      0 0 10px 2px rgba(122, 162, 247, 0.5), 0 0 26px 6px rgba(122, 162, 247, 0.18);
     --t-node-weight: 65%;
     --t-node-ring: 26%;
     --t-node-glow: 55%;
@@ -614,7 +498,7 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
   }
 
   @media (prefers-color-scheme: dark) {
-    :global(:root:not([data-theme="light"])) .office-stage {
+    :global(:root:not([data-theme='light'])) .office-stage {
       --t-bg: #15161f;
       --t-purple: #bb9af7;
       --t-green: #9ece6a;
@@ -636,8 +520,7 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
       --t-spine-opacity: 0.35;
       --t-packet: #7aa2f7;
       --t-packet-shadow:
-        0 0 10px 2px rgba(122, 162, 247, 0.5),
-        0 0 26px 6px rgba(122, 162, 247, 0.18);
+        0 0 10px 2px rgba(122, 162, 247, 0.5), 0 0 26px 6px rgba(122, 162, 247, 0.18);
       --t-node-weight: 65%;
       --t-node-ring: 26%;
       --t-node-glow: 55%;
@@ -755,12 +638,12 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
   }
 
   /* Dark keeps the original Tokyo Night accents untouched. */
-  :global([data-theme="dark"]) .tl-row {
+  :global([data-theme='dark']) .tl-row {
     --accent-ink: var(--accent);
   }
 
   @media (prefers-color-scheme: dark) {
-    :global(:root:not([data-theme="light"])) .tl-row {
+    :global(:root:not([data-theme='light'])) .tl-row {
       --accent-ink: var(--accent);
     }
   }
@@ -917,7 +800,8 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
     border-radius: 999px;
     background: var(--t-raised);
     text-align: center;
-    box-shadow: 0 10px 22px -14px color-mix(in srgb, var(--accent-ink) var(--t-pill-shadow-strength), transparent);
+    box-shadow: 0 10px 22px -14px
+      color-mix(in srgb, var(--accent-ink) var(--t-pill-shadow-strength), transparent);
   }
 
   .office-name {
@@ -1008,7 +892,9 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
   }
 
   @keyframes trace-blink {
-    50% { opacity: 0; }
+    50% {
+      opacity: 0;
+    }
   }
 
   .trace-kv {
@@ -1075,7 +961,9 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
     font-family: var(--font-mono);
     font-size: 11px;
     line-height: 1.6;
-    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s ease;
+    transition:
+      transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      color 0.2s ease;
   }
 
   .tech-tag:hover {
@@ -1111,13 +999,19 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
   :global([data-trace='pending']) .work-card.is-live .trace-line {
     opacity: 1;
     transform: none;
-    transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    transition:
+      opacity 0.45s ease,
+      transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
     transition-delay: calc(120ms + var(--i) * 70ms);
   }
 
   @keyframes trace-pop {
-    from { transform: scale(0.86); }
-    to { transform: scale(1); }
+    from {
+      transform: scale(0.86);
+    }
+    to {
+      transform: scale(1);
+    }
   }
 
   :global([data-trace='pending']) .work-card.is-live .results li {

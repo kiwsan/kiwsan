@@ -88,6 +88,10 @@ An AI-office portfolio: the work-history timeline is an interactive isometric fl
 
 **Keywords:** Software Engineering Portfolio, AI Platform Engineering, TypeScript, Astro, AWS
 
+## 🛠️ Development
+
+This repository also powers [kiwsan.com](https://kiwsan.com). Local setup, tests, and deploy steps live in [DEVELOPMENT.md](DEVELOPMENT.md). The source code is MIT licensed; site copy, images, and brand assets remain © Ekkachai Kiwsanthia.
+
 ## 📫 Contact & Connect
 
 Open to conversations about AI platforms, integration architecture, and engineering leadership.

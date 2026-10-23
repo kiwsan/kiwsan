@@ -1,18 +1,19 @@
 ---
-title: "Software Developer"
-company: "Ayodia Company"
-period: "Mar 2017 - Feb 2018"
-challenge: "Build custom ERP and web solutions for SME clients with onshore-offshore coordination"
-solution: "Full-stack development with Thailand onsite and offshore team coordination"
-tech: ["ASP.NET MVC", "C#", "VB.NET", "SQL Server", "AngularJS"]
-results: [
-  "Custom ERP solutions delivered",
-  "Onshore-offshore team coordination",
-  "SME client web applications"
-]
+title: 'Software Developer'
+company: 'Ayodia Company'
+period: 'Mar 2017 - Feb 2018'
+challenge: 'Build custom ERP and web solutions for SME clients with onshore-offshore coordination'
+solution: 'Full-stack development with Thailand onsite and offshore team coordination'
+tech: ['ASP.NET MVC', 'C#', 'VB.NET', 'SQL Server', 'AngularJS']
+results:
+  [
+    'Custom ERP solutions delivered',
+    'Onshore-offshore team coordination',
+    'SME client web applications',
+  ]
 order: 5
-type: "work"
-companySize: "small"
+type: 'work'
+companySize: 'small'
 ---
 
 Software house — custom ERP and web solutions for SME clients, onshore-offshore coordination.

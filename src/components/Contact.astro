@@ -1,4 +1,6 @@
 ---
+import { SITE } from '../lib/site';
+
 const startYear = 2016;
 const currentYear = new Date().getFullYear();
 const yearsOfExperience = currentYear - startYear;
@@ -10,37 +12,76 @@ const yearsOfExperience = currentYear - startYear;
       <span class="section-label">Contact</span>
       <h2>Let's Work Together</h2>
       <p class="intro">
-        Bangkok, Thailand<br />
-        {yearsOfExperience}+ years in software engineering<br />
-        B.Sc. Information Technology<br />
-        <a href="https://www.credly.com/badges/67952a92-1f24-469c-911a-b9f461552fdb" target="_blank" rel="noopener noreferrer" class="credential-link">
-          <img src="/images/programming_in_C_23-01.png" alt="Microsoft Certified C# Programming Badge" class="credential-icon" loading="lazy" decoding="async" />
+        Bangkok, Thailand
+        <br />
+        {yearsOfExperience}+ years in software engineering
+        <br />
+        B.Sc. Information Technology
+        <br />
+        <a
+          href="https://www.credly.com/badges/67952a92-1f24-469c-911a-b9f461552fdb"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="credential-link"
+        >
+          <img
+            src="/images/programming_in_C_23-01.png"
+            alt="Microsoft Certified C# Programming Badge"
+            class="credential-icon"
+            loading="lazy"
+            decoding="async"
+          />
           Microsoft Certified: Programming in C#
         </a>
       </p>
       <p class="focus">
-        Currently: AI Manager @ MC Group<br />
+        Currently: AI Manager @ MC Group
+        <br />
         Focus: E-commerce integration, cloud architecture, AI-assisted development
       </p>
       <div class="links">
-        <a href="mailto:kiwsanthia@gmail.com" class="link-item">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-            <polyline points="22,6 12,13 2,6"/>
+        <a href={`mailto:${SITE.email}`} class="link-item">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+            <polyline points="22,6 12,13 2,6" />
           </svg>
-          kiwsanthia@gmail.com
+          {SITE.email}
         </a>
-        <a href="https://www.linkedin.com/in/kiwsan" target="_blank" rel="noopener noreferrer" class="link-item">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
-            <rect x="2" y="9" width="4" height="12"/>
-            <circle cx="4" cy="4" r="2"/>
+        <a href={SITE.linkedin} target="_blank" rel="noopener noreferrer" class="link-item">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+            <rect x="2" y="9" width="4" height="12" />
+            <circle cx="4" cy="4" r="2" />
           </svg>
           linkedin.com/in/kiwsan
         </a>
-        <a href="https://github.com/kiwsan" target="_blank" rel="noopener noreferrer" class="link-item">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+        <a href={SITE.github} target="_blank" rel="noopener noreferrer" class="link-item">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
           </svg>
           github.com/kiwsan
         </a>
@@ -49,9 +90,16 @@ const yearsOfExperience = currentYear - startYear;
 
     <aside class="contact-cta" aria-label="Direct contact">
       <span class="cta-label">Direct line</span>
-      <p class="cta-text">Open to conversations about AI platforms, integration architecture, and engineering leadership.</p>
-      <a class="cta-primary" href="mailto:kiwsanthia@gmail.com?subject=Let%27s%20talk">Email me</a>
-      <button class="cta-secondary" type="button" data-email="kiwsanthia@gmail.com" hidden>Copy email</button>
+      <p class="cta-text">
+        Open to conversations about AI platforms, integration architecture, and engineering
+        leadership.
+      </p>
+      <a class="cta-primary" href={`mailto:${SITE.email}?subject=Let%27s%20talk`}>
+        Email me
+      </a>
+      <button class="cta-secondary" type="button" data-email={SITE.email} hidden>
+        Copy email
+      </button>
     </aside>
   </div>
 </section>
@@ -65,7 +113,9 @@ const yearsOfExperience = currentYear - startYear;
       try {
         await navigator.clipboard.writeText(email);
         copyButton.textContent = 'Copied';
-        window.setTimeout(() => { copyButton.textContent = 'Copy email'; }, 1600);
+        window.setTimeout(() => {
+          copyButton.textContent = 'Copy email';
+        }, 1600);
       } catch {
         window.location.href = `mailto:${email}`;
       }
@@ -236,7 +286,6 @@ const yearsOfExperience = currentYear - startYear;
     transform: scale(1.15);
   }
 
-
   @media (max-width: 900px) {
     .contact-layout {
       grid-template-columns: 1fr;
@@ -264,7 +313,8 @@ const yearsOfExperience = currentYear - startYear;
     h2 {
       font-size: var(--text-2xl);
     }
-    .intro, .focus {
+    .intro,
+    .focus {
       font-size: var(--text-sm);
     }
     .link-item {
