@@ -120,6 +120,10 @@ ${positions
 
     <div class="office-stage">
       <div class="scene">
+        <div class="scene-meta" aria-hidden="true">
+          <span class="meta-line">career floor</span>
+          <span class="meta-chip"><i class="meta-dot"></i>agents online · {String(workExperience.length).padStart(2, '0')}</span>
+        </div>
         <svg
           class="scene-svg"
           viewBox="0 0 880 500"
@@ -520,6 +524,52 @@ ${positions
     align-self: center;
   }
 
+  .scene-meta {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #565f89;
+  }
+
+  .meta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #1d202f;
+    color: #9ece6a;
+    box-shadow: 0 8px 24px -12px rgba(0, 0, 0, 0.5);
+  }
+
+  .meta-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: #9ece6a;
+    box-shadow: 0 0 8px rgba(158, 206, 106, 0.8);
+    animation: meta-pulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes meta-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.35;
+    }
+  }
+
   .scene-svg {
     display: block;
     width: 100%;
@@ -905,7 +955,8 @@ ${positions
     }
 
     .agent,
-    .office-packet {
+    .office-packet,
+    .meta-dot {
       animation: none;
     }
 
