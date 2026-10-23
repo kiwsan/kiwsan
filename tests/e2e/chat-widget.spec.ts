@@ -35,7 +35,9 @@ test.describe('Chat Widget Tests', () => {
     // Bot should respond after typing indicator
     const botMessages = homePage.chatMessages.locator('.chat-msg.bot');
     await expect(botMessages.nth(1)).toBeVisible({ timeout: 5000 });
-    await expect(botMessages.nth(1).locator('.chat-bubble')).toContainText(/React|TypeScript|skill/i);
+    await expect(botMessages.nth(1).locator('.chat-bubble')).toContainText(
+      /React|TypeScript|skill/i
+    );
   });
 
   test('should close chat window via close button', async ({ homePage }) => {

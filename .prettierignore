@@ -1,0 +1,14 @@
+dist
+node_modules
+.astro
+public
+test-results
+tests/node_modules
+tests/playwright-report
+tests/test-results
+terraform
+docs
+README.md
+DESIGN.md
+package-lock.json
+tests/package-lock.json

@@ -1,4 +1,7 @@
-# Hybrid WebGL environment under the CSS3D corridor
+# Archive: WebGL environment design
+
+> Historical design note from an earlier exploration. It is not implemented in the current site. The current Work Experience marker is a static SVG office cluster.
+
 
 Synthesized design package. Base: sonnet candidate. Grafts from opus candidate (marked). Both candidate packages at `/tmp/arena-corridor-env/candidate-{sonnet,opus}/` during synthesis.
 

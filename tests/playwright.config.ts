@@ -8,7 +8,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: [['html'], ['list']],
   use: {
-    baseURL: 'http://localhost:4321',
+    baseURL: 'http://localhost:4322',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     reducedMotion: 'reduce',
@@ -32,10 +32,10 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run build && npx astro preview --ignore-lock',
+    command: 'npm run build && npx astro preview --port 4322 --ignore-lock',
     cwd: '../',
-    url: 'http://localhost:4321',
-    reuseExistingServer: !process.env.CI,
+    url: 'http://localhost:4322',
+    reuseExistingServer: false,
     // Astro 7 auto-backgrounds `astro preview` in agent/CI environments and
     // the parent process exits, which Playwright treats as a server crash.
     env: { ASTRO_PREVIEW_BACKGROUND: 'false' },

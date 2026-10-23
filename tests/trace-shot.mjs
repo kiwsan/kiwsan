@@ -3,7 +3,7 @@
 // Rerun with `node tests/trace-shot.mjs` after `npm run build`.
 import { spawn } from 'node:child_process';
 import { mkdirSync } from 'node:fs';
-import { chromium, devices } from '@playwright/test';
+import { chromium } from '@playwright/test';
 import { fileURLToPath } from 'node:url';
 
 const PORT = 4324;
@@ -21,8 +21,7 @@ const browser = await chromium.launch();
 const base = `http://localhost:${PORT}`;
 
 // theme must be pinned before page scripts read localStorage.
-const boot = (page, theme) =>
-  page.addInitScript((t) => localStorage.setItem('theme', t), theme);
+const boot = (page, theme) => page.addInitScript((t) => localStorage.setItem('theme', t), theme);
 
 async function restShot(name, { viewport, theme, mobile }) {
   const context = await browser.newContext({
@@ -40,7 +39,10 @@ async function restShot(name, { viewport, theme, mobile }) {
 }
 
 async function motionShot(name) {
-  const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'no-preference' });
+  const context = await browser.newContext({
+    viewport: { width: 1440, height: 900 },
+    reducedMotion: 'no-preference',
+  });
   await boot(context, 'dark');
   const page = await context.newPage();
   await page.goto(base, { waitUntil: 'networkidle' });
@@ -52,7 +54,11 @@ async function motionShot(name) {
 
 await restShot('light-rest', { viewport: { width: 1440, height: 900 }, theme: 'light' });
 await restShot('dark-rest', { viewport: { width: 1440, height: 900 }, theme: 'dark' });
-await restShot('mobile-rest', { viewport: { width: 375, height: 812 }, theme: 'light', mobile: true });
+await restShot('mobile-rest', {
+  viewport: { width: 375, height: 812 },
+  theme: 'light',
+  mobile: true,
+});
 await motionShot('dark-motion');
 await browser.close();
 server.kill();

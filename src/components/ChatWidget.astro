@@ -2,32 +2,91 @@
 ---
 
 <!-- Chat Tooltip -->
-<div class="chat-tooltip" id="chat-tooltip">Ask me anything!</div>
+<div class="chat-tooltip" id="chat-tooltip" aria-hidden="true">
+  Ask me anything!
+</div>
 
 <!-- Chat Toggle Button -->
-<button class="chat-toggle" id="chat-toggle" aria-label="Open chat" title="Chat with AI">
-  <svg class="chat-icon-open" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+<button
+  class="chat-toggle"
+  id="chat-toggle"
+  aria-label="Open chat"
+  aria-expanded="false"
+  aria-controls="chat-window"
+  title="Chat with the portfolio assistant"
+>
+  <svg
+    class="chat-icon-open"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
   </svg>
-  <svg class="chat-icon-close" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <line x1="18" y1="6" x2="6" y2="18"/>
-    <line x1="6" y1="6" x2="18" y2="18"/>
+  <svg
+    class="chat-icon-close"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
   </svg>
 </button>
 
 <!-- Chat Window -->
-<div class="chat-window" id="chat-window" aria-hidden="true">
+<div
+  class="chat-window"
+  id="chat-window"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="chat-title"
+  aria-hidden="true"
+>
   <div class="chat-header">
-    <span class="chat-header-title">Ask about Ekkachai</span>
+    <span class="chat-header-title" id="chat-title">
+      Ask about Ekkachai
+    </span>
     <button class="chat-close" id="chat-close" aria-label="Close chat">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <line x1="18" y1="6" x2="6" y2="18"/>
-        <line x1="6" y1="6" x2="18" y2="18"/>
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
       </svg>
     </button>
   </div>
-  <div class="chat-messages" id="chat-messages"></div>
+  <div
+    class="chat-messages"
+    id="chat-messages"
+    role="log"
+    aria-live="polite"
+    aria-relevant="additions"
+  ></div>
   <div class="chat-input-area">
+    <label class="sr-only" for="chat-input">
+      Message
+    </label>
     <input
       type="text"
       class="chat-input"
@@ -36,9 +95,19 @@
       autocomplete="off"
     />
     <button class="chat-send" id="chat-send" aria-label="Send message">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <line x1="22" y1="2" x2="11" y2="13"/>
-        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <line x1="22" y1="2" x2="11" y2="13" />
+        <polygon points="22 2 15 22 11 13 2 9 22 2" />
       </svg>
     </button>
   </div>
@@ -61,7 +130,9 @@
     opacity: 0;
     transform: translateY(8px);
     pointer-events: none;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s ease;
   }
 
   .chat-tooltip.show {
@@ -152,13 +223,22 @@
     opacity: 0;
     transform: translateY(20px) scale(0.95);
     pointer-events: none;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    visibility: hidden;
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s ease,
+      visibility 0s linear 0.3s;
   }
 
   .chat-window.open {
     opacity: 1;
     transform: translateY(0) scale(1);
     pointer-events: auto;
+    visibility: visible;
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s ease,
+      visibility 0s linear 0s;
   }
 
   @media (max-width: 480px) {
@@ -314,7 +394,9 @@
   }
 
   @keyframes typingBounce {
-    0%, 60%, 100% {
+    0%,
+    60%,
+    100% {
       transform: translateY(0);
     }
     30% {
@@ -451,16 +533,23 @@
 
     let isOpen = false;
     let isBotTyping = false;
+    let lastFocused: HTMLElement | null = null;
 
     const responses: Record<string, string> = {
-      skills: "Ekkachai is proficient in React, TypeScript, JavaScript, Python, Node.js, and AWS. He also works with Docker, cloud computing, and modern web development frameworks.",
-      experience: "Ekkachai is a Full Stack Software Engineer with experience building scalable web applications, cloud architecture, and modern JavaScript frameworks. He's based in Bangkok, Thailand.",
-      projects: "Ekkachai has worked on various projects involving scalable web applications, cloud-native solutions, and full-stack development. Check out the Projects section on this page for details!",
-      contact: "You can reach Ekkachai via email at kiwsanthia@gmail.com, connect on LinkedIn at linkedin.com/in/kiwsan, or check out his GitHub at github.com/kiwsan.",
-      hello: "Hi there! I'm Ekkachai's AI assistant. I can tell you about his skills, work experience, projects, or how to get in touch. What would you like to know?",
+      skills:
+        'Ekkachai is proficient in React, TypeScript, JavaScript, Python, Node.js, and AWS. He also works with Docker, cloud computing, and modern web development frameworks.',
+      experience:
+        "Ekkachai is a Full Stack Software Engineer with experience building scalable web applications, cloud architecture, and modern JavaScript frameworks. He's based in Bangkok, Thailand.",
+      projects:
+        'Ekkachai has worked on various projects involving scalable web applications, cloud-native solutions, and full-stack development. Check out the Projects section on this page for details!',
+      contact:
+        'You can reach Ekkachai via email at kiwsanthia@gmail.com, connect on LinkedIn at linkedin.com/in/kiwsan, or check out his GitHub at github.com/kiwsan.',
+      hello:
+        "Hi there! I'm Ekkachai's portfolio assistant. I can give quick answers about his skills, work experience, projects, or how to get in touch. What would you like to know?",
     };
 
-    const defaultResponse = "I can help you learn about Ekkachai! Try asking about his skills, experience, projects, or contact information.";
+    const defaultResponse =
+      'I can help you learn about Ekkachai! Try asking about his skills, experience, projects, or contact information.';
 
     function getTimeString() {
       return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -498,6 +587,10 @@
       msg.appendChild(avatar);
       const bubble = document.createElement('div');
       bubble.className = 'chat-bubble chat-typing';
+      const label = document.createElement('span');
+      label.className = 'sr-only';
+      label.textContent = 'Assistant is typing';
+      bubble.appendChild(label);
       for (let i = 0; i < 3; i++) {
         const dot = document.createElement('span');
         dot.className = 'chat-typing-dot';
@@ -511,19 +604,26 @@
       chatMessages?.appendChild(createMessageEl(responses.hello, 'bot'));
       const suggestions = document.createElement('div');
       suggestions.className = 'chat-suggestions';
-      ['What are his skills?', 'Work experience', 'Projects', 'Contact info'].forEach(text => {
+      ['What are his skills?', 'Work experience', 'Projects', 'Contact info'].forEach((text) => {
         const chip = document.createElement('button');
         chip.className = 'chat-suggestion';
         chip.textContent = text;
-        chip.addEventListener('click', () => { sendMessage(text); suggestions.remove(); });
+        chip.addEventListener('click', () => {
+          sendMessage(text);
+          suggestions.remove();
+        });
         suggestions.appendChild(chip);
       });
       chatMessages?.appendChild(suggestions);
     }
 
     function getMockResponse(input: string) {
-      if (/skill|tech|stack|react|typescript|python|node|aws|docker|language|framework/i.test(input)) return responses.skills;
-      if (/experience|work|job|career|background|engineer/i.test(input)) return responses.experience;
+      if (
+        /skill|tech|stack|react|typescript|python|node|aws|docker|language|framework/i.test(input)
+      )
+        return responses.skills;
+      if (/experience|work|job|career|background|engineer/i.test(input))
+        return responses.experience;
       if (/project|portfolio|build|app|application/i.test(input)) return responses.projects;
       if (/contact|email|linkedin|github|hire|reach|connect/i.test(input)) return responses.contact;
       if (/hi|hello|hey|greet|sup|yo/i.test(input)) return responses.hello;
@@ -549,24 +649,40 @@
       const typingEl = createTypingEl();
       chatMessages?.appendChild(typingEl);
       scrollToBottom();
-      setTimeout(() => {
-        typingEl.remove();
-        chatMessages?.appendChild(createMessageEl(getMockResponse(text), 'bot'));
-        scrollToBottom();
-        isBotTyping = false;
-        setInputEnabled(true);
-        chatInput.focus();
-      }, 1000 + Math.random() * 1000);
+      setTimeout(
+        () => {
+          typingEl.remove();
+          chatMessages?.appendChild(createMessageEl(getMockResponse(text), 'bot'));
+          scrollToBottom();
+          isBotTyping = false;
+          setInputEnabled(true);
+          chatInput.focus();
+        },
+        1000 + Math.random() * 1000
+      );
+    }
+
+    function setToggleState(open: boolean) {
+      chatToggle?.classList.toggle('active', open);
+      chatToggle?.setAttribute('aria-expanded', String(open));
+      chatToggle?.setAttribute('aria-label', open ? 'Close chat' : 'Open chat');
     }
 
     function toggleChat() {
       isOpen = !isOpen;
-      chatToggle?.classList.toggle('active', isOpen);
+      setToggleState(isOpen);
       chatWindow?.classList.toggle('open', isOpen);
-      chatWindow?.setAttribute('aria-hidden', String(!isOpen));
+
       if (isOpen) {
+        lastFocused = document.activeElement as HTMLElement;
         if (!chatMessages?.hasChildNodes()) addWelcomeMessage();
+        chatWindow?.setAttribute('aria-hidden', 'false');
         chatInput.focus();
+      } else {
+        if (chatWindow?.contains(document.activeElement)) {
+          (lastFocused ?? chatToggle)?.focus();
+        }
+        chatWindow?.setAttribute('aria-hidden', 'true');
       }
     }
 
@@ -574,12 +690,37 @@
     chatClose?.addEventListener('click', toggleChat);
     chatSend?.addEventListener('click', () => sendMessage(chatInput.value));
     chatInput?.addEventListener('keydown', (e: KeyboardEvent) => {
-      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(chatInput.value); }
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage(chatInput.value);
+      }
     });
+
+    chatWindow?.addEventListener('keydown', (event) => {
+      if (event.key !== 'Tab' || !isOpen) return;
+
+      const focusable = Array.from(
+        chatWindow.querySelectorAll<HTMLElement>(
+          'button:not(:disabled), input:not(:disabled), [href], [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((element) => element.offsetParent !== null);
+
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+
     document.addEventListener('keydown', (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) toggleChat();
     });
-
   }
 
   // Defer full chat init until user interaction (same behavior on all devices)

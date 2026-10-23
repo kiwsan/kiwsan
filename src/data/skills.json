@@ -18,7 +18,16 @@
     },
     {
       "label": "Data & Domain",
-      "items": ["MS SQL Server", "MongoDB", "Shopee API", "Lazada API", "TikTok Shop", "RFID Integration", "ISO 27001", "PDPA"]
+      "items": [
+        "MS SQL Server",
+        "MongoDB",
+        "Shopee API",
+        "Lazada API",
+        "TikTok Shop",
+        "RFID Integration",
+        "ISO 27001",
+        "PDPA"
+      ]
     }
   ]
 }

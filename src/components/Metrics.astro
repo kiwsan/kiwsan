@@ -7,7 +7,9 @@ import metrics from '../data/metrics.json';
     <div class="metrics-grid">
       {metrics.map((metric, i) => (
         <div class={`metric-card animate-fade-in-up stagger-${i + 1}`}>
-          <div class="value" data-target={metric.value}>{metric.value}</div>
+          <div class="value" data-target={metric.value}>
+            {metric.value}
+          </div>
           <div class="label">{metric.label}</div>
           <div class="description">{metric.description}</div>
         </div>
@@ -62,7 +64,9 @@ import metrics from '../data/metrics.json';
     padding: var(--space-8) var(--space-4);
     background: var(--color-bg);
     border-radius: var(--radius-xl);
-    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+    transition:
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.35s ease;
   }
 
   .metric-card:hover {
