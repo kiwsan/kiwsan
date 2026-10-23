@@ -11,7 +11,8 @@ test.describe('Homepage Tests', () => {
     await expect(homePage.heroLabel).toBeAttached();
     await expect(homePage.heroDescription).toBeAttached();
     await expect(homePage.heroIllustration).toBeAttached();
-    await expect(homePage.heroIllustration).toHaveAttribute('alt', /Ekkachai/i);
+    await expect(homePage.heroIllustration).toHaveAttribute('aria-label', /Ekkachai/i);
+    await expect(homePage.heroIllustration).toHaveAttribute('role', 'img');
   });
 
   test('should display hero CTA buttons with correct anchors', async ({ homePage }) => {
