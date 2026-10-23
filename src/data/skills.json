@@ -1,5 +1,24 @@
 {
-  "expert": ["C#", "Node.js", "React.js", "AWS", "Docker"],
-  "proficient": ["MongoDB", "Event-Driven", "Microservices", "CI/CD", "MS SQL Server"],
-  "specialized": ["Shopee API", "Lazada API", "TikTok Shop", "RFID Integration", "ISO 27001", "PDPA", "Amazon Q"]
+  "groups": [
+    {
+      "label": "AI & Agents",
+      "items": ["LiteLLM", "Azure AI Foundry", "MCP", "Python", "Amazon Q"]
+    },
+    {
+      "label": "Backend & Integration",
+      "items": ["Node.js", "TypeScript", "C#", ".NET", "Event-Driven", "Microservices", "REST API"]
+    },
+    {
+      "label": "Cloud & DevOps",
+      "items": ["AWS", "Azure", "Docker", "Terraform", "CI/CD"]
+    },
+    {
+      "label": "Frontend",
+      "items": ["React.js", "Astro", "AngularJS"]
+    },
+    {
+      "label": "Data & Domain",
+      "items": ["MS SQL Server", "MongoDB", "Shopee API", "Lazada API", "TikTok Shop", "RFID Integration", "ISO 27001", "PDPA"]
+    }
+  ]
 }

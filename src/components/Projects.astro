@@ -206,19 +206,20 @@ const projects = (await getCollection('projects'))
     display: block;
   }
 
-  [data-theme="dark"] .project-image .theme-dark {
+  /* Theme overrides live on <html>, so they must escape Astro's scoped cid. */
+  :global([data-theme="dark"]) .project-image .theme-dark {
     display: block;
   }
 
-  [data-theme="dark"] .project-image .theme-light {
+  :global([data-theme="dark"]) .project-image .theme-light {
     display: none;
   }
 
   @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) .project-image .theme-dark {
+    :global(:root:not([data-theme="light"])) .project-image .theme-dark {
       display: block;
     }
-    :root:not([data-theme="light"]) .project-image .theme-light {
+    :global(:root:not([data-theme="light"])) .project-image .theme-light {
       display: none;
     }
   }

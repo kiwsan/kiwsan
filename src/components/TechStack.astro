@@ -6,32 +6,18 @@ import skills from '../data/skills.json';
   <div class="container">
     <span class="section-label">Skills</span>
     <h2>Tech Stack</h2>
-    
-    <div class="skills-section">
-      <h3>Expert</h3>
-      <div class="skills-grid">
-        {skills.expert.map((skill) => (
-          <span class="skill-tag expert">{skill}</span>
-        ))}
-      </div>
-    </div>
 
-    <div class="skills-section">
-      <h3>Proficient</h3>
-      <div class="skills-grid">
-        {skills.proficient.map((skill) => (
-          <span class="skill-tag proficient">{skill}</span>
-        ))}
-      </div>
-    </div>
-
-    <div class="skills-section">
-      <h3>Specialized</h3>
-      <div class="skills-grid">
-        {skills.specialized.map((skill) => (
-          <span class="skill-tag specialized">{skill}</span>
-        ))}
-      </div>
+    <div class="skills-groups">
+      {skills.groups.map((group) => (
+        <div class="skills-group">
+          <h3>{group.label}</h3>
+          <div class="skills-grid">
+            {group.items.map((skill) => (
+              <span class="skill-tag">{skill}</span>
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   </div>
 </section>
@@ -47,18 +33,20 @@ import skills from '../data/skills.json';
     margin-bottom: var(--space-8);
   }
 
-  .skills-section {
-    margin-bottom: var(--space-8);
+  .skills-groups {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-8) var(--space-12);
   }
 
-  .skills-section:last-child {
-    margin-bottom: 0;
+  .skills-group:last-child {
+    grid-column: 1 / -1;
   }
 
   h3 {
     font-size: var(--text-xl);
     margin-bottom: var(--space-4);
-    font-weight: 500;
+    font-weight: 600;
   }
 
   .skills-grid {
@@ -73,27 +61,21 @@ import skills from '../data/skills.json';
     font-size: var(--text-sm);
     font-family: var(--font-mono);
     font-weight: 500;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--color-surface-container-high);
+    color: var(--color-text);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
     cursor: default;
   }
 
   .skill-tag:hover {
-    transform: translateY(-2px) scale(1.05);
+    transform: translateY(-2px) scale(1.02);
+    background: var(--color-bg);
   }
 
-  .skill-tag.expert {
-    background: var(--color-text);
-    color: var(--color-bg);
-  }
-
-  .skill-tag.proficient {
-    background: var(--color-accent);
-    color: white;
-  }
-
-  .skill-tag.specialized {
-    background: var(--color-surface-container-low);
-    color: var(--color-on-secondary-container);
+  /* Current focus first: let the AI group carry the accent. */
+  .skills-group:first-child .skill-tag {
+    background: var(--color-primary-container);
+    color: #ffffff;
   }
 
   @media (max-width: 768px) {
@@ -102,6 +84,13 @@ import skills from '../data/skills.json';
     }
     h2 {
       font-size: var(--text-3xl);
+    }
+    .skills-groups {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
+    .skills-group:last-child {
+      grid-column: auto;
     }
   }
 

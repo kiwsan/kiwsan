@@ -37,18 +37,18 @@
   <div class="container">
     <div class="hero-content">
       <div class="hero-text">
-        <span class="hero-label animate-fade-in-up stagger-1">Software Engineer &mdash; Bangkok, Thailand</span>
+        <span class="hero-label animate-fade-in-up stagger-1">AI Manager &middot; Full Stack Engineer &mdash; Bangkok, Thailand</span>
         <h1 class="animate-fade-in-up stagger-2">
-          I build systems<br />that process<br />
+          I build systems <br />that process <br />
           <span class="highlight">Million+ orders</span>
         </h1>
         <div class="hero-rule animate-fade-in-up stagger-2-5"></div>
-        <p class="hero-description animate-fade-in-up stagger-3">Full Stack Engineer with 10+ years crafting scalable e-commerce systems for Shopee, Lazada, and MC Group. Specialized in React, TypeScript, Node.js, and AWS cloud architecture.</p>
+        <p class="hero-description animate-fade-in-up stagger-3">AI Manager at MC Group, building the LLM gateway and agent tooling behind a million-plus orders a year. 10+ years across e-commerce integration, cloud architecture, and full-stack engineering.</p>
         <div class="tags animate-fade-in-up stagger-4">
-          <span>AI Manager</span>
-          <span>Full Stack</span>
-          <span>React &bull; TypeScript &bull; AWS</span>
+          <span>AI Platform</span>
+          <span>E-commerce Integration</span>
           <span>Cloud Architecture</span>
+          <span>React &bull; TypeScript &bull; AWS</span>
         </div>
         <div class="cta animate-fade-in-up stagger-5">
           <a href="#experience" class="btn-primary">View My Work</a>
@@ -57,7 +57,7 @@
       </div>
 
       <div class="hero-illustration animate-fade-in-up stagger-5">
-        <img src="/hero-illustration.svg" alt="Full Stack Software Engineer - Ekkachai K. Portfolio Illustration" width="350" height="350" loading="eager" fetchpriority="high" />
+        <img src="/hero-illustration.svg" alt="Ekkachai at a desk, connected to a network" width="350" height="350" loading="eager" fetchpriority="high" />
       </div>
     </div>
   </div>
@@ -112,22 +112,44 @@
   }
 
   /* Dark mode */
-  [data-theme="dark"] .hero-bg-field {
+  /* :global() keeps the theme attribute on <html>; without it Astro scopes the
+     attribute to this component's cid and the rule never matches. */
+  :global([data-theme="dark"]) .hero-bg-field {
     background:
       linear-gradient(112deg, #1a1b26 0%, #1a1b26 52%, #1e2540 52%, #1c2b4a 100%);
   }
 
-  [data-theme="dark"] .hero-bg-grid {
+  :global([data-theme="dark"]) .hero-bg-grid {
     background-image: radial-gradient(circle, rgba(122,162,247,0.08) 1px, transparent 1px);
   }
 
+  /* The decorative SVG is drawn for a light canvas: keep it as a quiet glow
+     on dark, and lift the line illustration's dark strokes. */
+  @media (min-width: 769px) {
+    :global([data-theme="dark"]) .hero-bg-shapes {
+      opacity: 0.35;
+    }
+  }
+
+  :global([data-theme="dark"]) .hero-illustration img {
+    filter: invert(1) grayscale(1) brightness(1.15);
+  }
+
   @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) .hero-bg-field {
+    :global(:root:not([data-theme="light"])) .hero-bg-field {
       background:
         linear-gradient(112deg, #1a1b26 0%, #1a1b26 52%, #1e2540 52%, #1c2b4a 100%);
     }
-    :root:not([data-theme="light"]) .hero-bg-grid {
+    :global(:root:not([data-theme="light"])) .hero-bg-grid {
       background-image: radial-gradient(circle, rgba(122,162,247,0.08) 1px, transparent 1px);
+    }
+    :global(:root:not([data-theme="light"])) .hero-illustration img {
+      filter: invert(1) grayscale(1) brightness(1.15);
+    }
+    @media (min-width: 769px) {
+      :global(:root:not([data-theme="light"])) .hero-bg-shapes {
+        opacity: 0.35;
+      }
     }
   }
 

@@ -6,6 +6,8 @@
 
 html {
   scroll-behavior: smooth;
+  /* Fixed header is 68px tall; leave breathing room above anchored sections. */
+  scroll-padding-top: 88px;
   -webkit-text-size-adjust: 100%;
   -moz-text-size-adjust: 100%;
   text-size-adjust: 100%;
