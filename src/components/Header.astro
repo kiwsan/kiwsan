@@ -117,26 +117,28 @@
     transition: opacity 0.18s ease, transform 0.18s ease;
   }
 
-  [data-theme="dark"] .header-bg {
+  /* :global() keeps the theme attribute on <html>; Astro's default scoping would
+     add the component's data-astro-cid to it, so the rule could never match. */
+  :global([data-theme="dark"]) .header-bg {
     background: rgba(26, 27, 38, 0.8);
   }
 
-  [data-theme="dark"] .logo-svg path {
+  :global([data-theme="dark"]) .logo-svg path {
     stroke: #ffffff;
   }
 
-  [data-theme="dark"] .logo-svg circle {
+  :global([data-theme="dark"]) .logo-svg circle {
     fill: #ffffff;
   }
 
   @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) .header-bg {
+    :global(:root:not([data-theme="light"])) .header-bg {
       background: rgba(26, 27, 38, 0.8);
     }
-    :root:not([data-theme="light"]) .logo-svg path {
+    :global(:root:not([data-theme="light"])) .logo-svg path {
       stroke: #ffffff;
     }
-    :root:not([data-theme="light"]) .logo-svg circle {
+    :global(:root:not([data-theme="light"])) .logo-svg circle {
       fill: #ffffff;
     }
   }
