@@ -55,6 +55,14 @@ npm run format:check
 npm run format
 ```
 
+## Social images
+
+```bash
+npm run social:generate
+```
+
+This renders the Open Graph card and the square, portrait, and story variants. See `docs/social-images.md`.
+
 ## Deploy
 
 The CI workflow builds, tests, uploads `dist/` through Terraform, applies the CloudFront configuration, invalidates the cache, and runs the live smoke test.

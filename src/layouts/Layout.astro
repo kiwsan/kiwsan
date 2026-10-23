@@ -8,6 +8,8 @@ import { SITE } from '../lib/site';
 interface Props {
   title?: string;
   description?: string;
+  socialTitle?: string;
+  socialDescription?: string;
   keywords?: string;
   noindex?: boolean;
   structuredData?: Record<string, unknown> | null;
@@ -16,6 +18,8 @@ interface Props {
 const {
   title = `Full Stack Software Engineer — I build systems that process Million+ orders/year | ${SITE.name}`,
   description = SITE.description,
+  socialTitle = `${SITE.name} — AI Manager & Full Stack Engineer`,
+  socialDescription = 'Building AI platforms and the integration backbone behind 1M+ orders a year.',
   keywords = 'Full Stack Software Engineer Bangkok, Software Engineer Thailand, React Developer Bangkok, TypeScript Developer Thailand, AWS Cloud Engineer Bangkok, E-commerce Systems Developer, Million Orders Processing, Shopee Lazada Developer, Node.js Developer Bangkok, Docker Kubernetes Thailand',
   noindex = false,
   structuredData = null,
@@ -23,7 +27,8 @@ const {
 
 const site = Astro.site ?? new URL(SITE.url);
 const canonical = new URL(Astro.url.pathname, site).toString();
-const ogImage = new URL('/images/og-image.png', site).toString();
+const ogImageVersion = '2';
+const ogImage = new URL(`/images/og-image.png?v=${ogImageVersion}`, site).toString();
 const robots = noindex
   ? 'noindex, nofollow'
   : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
@@ -74,28 +79,29 @@ const robots = noindex
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
+    <meta property="og:title" content={socialTitle} />
+    <meta property="og:description" content={socialDescription} />
     <meta property="og:locale" content="en_US" />
     <meta property="og:site_name" content={`${SITE.name} - Full Stack Software Engineer`} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta
       property="og:image:alt"
-      content={`${SITE.name} - Full Stack Software Engineer Portfolio`}
+      content={`${SITE.name}, AI Manager and Full Stack Engineer, in front of a glowing isometric office campus`}
     />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@kiwsan" />
     <meta name="twitter:creator" content="@kiwsan" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
+    <meta name="twitter:title" content={socialTitle} />
+    <meta name="twitter:description" content={socialDescription} />
     <meta name="twitter:image" content={ogImage} />
     <meta
       name="twitter:image:alt"
-      content={`${SITE.name} - Full Stack Software Engineer Portfolio`}
+      content={`${SITE.name}, AI Manager and Full Stack Engineer, in front of a glowing isometric office campus`}
     />
 
     {!noindex && <link rel="canonical" href={canonical} />}
