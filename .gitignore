@@ -7,6 +7,11 @@ node_modules/
 coverage/
 .nyc_output
 
+# Playwright artifacts
+test-results/
+playwright-report/
+.playwright-mcp/
+
 # Build outputs
 dist/
 build/
