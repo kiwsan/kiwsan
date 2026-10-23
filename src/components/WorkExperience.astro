@@ -389,9 +389,11 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
      and the trace into raised sheets; dark keeps the Tokyo Night terminal. */
   .office-stage {
     --t-bg: #f2f4f6;
-    --t-fg: #191c1e;
-    --t-dim: #5a6779;
-    --t-muted: #505f76;
+    /* Text follows the main theme tokens (light + dark + no-JS) so the
+       stage can never drift out of sync with the rest of the page. */
+    --t-fg: var(--color-text);
+    --t-dim: var(--color-on-secondary-container);
+    --t-muted: var(--color-text-muted);
     --t-purple: #6d3fc0;
     --t-green: #256b2b;
     --t-chip: #e6ebf2;
@@ -433,9 +435,6 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
 
   :global([data-theme="dark"]) .office-stage {
     --t-bg: #15161f;
-    --t-fg: #c0caf5;
-    --t-dim: #565f89;
-    --t-muted: #a9b1d6;
     --t-purple: #bb9af7;
     --t-green: #9ece6a;
     --t-chip: #1d202f;
@@ -469,9 +468,6 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
   @media (prefers-color-scheme: dark) {
     :global(:root:not([data-theme="light"])) .office-stage {
       --t-bg: #15161f;
-      --t-fg: #c0caf5;
-      --t-dim: #565f89;
-      --t-muted: #a9b1d6;
       --t-purple: #bb9af7;
       --t-green: #9ece6a;
       --t-chip: #1d202f;
