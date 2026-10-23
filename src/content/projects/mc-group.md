@@ -13,6 +13,7 @@ results: [
 ]
 order: 2
 type: "work"
+companySize: "enterprise"
 ---
 
 Architected the technical backbone for a SET-listed fashion retailer, enabling seamless omnichannel operations across multiple marketplaces and offline POS systems.

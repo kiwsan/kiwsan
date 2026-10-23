@@ -12,6 +12,7 @@ results: [
 ]
 order: 6
 type: "work"
+companySize: "small"
 ---
 
 Started as intern, promoted to full-time developer.

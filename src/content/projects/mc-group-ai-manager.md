@@ -12,6 +12,7 @@ results: [
 ]
 order: 1
 type: "work"
+companySize: "enterprise"
 ---
 
 Promoted from Technical Lead to AI Manager, continuing the e-commerce integration work while expanding into AI platform engineering.

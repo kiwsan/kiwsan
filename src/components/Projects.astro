@@ -1,8 +1,12 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+type PersonalEntry = CollectionEntry<'projects'> & {
+  data: { type: 'personal' };
+};
 
 const projects = (await getCollection('projects'))
-  .filter(p => p.data.type === 'personal')
+  .filter((p): p is PersonalEntry => p.data.type === 'personal')
   .sort((a, b) => a.data.order - b.data.order);
 ---
 

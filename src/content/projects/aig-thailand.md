@@ -13,6 +13,7 @@ results: [
 ]
 order: 4
 type: "work"
+companySize: "medium"
 ---
 
 Deployed onsite to support AIG Thailand's digital transformation initiative, focusing on legacy system migration, customer portals, and marketing automation.

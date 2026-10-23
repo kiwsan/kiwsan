@@ -12,6 +12,7 @@ results: [
 ]
 order: 3
 type: "work"
+companySize: "large"
 ---
 
 Consumer finance subsidiary of Bank of Ayudhya (Krungsri) — personal loans and hire purchase products.

@@ -84,7 +84,7 @@ I still write the code: TypeScript/Node.js, Python, C#, and the infrastructure (
 
 ### [Professional Portfolio — kiwsan.com](https://kiwsan.com)
 
-An AI-office portfolio: the work-history timeline is an interactive isometric floor (one desk per role, SVG + CSS, no WebGL), each run card types itself into view, and the whole site ships as a static Astro build on AWS.
+An AI-office portfolio: the work-history timeline is an interactive isometric floor (one office campus per role, scaled by company size, SVG + CSS, no WebGL), each run card types itself into view, and the whole site ships as a static Astro build on AWS.
 
 **Keywords:** Software Engineering Portfolio, AI Platform Engineering, TypeScript, Astro, AWS
 
