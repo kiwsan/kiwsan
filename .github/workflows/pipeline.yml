@@ -172,7 +172,7 @@ jobs:
         working-directory: ${{ env.TF_DIR }}
 
       - name: Comment PR with plan
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require('node:fs');
