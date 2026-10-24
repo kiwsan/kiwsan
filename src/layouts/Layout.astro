@@ -27,7 +27,7 @@ const {
 
 const site = Astro.site ?? new URL(SITE.url);
 const canonical = new URL(Astro.url.pathname, site).toString();
-const ogImageVersion = '2';
+const ogImageVersion = '3';
 const ogImage = new URL(`/images/og-image.png?v=${ogImageVersion}`, site).toString();
 const robots = noindex
   ? 'noindex, nofollow'
@@ -89,7 +89,7 @@ const robots = noindex
     <meta property="og:image:height" content="630" />
     <meta
       property="og:image:alt"
-      content={`${SITE.name}, AI Manager and Full Stack Engineer, in front of a glowing isometric office campus`}
+      content={`${SITE.name}, AI Manager and Full Stack Engineer, beside an ink axonometric office campus on a cobalt field`}
     />
 
     <!-- Twitter Card -->
@@ -101,7 +101,7 @@ const robots = noindex
     <meta name="twitter:image" content={ogImage} />
     <meta
       name="twitter:image:alt"
-      content={`${SITE.name}, AI Manager and Full Stack Engineer, in front of a glowing isometric office campus`}
+      content={`${SITE.name}, AI Manager and Full Stack Engineer, beside an ink axonometric office campus on a cobalt field`}
     />
 
     {!noindex && <link rel="canonical" href={canonical} />}
