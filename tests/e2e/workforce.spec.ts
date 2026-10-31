@@ -9,7 +9,7 @@ test.describe('Workforce floor', () => {
     const section = homePage.page.locator('#workforce');
 
     await expect(section).toBeVisible();
-    await expect(section.getByRole('heading', { name: /Twenty-five roles/ })).toBeVisible();
+    await expect(section.getByRole('heading', { name: /25-role AI team/ })).toBeVisible();
     await expect(section.locator('svg .pod')).toHaveCount(6);
     await expect(section.locator('svg .desk')).toHaveCount(25);
     await expect(section.locator('.workforce-stage')).toBeVisible();

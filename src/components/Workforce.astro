@@ -9,22 +9,22 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
 <section id="workforce" class="workforce" aria-labelledby="workforce-title">
   <div class="container">
     <div class="workforce-head">
-      <span class="section-label">Operating model</span>
-      <h2 id="workforce-title">One operator. Twenty-five roles.</h2>
+      <span class="section-label">How I work</span>
+      <h2 id="workforce-title">One person. A 25-role AI team.</h2>
       <p class="workforce-caption">
-        One operator, 25 scoped roles. Agents execute in parallel and hand off concrete artifacts;
-        CI and specialist reviewers test the work. I set the intent and hold the scope, design,
-        merge and deploy gates.
+        The team works in parallel and hands off real work: plans, code, tests and docs. Automated
+        checks and specialist reviewers test it. I decide what to build and approve four
+        checkpoints: scope, design, merge and deploy.
       </p>
     </div>
 
     <div class="workforce-stage">
       <div class="floor-wrap">
         <div class="scene-meta" aria-hidden="true">
-          <span class="meta-line">workforce floor</span>
+          <span class="meta-line">AI team floor</span>
           <span class="meta-chip">
             <i class="meta-dot"></i>
-            {workforceRoleCount} roles · 6 functions
+            {workforceRoleCount} roles · 6 teams
           </span>
         </div>
 
@@ -36,7 +36,7 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
         >
           <title id="workforce-svg-title">The AI workforce floor</title>
           <desc id="workforce-svg-desc">
-            A central chief-of-staff hub connected to six function pods: Product and Engineering,
+            A central chief-of-staff hub connected to six team pods: Product and Engineering,
             Prototype, Research, Marketing, Support and Security. Desk count shows the number of
             roles in each pod.
           </desc>
@@ -81,7 +81,7 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
               {workforceHub.name}
             </text>
             <text class="hub-count" x={scene.hub.cx} y={scene.hub.labelY + 14} text-anchor="middle">
-              orchestrator · 1 role
+              planner · 1 role
             </text>
           </g>
 
@@ -111,8 +111,8 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
       <aside class="shift-log" aria-labelledby="shift-log-title">
         <div class="log-head">
           <span class="log-dot" aria-hidden="true"></span>
-          <h3 id="shift-log-title">workforce.status</h3>
-          <span class="log-chip">6 functions</span>
+          <h3 id="shift-log-title">team status</h3>
+          <span class="log-chip">6 teams</span>
         </div>
 
         <ul class="log-rows">
@@ -129,20 +129,20 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
 
         <div class="log-legend">
           <span>
-            <i class="legend-desk"></i> desk = role
+            <i class="legend-desk"></i> desk = one role
           </span>
           <span>
             <i class="legend-rail"></i> rail = handoff
           </span>
           <span>
-            <i class="legend-hub"></i> hub = orchestrator
+            <i class="legend-hub"></i> hub = planner
           </span>
         </div>
 
-        <p class="log-principle">agents run the loop · i own the gates</p>
+        <p class="log-principle">AI agents do the work · I approve what ships</p>
 
         <div class="log-gates">
-          <span class="gate-label">human gates</span>
+          <span class="gate-label">my checkpoints</span>
           {gates.map((gate) => (
             <span class="gate">{gate}</span>
           ))}
