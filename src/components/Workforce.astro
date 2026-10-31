@@ -1,0 +1,700 @@
+---
+import { workforceFunctions, workforceHub, workforceRoleCount } from '../data/workforce';
+import { buildWorkforceScene } from '../lib/experience/workforce';
+
+const scene = buildWorkforceScene();
+const gates = ['scope', 'design', 'merge', 'deploy'];
+---
+
+<section id="workforce" class="workforce" aria-labelledby="workforce-title">
+  <div class="container">
+    <div class="workforce-head">
+      <span class="section-label">Operating model</span>
+      <h2 id="workforce-title">One operator. Twenty-five roles.</h2>
+      <p class="workforce-caption">
+        One operator, 25 scoped roles. Agents execute in parallel and hand off concrete artifacts;
+        CI and specialist reviewers test the work. I set the intent and hold the scope, design,
+        merge and deploy gates.
+      </p>
+    </div>
+
+    <div class="workforce-stage">
+      <div class="floor-wrap">
+        <div class="scene-meta" aria-hidden="true">
+          <span class="meta-line">workforce floor</span>
+          <span class="meta-chip">
+            <i class="meta-dot"></i>
+            {workforceRoleCount} roles · 6 functions
+          </span>
+        </div>
+
+        <svg
+          class="floor"
+          viewBox={scene.viewBox}
+          role="img"
+          aria-labelledby="workforce-svg-title workforce-svg-desc"
+        >
+          <title id="workforce-svg-title">The AI workforce floor</title>
+          <desc id="workforce-svg-desc">
+            A central chief-of-staff hub connected to six function pods: Product and Engineering,
+            Prototype, Research, Marketing, Support and Security. Desk count shows the number of
+            roles in each pod.
+          </desc>
+
+          <defs>
+            <pattern id="workforce-grid" width="24" height="24" patternUnits="userSpaceOnUse">
+              <circle class="grid-dot" cx="1" cy="1" r="0.9" />
+            </pattern>
+          </defs>
+
+          <rect class="floor-bg" width="1000" height="640" rx="18" />
+          <rect class="floor-grid" width="1000" height="640" rx="18" fill="url(#workforce-grid)" />
+
+          <g class="rails" aria-hidden="true">
+            {scene.rails.map((rail) => (
+              <path class="rail" d={rail.d} style={`--accent:${rail.accent}`} />
+            ))}
+          </g>
+
+          <g class="hub" style="--accent:var(--color-primary)">
+            <circle
+              class="hub-halo"
+              cx={scene.hub.cx}
+              cy={scene.hub.cy}
+              r={scene.hub.radius + 18}
+            />
+            <circle class="hub-base" cx={scene.hub.cx} cy={scene.hub.cy} r={scene.hub.radius} />
+            <circle
+              class="hub-inner"
+              cx={scene.hub.cx}
+              cy={scene.hub.cy}
+              r={scene.hub.radius - 9}
+            />
+            {scene.hub.desks.map((desk) => (
+              <g class="desk hub-desk">
+                <path class="desk-left" d={desk.left} />
+                <path class="desk-right" d={desk.right} />
+                <path class="desk-top" d={desk.top} />
+              </g>
+            ))}
+            <text class="hub-name" x={scene.hub.cx} y={scene.hub.labelY} text-anchor="middle">
+              {workforceHub.name}
+            </text>
+            <text class="hub-count" x={scene.hub.cx} y={scene.hub.labelY + 14} text-anchor="middle">
+              orchestrator · 1 role
+            </text>
+          </g>
+
+          {scene.pods.map((pod) => (
+            <g class="pod" data-pod={pod.id} style={`--accent:${pod.accent}`}>
+              <path class="pod-left" d={pod.left} />
+              <path class="pod-right" d={pod.right} />
+              <path class="pod-top" d={pod.top} />
+              {pod.desks.map((desk) => (
+                <g class="desk">
+                  <path class="desk-left" d={desk.left} />
+                  <path class="desk-right" d={desk.right} />
+                  <path class="desk-top" d={desk.top} />
+                </g>
+              ))}
+              <text class="pod-name" x={pod.cx} y={pod.labelY} text-anchor="middle">
+                {pod.label}
+              </text>
+              <text class="pod-count" x={pod.cx} y={pod.labelY + 14} text-anchor="middle">
+                {pod.count} roles
+              </text>
+            </g>
+          ))}
+        </svg>
+      </div>
+
+      <aside class="shift-log" aria-labelledby="shift-log-title">
+        <div class="log-head">
+          <span class="log-dot" aria-hidden="true"></span>
+          <h3 id="shift-log-title">workforce.status</h3>
+          <span class="log-chip">6 functions</span>
+        </div>
+
+        <ul class="log-rows">
+          {workforceFunctions.map((fn, index) => (
+            <li
+              class:list={['log-row', { 'is-active': index === 0 }]}
+              style={`--accent:${fn.accent}`}
+            >
+              <span class="log-fn">{fn.label}</span>
+              <span class="log-handoff">{fn.handoff}</span>
+            </li>
+          ))}
+        </ul>
+
+        <div class="log-legend">
+          <span>
+            <i class="legend-desk"></i> desk = role
+          </span>
+          <span>
+            <i class="legend-rail"></i> rail = handoff
+          </span>
+          <span>
+            <i class="legend-hub"></i> hub = orchestrator
+          </span>
+        </div>
+
+        <p class="log-principle">agents run the loop · i own the gates</p>
+
+        <div class="log-gates">
+          <span class="gate-label">human gates</span>
+          {gates.map((gate) => (
+            <span class="gate">{gate}</span>
+          ))}
+        </div>
+      </aside>
+    </div>
+
+    <div class="pod-cards" aria-label="Workforce functions">
+      <article class="pod-card hub-card">
+        <div class="pod-card-head">
+          <h3>{workforceHub.label}</h3>
+          <span class="pod-card-count">1 role</span>
+        </div>
+        <p class="pod-card-handoff">{workforceHub.name} → weekly plan · OKRs · handoffs</p>
+        <p class="pod-card-roles">{workforceHub.owns}</p>
+      </article>
+
+      {workforceFunctions.map((fn) => (
+        <article class="pod-card" style={`--accent:${fn.accent}`}>
+          <div class="pod-card-head">
+            <h3>{fn.label}</h3>
+            <span class="pod-card-count">{fn.roles.length} roles</span>
+          </div>
+          <p class="pod-card-handoff">{fn.handoff}</p>
+          <p class="pod-card-roles">{fn.roles.map((role) => role.name).join(' · ')}</p>
+        </article>
+      ))}
+    </div>
+
+    <ul class="sr-only">
+      <li>
+        {workforceHub.label}: {workforceHub.name} — {workforceHub.owns}
+      </li>
+      {workforceFunctions.flatMap((fn) =>
+        fn.roles.map((role) => (
+          <li>
+            {fn.label}: {role.name} — {role.owns}
+          </li>
+        ))
+      )}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .workforce {
+    padding: var(--space-16) 0;
+  }
+
+  .workforce-head {
+    max-width: 68ch;
+    margin-bottom: var(--space-8);
+  }
+
+  h2 {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-3);
+  }
+
+  .workforce-caption {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .workforce-stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: var(--space-6);
+    padding: clamp(16px, 2.4vw, 28px);
+    border-radius: 16px;
+    background: var(--color-surface-container-low);
+    box-shadow: 0 28px 64px -40px rgba(16, 24, 40, 0.2);
+  }
+
+  :global([data-theme='dark']) .workforce-stage {
+    background: #15161f;
+    box-shadow: 0 24px 64px -32px rgba(0, 0, 0, 0.5);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .workforce-stage {
+      background: #15161f;
+      box-shadow: 0 24px 64px -32px rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  .floor-wrap {
+    --pod-top: #fbfcfe;
+    --pod-left: #d5deea;
+    --pod-right: #c2cedf;
+    --pod-stroke: 0.28;
+
+    min-width: 0;
+    padding: 10px;
+    border-radius: 12px;
+    background: var(--color-bg);
+  }
+
+  :global([data-theme='dark']) .floor-wrap {
+    --pod-top: #262c3e;
+    --pod-left: #1b2030;
+    --pod-right: #161a26;
+    --pod-stroke: 0.5;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .floor-wrap {
+      --pod-top: #262c3e;
+      --pod-left: #1b2030;
+      --pod-right: #161a26;
+      --pod-stroke: 0.5;
+    }
+  }
+
+  .scene-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 2px 4px 0;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .meta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--color-surface-container-low);
+    color: var(--color-text);
+    box-shadow: 0 8px 20px -16px rgba(16, 24, 40, 0.35);
+  }
+
+  .meta-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: #256b2b;
+    box-shadow: 0 0 8px color-mix(in srgb, #256b2b 45%, transparent);
+  }
+
+  :global([data-theme='dark']) .meta-dot {
+    background: #9ece6a;
+    box-shadow: 0 0 8px color-mix(in srgb, #9ece6a 60%, transparent);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .meta-dot {
+      background: #9ece6a;
+      box-shadow: 0 0 8px color-mix(in srgb, #9ece6a 60%, transparent);
+    }
+  }
+
+  .floor {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .floor-bg {
+    fill: var(--color-bg);
+  }
+
+  .grid-dot {
+    fill: color-mix(in srgb, var(--color-text-muted) 22%, transparent);
+  }
+
+  .rail {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1.2;
+    stroke-dasharray: 3 7;
+    stroke-linecap: round;
+    opacity: 0.4;
+  }
+
+  .pod {
+    --accent-ink: color-mix(in oklab, var(--accent) 52%, #101828);
+  }
+
+  :global([data-theme='dark']) .pod {
+    --accent-ink: var(--accent);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .pod {
+      --accent-ink: var(--accent);
+    }
+  }
+
+  .pod-top {
+    fill: var(--pod-top);
+    stroke: var(--accent-ink);
+    stroke-opacity: var(--pod-stroke);
+    stroke-width: 0.8;
+  }
+
+  .pod-left {
+    fill: var(--pod-left);
+  }
+
+  .pod-right {
+    fill: var(--pod-right);
+  }
+
+  .desk-top {
+    fill: var(--accent-ink);
+    opacity: 0.78;
+  }
+
+  .desk-left,
+  .desk-right {
+    fill: color-mix(in oklab, var(--accent-ink) 58%, #101828);
+    opacity: 0.55;
+  }
+
+  .pod-name {
+    fill: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+
+  .pod-count,
+  .hub-count {
+    fill: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.02em;
+  }
+
+  .hub-halo {
+    fill: var(--color-primary);
+    opacity: 0.08;
+  }
+
+  .hub-base {
+    fill: var(--color-primary-fixed);
+    stroke: var(--color-primary);
+    stroke-opacity: 0.35;
+    stroke-width: 1;
+  }
+
+  .hub-inner {
+    fill: color-mix(in oklab, var(--color-primary) 9%, var(--color-bg));
+    stroke: var(--color-primary);
+    stroke-opacity: 0.18;
+    stroke-width: 0.8;
+    stroke-dasharray: 2 5;
+  }
+
+  .hub-desk .desk-top {
+    fill: var(--color-primary);
+    opacity: 0.9;
+  }
+
+  .hub-desk .desk-left,
+  .hub-desk .desk-right {
+    fill: color-mix(in oklab, var(--color-primary) 62%, #101828);
+    opacity: 0.7;
+  }
+
+  .hub-name {
+    fill: var(--color-primary);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+
+  .shift-log {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 16px;
+    border-radius: 12px;
+    background: var(--color-bg);
+    font-family: var(--font-mono);
+  }
+
+  .log-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 10px;
+  }
+
+  .log-head h3 {
+    flex: 1;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--color-text);
+  }
+
+  .log-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: #256b2b;
+  }
+
+  :global([data-theme='dark']) .log-dot {
+    background: #9ece6a;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .log-dot {
+      background: #9ece6a;
+    }
+  }
+
+  .log-chip {
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: var(--color-surface-container-low);
+    color: var(--color-text-muted);
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .log-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .log-row {
+    --accent-ink: color-mix(in oklab, var(--accent) 52%, #101828);
+
+    display: grid;
+    grid-template-columns: 82px minmax(0, 1fr);
+    gap: 10px;
+    align-items: baseline;
+    padding: 8px 8px 8px 10px;
+    border-left: 2px solid transparent;
+    border-radius: 0 8px 8px 0;
+  }
+
+  :global([data-theme='dark']) .log-row {
+    --accent-ink: var(--accent);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .log-row {
+      --accent-ink: var(--accent);
+    }
+  }
+
+  .log-row.is-active {
+    border-left-color: var(--accent);
+    background: color-mix(in oklab, var(--accent) 8%, var(--color-bg));
+  }
+
+  .log-fn {
+    color: var(--accent-ink);
+    font-size: 9px;
+    line-height: 1.5;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .log-handoff {
+    color: var(--color-text-muted);
+    font-size: 10px;
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+  }
+
+  .log-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px 8px 0;
+    color: var(--color-text-muted);
+    font-size: 9px;
+    letter-spacing: 0.02em;
+  }
+
+  .log-legend span {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .log-legend i {
+    flex: none;
+    width: 8px;
+    height: 8px;
+  }
+
+  .legend-desk {
+    background: var(--color-primary);
+    transform: rotate(45deg);
+  }
+
+  .legend-rail {
+    height: 0;
+    border-top: 1px dashed var(--color-text-muted);
+  }
+
+  .legend-hub {
+    border: 1px solid var(--color-primary);
+    border-radius: 999px;
+  }
+
+  .log-principle {
+    margin: auto 8px 0;
+    padding-top: 14px;
+    color: var(--color-primary);
+    font-size: 9px;
+    line-height: 1.5;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .log-gates {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+    padding: 10px 8px 0;
+  }
+
+  .gate-label {
+    width: 100%;
+    margin-bottom: 2px;
+    color: var(--color-text-muted);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .gate {
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: var(--color-surface-container-low);
+    color: var(--color-text);
+    font-size: 9px;
+    letter-spacing: 0.02em;
+  }
+
+  .pod-cards {
+    display: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+  }
+
+  .pod-card {
+    --accent-ink: color-mix(in oklab, var(--accent) 52%, #101828);
+
+    padding: 14px;
+    border-top: 2px solid var(--accent);
+    border-radius: 12px;
+    background: var(--color-bg);
+    box-shadow: 0 10px 24px -22px rgba(16, 24, 40, 0.4);
+  }
+
+  :global([data-theme='dark']) .pod-card {
+    --accent-ink: var(--accent);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .pod-card {
+      --accent-ink: var(--accent);
+    }
+  }
+
+  .hub-card {
+    grid-column: 1 / -1;
+    --accent: var(--color-primary);
+  }
+
+  .pod-card-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .pod-card-head h3 {
+    margin: 0;
+    color: var(--accent-ink);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .pod-card-count {
+    flex: none;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 10px;
+  }
+
+  .pod-card-handoff {
+    margin: 6px 0 4px;
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    line-height: 1.5;
+  }
+
+  .pod-card-roles {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 10px;
+    line-height: 1.55;
+  }
+
+  @media (max-width: 1100px) {
+    .workforce-stage {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .workforce {
+      padding: var(--space-12) 0;
+    }
+
+    .workforce-stage {
+      display: none;
+    }
+
+    .pod-cards {
+      display: grid;
+    }
+  }
+
+  @media (max-width: 560px) {
+    h2 {
+      font-size: var(--text-3xl);
+    }
+
+    .pod-cards {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
