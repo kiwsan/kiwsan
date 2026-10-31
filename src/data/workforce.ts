@@ -30,7 +30,7 @@ export const workforceFunctions: WorkforceFunction[] = [
     id: 'product',
     label: 'Product & Eng',
     accent: '#7aa2f7',
-    handoff: 'pm → PRD · architect → ADR · builder → PR',
+    handoff: 'plan → design → build → review',
     roles: [
       { name: 'pm', owns: 'PRD, acceptance criteria, backlog', mode: 'all' },
       { name: 'architect', owns: 'ADR, API/data contracts', mode: 'subagent' },
@@ -46,7 +46,7 @@ export const workforceFunctions: WorkforceFunction[] = [
     id: 'prototype',
     label: 'Prototype',
     accent: '#bb9af7',
-    handoff: 'ux-designer → flow · prototyper → preview',
+    handoff: 'user flow → clickable preview',
     roles: [
       { name: 'ux-designer', owns: 'flows, wireframes, states', mode: 'subagent' },
       { name: 'prototyper', owns: 'clickable HTML + preview link', mode: 'subagent' },
@@ -57,7 +57,7 @@ export const workforceFunctions: WorkforceFunction[] = [
     id: 'research',
     label: 'Research',
     accent: '#7dcfff',
-    handoff: 'market-researcher → brief · data-analyst → funnel',
+    handoff: 'market brief → user evidence → metrics',
     roles: [
       { name: 'market-researcher', owns: 'market/competitor/pricing, cited', mode: 'subagent' },
       { name: 'user-researcher', owns: 'interviews, usability, personas', mode: 'subagent' },
@@ -72,7 +72,7 @@ export const workforceFunctions: WorkforceFunction[] = [
     id: 'marketing',
     label: 'Marketing',
     accent: '#ff9e64',
-    handoff: 'content-seo → draft · growth → experiment',
+    handoff: 'content draft → growth test',
     roles: [
       { name: 'marketing-lead', owns: 'positioning, channels, budget', mode: 'subagent' },
       { name: 'content-seo', owns: 'content drafts, SEO briefs', mode: 'subagent' },
@@ -84,7 +84,7 @@ export const workforceFunctions: WorkforceFunction[] = [
     id: 'support',
     label: 'Support',
     accent: '#9ece6a',
-    handoff: 'prod-support → triage · incident-commander → timeline',
+    handoff: 'triage → incident timeline',
     roles: [
       { name: 'prod-support', owns: 'first response, triage, timeline', mode: 'subagent' },
       { name: 'incident-commander', owns: 'severity, decisions, comms cadence', mode: 'all' },
@@ -95,7 +95,7 @@ export const workforceFunctions: WorkforceFunction[] = [
     id: 'security',
     label: 'Security',
     accent: '#f7768e',
-    handoff: 'sec-intel → bulletin · patch-engineer → patch',
+    handoff: 'advisory → patch → review',
     roles: [
       { name: 'sec-intel', owns: 'advisories, weekly bulletin', mode: 'subagent' },
       { name: 'patch-engineer', owns: 'dependency/vulnerability patches', mode: 'subagent' },
