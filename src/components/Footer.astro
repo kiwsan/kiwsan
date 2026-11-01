@@ -37,6 +37,22 @@ const buildVersion = import.meta.env.PUBLIC_BUILD_VERSION || 'dev';
           decoding="async"
         />
       </a>
+      <p>If this site helped you, you can support it:</p>
+      <a
+        class="bmc-button"
+        href="https://www.buymeacoffee.com/kiwsan"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="/images/buy-me-a-coffee.png"
+          alt="Buy Me a Coffee - support this site"
+          width="545"
+          height="153"
+          loading="lazy"
+          decoding="async"
+        />
+      </a>
     </div>
     <div class="footer-content">
       <p>&copy; {new Date().getFullYear()} Ekkachai Kiwsanthia. All rights reserved.</p>
@@ -116,6 +132,11 @@ const buildVersion = import.meta.env.PUBLIC_BUILD_VERSION || 'dev';
 
   .footer-referrals img {
     height: 36px;
+  }
+
+  .footer-referrals .bmc-button img {
+    width: 217px;
+    height: auto;
   }
 
   @media (max-width: 768px) {
