@@ -135,8 +135,9 @@ const buildVersion = import.meta.env.PUBLIC_BUILD_VERSION || 'dev';
   }
 
   .footer-referrals .bmc-button img {
-    width: 217px;
+    width: 170px;
     height: auto;
+    max-width: 100%;
   }
 
   @media (max-width: 768px) {
@@ -148,6 +149,7 @@ const buildVersion = import.meta.env.PUBLIC_BUILD_VERSION || 'dev';
     .footer-referrals {
       justify-content: center;
       text-align: center;
+      gap: var(--space-3);
     }
     .footer-links {
       justify-content: center;
@@ -156,13 +158,17 @@ const buildVersion = import.meta.env.PUBLIC_BUILD_VERSION || 'dev';
 
   @media (max-width: 480px) {
     .footer {
-      padding: var(--space-6) 0;
+      /* Keep the links clear of the fixed chat button in the bottom corner. */
+      padding: var(--space-6) 0 calc(var(--space-6) + 3rem);
     }
     .footer-links {
       gap: var(--space-4);
     }
     .footer-referrals img {
       height: 30px;
+    }
+    .footer-referrals .bmc-button img {
+      width: 150px;
     }
   }
 </style>
