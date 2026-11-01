@@ -39,3 +39,20 @@ test.describe('Workforce floor', () => {
     await expect(homePage.page.locator('nav a[href="#workforce"]')).toHaveCount(1);
   });
 });
+
+test.describe('Workforce assembly', () => {
+  test.use({ reducedMotion: 'no-preference' });
+
+  test('plays once when the floor enters view', async ({ page }) => {
+    const width = page.viewportSize()?.width ?? 0;
+    test.skip(width <= 900, 'mobile uses the card layout');
+
+    await page.goto('/');
+    await page.locator('#workforce').scrollIntoViewIfNeeded();
+
+    const stage = page.locator('.workforce-stage');
+    await expect(stage).not.toHaveAttribute('data-motion', 'armed', { timeout: 5000 });
+    await expect(page.locator('.pod').first()).toHaveCSS('opacity', '1');
+    await expect(page.locator('.rail').first()).toHaveCSS('opacity', '0.4');
+  });
+});
