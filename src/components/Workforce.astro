@@ -187,6 +187,92 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
   </div>
 </section>
 
+<script>
+  /* The floor assembles once, when it first comes into view: hub, rails, pods,
+     desks, then the status log. The final frame is the existing static scene,
+     so no-JS, reduced motion, mobile, and the test suite all keep the same
+     markup and the same result. */
+  const stage = document.querySelector<HTMLElement>('#workforce .workforce-stage');
+  const wide = window.matchMedia('(min-width: 901px)');
+  const calm = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  if (stage && wide.matches && !calm.matches) {
+    const floor = stage.querySelector<SVGSVGElement>('svg.floor');
+    const hub = floor?.querySelector<SVGGElement>('.hub');
+    const halo = floor?.querySelector<SVGCircleElement>('.hub-halo');
+    const rails = floor?.querySelectorAll<SVGPathElement>('.rail') ?? [];
+    const pods = floor?.querySelectorAll<SVGGElement>('.pod') ?? [];
+    const rows = stage.querySelectorAll<HTMLElement>('.log-row');
+    let started = false;
+
+    stage.dataset.motion = 'armed';
+
+    const play = async () => {
+      if (started) return;
+      started = true;
+
+      try {
+        const { createTimeline, stagger } = await import('animejs');
+
+        const timeline = createTimeline({
+          defaults: { ease: 'outCubic' },
+          onComplete: () => {
+            delete stage.dataset.motion;
+          },
+        });
+
+        if (hub) {
+          timeline.add(hub, { opacity: [0, 1], translateY: [12, 0], duration: 560 }, 0);
+        }
+        if (halo) {
+          timeline.add(halo, { scale: [0.72, 1], duration: 900, ease: 'outExpo' }, 0);
+        }
+
+        timeline.add(
+          rails,
+          {
+            opacity: [0, 0.4],
+            strokeDashoffset: [0, -60],
+            duration: 900,
+            ease: 'inOutSine',
+            delay: stagger(55),
+          },
+          200
+        );
+
+        pods.forEach((pod, index) => {
+          const at = 380 + index * 150;
+          timeline.add(pod, { opacity: [0, 1], translateY: [10, 0], duration: 440 }, at);
+          timeline.add(
+            pod.querySelectorAll('.desk'),
+            { opacity: [0, 1], duration: 260, delay: stagger(24) },
+            at + 110
+          );
+
+          const row = rows[index];
+          if (row) timeline.add(row, { opacity: [0, 1], duration: 320 }, at);
+        });
+      } catch {
+        delete stage.dataset.motion;
+      }
+    };
+
+    if (typeof IntersectionObserver === 'undefined') {
+      play();
+    } else {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((entry) => entry.isIntersecting)) return;
+          observer.disconnect();
+          play();
+        },
+        { threshold: 0.2, rootMargin: '0px 0px -8% 0px' }
+      );
+      observer.observe(stage);
+    }
+  }
+</script>
+
 <style>
   .workforce {
     padding: var(--space-16) 0;
@@ -229,6 +315,16 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
       background: #15161f;
       box-shadow: 0 24px 64px -32px rgba(0, 0, 0, 0.5);
     }
+  }
+
+  /* Armed by the assembly script until the first frame plays. Opacity only,
+     so nothing reflows while the floor is hidden. */
+  .workforce-stage[data-motion='armed'] .hub,
+  .workforce-stage[data-motion='armed'] .rail,
+  .workforce-stage[data-motion='armed'] .pod,
+  .workforce-stage[data-motion='armed'] .pod .desk,
+  .workforce-stage[data-motion='armed'] .log-row {
+    opacity: 0;
   }
 
   .floor-wrap {
@@ -385,6 +481,8 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
   .hub-halo {
     fill: var(--color-primary);
     opacity: 0.08;
+    transform-box: fill-box;
+    transform-origin: center;
   }
 
   .hub-base {
