@@ -16,8 +16,8 @@ const buildVersion = import.meta.env.PUBLIC_BUILD_VERSION || 'dev';
         <img
           src="/images/digitalocean-badge.svg"
           alt="DigitalOcean Referral Badge - Get $100 Cloud Credits"
-          width="120"
-          height="36"
+          width="200"
+          height="65"
           loading="lazy"
           decoding="async"
         />
@@ -31,8 +31,8 @@ const buildVersion = import.meta.env.PUBLIC_BUILD_VERSION || 'dev';
         <img
           src="/images/hostinger-black.svg"
           alt="Hostinger Referral Badge - Premium Web Hosting 20% Off"
-          width="120"
-          height="36"
+          width="200"
+          height="65"
           loading="lazy"
           decoding="async"
         />
@@ -131,11 +131,11 @@ const buildVersion = import.meta.env.PUBLIC_BUILD_VERSION || 'dev';
   }
 
   .footer-referrals img {
-    height: 36px;
+    width: 110px;
+    height: auto;
   }
 
   .footer-referrals .bmc-button img {
-    width: 120px;
     height: auto;
     max-width: 100%;
   }
@@ -163,9 +163,6 @@ const buildVersion = import.meta.env.PUBLIC_BUILD_VERSION || 'dev';
     }
     .footer-links {
       gap: var(--space-4);
-    }
-    .footer-referrals img {
-      height: 30px;
     }
   }
 </style>
