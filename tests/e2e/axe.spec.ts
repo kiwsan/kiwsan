@@ -13,7 +13,7 @@ test('has no WCAG A or AA violations on the home page', async ({ homePage }) => 
 });
 
 test('has no WCAG A or AA violations on the workforce case study', async ({ page }) => {
-  await page.goto('/workforce');
+  await page.goto('/workforce/');
   await page.waitForLoadState('networkidle');
   await page.evaluate(() => {
     document.querySelectorAll('section').forEach((el) => el.classList.add('visible'));
