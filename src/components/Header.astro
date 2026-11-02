@@ -1,4 +1,9 @@
 ---
+interface Props {
+  basePath?: string;
+}
+
+const { basePath = '' } = Astro.props;
 ---
 
 <header class="header">
@@ -50,7 +55,7 @@
       <span></span>
     </button>
     <nav class="nav" id="nav" aria-label="Main navigation">
-      <a href="#experience">
+      <a href={`${basePath}#experience`}>
         <svg
           width="18"
           height="18"
@@ -64,7 +69,7 @@
         </svg>
         Experience
       </a>
-      <a href="#workforce">
+      <a href={`${basePath}#workforce`}>
         <svg
           width="18"
           height="18"
@@ -80,7 +85,7 @@
         </svg>
         Workforce
       </a>
-      <a href="#projects">
+      <a href={`${basePath}#projects`}>
         <svg
           width="18"
           height="18"
@@ -93,7 +98,7 @@
         </svg>
         Projects
       </a>
-      <a href="#contact">
+      <a href={`${basePath}#contact`}>
         <svg
           width="18"
           height="18"
