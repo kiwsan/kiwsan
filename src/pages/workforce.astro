@@ -1,0 +1,1017 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { workforceFunctions, workforceHub, workforceRoleCount } from '../data/workforce';
+import { SITE } from '../lib/site';
+
+const gates = [
+  {
+    name: 'Scope',
+    question: 'Is this the right problem?',
+    evidence: 'Problem statement + acceptance criteria',
+  },
+  {
+    name: 'Design',
+    question: 'Is this the right shape? (work > 2 days)',
+    evidence: 'ADR + API and data impact',
+  },
+  {
+    name: 'Merge',
+    question: 'Is the diff safe to keep?',
+    evidence: 'Green CI + no blocking review findings',
+  },
+  {
+    name: 'Deploy',
+    question: 'Is now the right time?',
+    evidence: 'Green scan + rollback SHA',
+  },
+];
+
+const tiers = [
+  {
+    tier: 'read',
+    access: 'No writes',
+    roles: 'reviewer · sec-reviewer · design-critic',
+  },
+  {
+    tier: 'docs(path)',
+    access: 'Write only under an assigned docs path',
+    roles: 'pm · architect · researchers · marketing',
+  },
+  {
+    tier: 'code',
+    access: 'Repository writes; push asks; force-push and main denied',
+    roles: 'builder · patch-engineer · prototyper',
+  },
+  {
+    tier: 'ops-read',
+    access: 'docker ps, logs and stats; no mutations',
+    roles: 'sre · prod-support',
+  },
+  {
+    tier: 'security',
+    access: 'docs/security only',
+    roles: 'sec-intel',
+  },
+  {
+    tier: 'notify',
+    access: 'No shell; alerts only',
+    roles: 'notifier',
+  },
+];
+
+const loop = [
+  {
+    title: 'Intake',
+    role: 'pm',
+    body: 'The PRD, acceptance criteria and backlog. Nothing starts without a written problem.',
+    gate: 'Gate 1 · scope',
+  },
+  {
+    title: 'Design',
+    role: 'architect',
+    body: 'An ADR with API and data contracts, only for work longer than two days.',
+    gate: 'Gate 2 · design',
+  },
+  {
+    title: 'Build',
+    role: 'builder',
+    body: 'Implementation, tests and a pull request. One ticket per branch.',
+    gate: null,
+  },
+  {
+    title: 'Review',
+    role: 'reviewer + qa',
+    body: 'The diff is checked against the criteria, the test plan and CI.',
+    gate: 'Gate 3 · merge',
+  },
+  {
+    title: 'Release',
+    role: 'release',
+    body: 'A release note, a green scan and a rollback SHA. Deploy waits for a person.',
+    gate: 'Gate 4 · deploy',
+  },
+  {
+    title: 'Operate',
+    role: 'sre + prod-support',
+    body: 'Health, capacity and dependency risk; triage and an incident timeline when something breaks.',
+    gate: null,
+  },
+];
+---
+
+<Layout
+  title="Inside a 25-role AI workforce — Ekkachai K."
+  description="How one person runs a 25-role AI software team with one artifact per role, narrow permissions and four human gates."
+  socialTitle="One person. A 25-role AI team."
+  socialDescription="The operating model behind the AI workforce: roles, artifacts, permission tiers and four human gates."
+>
+  <Header basePath="/" />
+  <main id="main-content" role="main">
+    <section class="hero" aria-label="Workforce case study">
+      <div class="container">
+        <span class="section-label">Case study · AI workforce</span>
+        <h1>One person. A {workforceRoleCount}-role AI team.</h1>
+        <p class="lede">
+          I run my side projects like a small software company: {workforceRoleCount} AI roles, seven
+          functions, one human. Every role owns a single artifact. Every decision to ship stays with
+          me.
+        </p>
+        <p class="hero-note">
+          This is the operating model behind the
+          <a href="/#workforce">workforce floor on my homepage</a> — what the roles do, what they
+          are not allowed to do, and what has actually run.
+        </p>
+
+        <ul class="stats" aria-label="Workforce at a glance">
+          <li>
+            <strong>{workforceRoleCount}</strong>
+            <span>agent roles</span>
+          </li>
+          <li>
+            <strong>{workforceFunctions.length + 1}</strong>
+            <span>functions</span>
+          </li>
+          <li>
+            <strong>4</strong>
+            <span>human gates</span>
+          </li>
+          <li>
+            <strong>1</strong>
+            <span>human</span>
+          </li>
+        </ul>
+
+        <div class="hero-actions">
+          <a class="btn-primary" href="#loop">
+            Follow a ticket
+          </a>
+          <a class="btn-secondary" href="#roles">
+            See the roles
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-surface" aria-label="Why the workforce exists">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-label">Why it exists</span>
+          <h2>A chat window is not an org chart.</h2>
+          <p>
+            Most agent setups fail at the same three points. The fix is not a better prompt. It is a
+            smaller role, a named artifact and a gate.
+          </p>
+        </div>
+
+        <div class="problem-grid">
+          <article class="problem-card">
+            <span class="card-index">01</span>
+            <h3>No owner</h3>
+            <p>
+              One assistant answers everything. Nobody owns the PRD, the ADR or the release note, so
+              nothing can be reviewed.
+            </p>
+          </article>
+          <article class="problem-card">
+            <span class="card-index">02</span>
+            <h3>No boundary</h3>
+            <p>
+              An agent with repo-wide write access is a production incident waiting for a trigger.
+              Speed is not the constraint. Blast radius is.
+            </p>
+          </article>
+          <article class="problem-card">
+            <span class="card-index">03</span>
+            <h3>No evidence</h3>
+            <p>
+              A demo shows the happy path. It never shows which roles have run a real ticket, or
+              what happened when they failed.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="roles" class="section" aria-label="The workforce roster">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-label">The floor</span>
+          <h2>Seven functions. {workforceRoleCount} roles. One artifact each.</h2>
+          <p>
+            The chief-of-staff plans the week. Six functions do the work and hand off documents, not
+            opinions. If a role cannot name its artifact, it does not get a desk.
+          </p>
+        </div>
+
+        <div class="roles-grid">
+          <article class="role-card role-card-hub">
+            <header>
+              <h3>{workforceHub.label}</h3>
+              <span>1 role</span>
+            </header>
+            <ul>
+              <li>
+                <span class="role-name">{workforceHub.name}</span>
+                <span class="role-owns">{workforceHub.owns}</span>
+              </li>
+            </ul>
+          </article>
+
+          {workforceFunctions.map((fn) => (
+            <article
+              class:list={['role-card', fn.id === 'product' && 'role-card-wide']}
+              style={`--accent:${fn.accent}`}
+            >
+              <header>
+                <h3>{fn.label}</h3>
+                <span>{fn.roles.length} roles</span>
+              </header>
+              <ul>
+                {fn.roles.map((role) => (
+                  <li>
+                    <span class="role-name">{role.name}</span>
+                    <span class="role-owns">{role.owns}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+
+        <p class="footnote">
+          A 26th agent, <code>notifier</code>, is a subagent that only sends P1 alerts and
+          blocked-gate messages. It has no shell and cannot write to the repo, so it is not on the
+          floor.
+        </p>
+      </div>
+    </section>
+
+    <section id="loop" class="section section-surface" aria-label="How a ticket moves">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-label">The loop</span>
+          <h2>One ticket, six steps, four human decisions.</h2>
+          <p>
+            A ticket is the only unit of work. It moves through the same path every time. A gate is
+            a person, not a checklist.
+          </p>
+        </div>
+
+        <ol class="loop">
+          {loop.map((step) => (
+            <li>
+              <div class="step-body">
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+              </div>
+              <div class="step-meta">
+                <span class="step-role">{step.role}</span>
+                {step.gate && <span class="step-gate">{step.gate}</span>}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" aria-label="Human gates">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-label">The gates</span>
+          <h2>What a human still decides.</h2>
+          <p>
+            Automation is allowed to prepare a decision. It is not allowed to make one. Content and
+            spend carry their own gates.
+          </p>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th scope="col">Gate</th>
+                <th scope="col">The question</th>
+                <th scope="col">Evidence required</th>
+              </tr>
+            </thead>
+            <tbody>
+              {gates.map((gate) => (
+                <tr>
+                  <th scope="row">{gate.name}</th>
+                  <td>{gate.question}</td>
+                  <td>{gate.evidence}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-surface" aria-label="Permission tiers">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-label">The blast radius</span>
+          <h2>What the agents cannot do.</h2>
+          <p>
+            Each role starts from a permission tier. A deny in the baseline cannot be relaxed by a
+            role. The narrowest set that still does the job wins.
+          </p>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th scope="col">Tier</th>
+                <th scope="col">Access</th>
+                <th scope="col">Roles</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tiers.map((tier) => (
+                <tr>
+                  <th scope="row">
+                    <code>{tier.tier}</code>
+                  </th>
+                  <td>{tier.access}</td>
+                  <td>{tier.roles}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="rules">
+          <h3>Hard rules, for every role</h3>
+          <ul>
+            <li>
+              Never read, print or commit <code>.env*</code>, tokens or keys.
+            </li>
+            <li>
+              Never run <code>sudo</code>, <code>systemctl</code>, or anything that changes
+              production.
+            </li>
+            <li>
+              Never push to <code>main</code>, force-push, merge or deploy without a human gate.
+            </li>
+            <li>Never invent requirements, numbers, CVEs or test results.</li>
+          </ul>
+        </div>
+
+        <p class="callout">
+          The agent most likely to cause damage is the one with the broadest permission. Fix the
+          tier before you fix the prompt.
+        </p>
+      </div>
+    </section>
+
+    <section class="section" aria-label="Evidence">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-label">Evidence, not intent</span>
+          <h2>What has actually run.</h2>
+          <p>
+            I track the difference between a role that exists and a role that has shipped. The
+            status table is deliberately unglamorous.
+          </p>
+        </div>
+
+        <div class="evidence-grid">
+          <article class="evidence-card">
+            <span class="card-index">01 · 1 Nov 2026</span>
+            <h3>The first real review</h3>
+            <p>
+              <code>reviewer</code> read a merged origin-authentication change and returned six
+              findings: one high, one medium-high, two medium, two low. One was a real secret-path
+              disclosure; two were availability risks. It stayed read-only and named four residual
+              risks it could not verify.
+            </p>
+          </article>
+          <article class="evidence-card">
+            <span class="card-index">02 · before commit</span>
+            <h3>Validation, not vibes</h3>
+            <p>
+              <code>validate.sh</code> fails when frontmatter is incomplete, a baseline deny is
+              missing, a command points at a role that does not exist, or the roster drifts from the
+              docs.
+            </p>
+          </article>
+          <article class="evidence-card">
+            <span class="card-index">03 · current state</span>
+            <h3>Scaffolded is a state</h3>
+            <p>
+              A role is marked in use only after one real ticket. The first phase — pm, builder and
+              reviewer — is in use. The others have a file, permissions and a playbook, but not yet
+              a written first run.
+            </p>
+          </article>
+        </div>
+
+        <p class="callout">
+          What I do not claim: every role is battle-tested. The design is complete. The evidence is
+          still accumulating. I would rather publish the gap than imply that all{' '}
+          {workforceRoleCount}
+          agents are shipping.
+        </p>
+      </div>
+    </section>
+
+    <section class="section section-surface" aria-label="Questions about the workforce">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-label">Questions</span>
+          <h2>The parts people ask about.</h2>
+        </div>
+
+        <div class="faq-grid">
+          <div class="faq-item">
+            <h3>Does 25 roles mean 25 employees?</h3>
+            <p>
+              No. {workforceRoleCount} agent roles and one human. I approve scope, design, merge and
+              deploy.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3>Do agents deploy to production?</h3>
+            <p>
+              No. <code>release</code> prepares the evidence and a rollback SHA. Deploy is a human
+              gate.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3>Which model runs the team?</h3>
+            <p>
+              The roles are model-agnostic. They run in OpenCode, and I choose the model per session
+              instead of hardcoding one into a role.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3>Why not more roles?</h3>
+            <p>Every role adds a handoff. I add one only when a real artifact has no owner.</p>
+          </div>
+          <div class="faq-item">
+            <h3>Can I copy the model?</h3>
+            <p>
+              Yes. Start with one artifact per role and the smallest permission set that still does
+              the job. If you want the checklist, email me.
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3>What breaks most often?</h3>
+            <p>
+              Handoffs and permissions — a role that cannot see what it needs, or one that can see
+              far too much. Both show up as review findings, not demos.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" aria-label="Contact">
+      <div class="container">
+        <span class="section-label">Next</span>
+        <h2>Building an AI team of your own?</h2>
+        <p>
+          I write about the operating model, the failures and the gates. If you are wiring agents
+          into real delivery, I am happy to compare notes.
+        </p>
+        <div class="closing-actions">
+          <a class="btn-primary" href={`mailto:${SITE.email}?subject=AI%20workforce`}>
+            Email me
+          </a>
+          <a class="btn-secondary" href={SITE.linkedin} target="_blank" rel="noopener noreferrer">
+            Connect on LinkedIn
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .hero {
+    padding: clamp(48px, 7vw, 88px) 0 var(--space-16);
+    background:
+      radial-gradient(120% 90% at 100% 0%, var(--color-primary-fixed) 0%, transparent 55%),
+      var(--color-bg);
+  }
+
+  h1 {
+    max-width: 16ch;
+    margin: var(--space-2) 0 var(--space-5);
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    letter-spacing: -0.035em;
+  }
+
+  .lede {
+    max-width: 62ch;
+    color: var(--color-text);
+    font-size: clamp(1.125rem, 2vw, 1.35rem);
+    line-height: 1.55;
+  }
+
+  .hero-note {
+    max-width: 60ch;
+    margin-top: var(--space-4);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    line-height: 1.65;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-4);
+    max-width: 720px;
+    margin: var(--space-10) 0 var(--space-8);
+    padding: 0;
+    list-style: none;
+  }
+
+  .stats li {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .stats strong {
+    font-family: var(--font-display);
+    font-size: clamp(1.9rem, 4vw, 2.8rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  .stats span {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .hero-actions,
+  .closing-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.875rem var(--space-8);
+    border-radius: 8px;
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    transition:
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.35s ease,
+      background-color 0.35s ease;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #00288e, #1e40af);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 40, 142, 0.18);
+  }
+
+  .btn-primary:hover {
+    color: #ffffff;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(0, 40, 142, 0.22);
+  }
+
+  .btn-secondary {
+    background: var(--color-primary-fixed);
+    color: var(--color-primary);
+  }
+
+  .btn-secondary:hover {
+    color: var(--color-primary);
+    transform: translateY(-2px);
+  }
+
+  .section {
+    padding: var(--space-20) 0;
+  }
+
+  .section-surface {
+    background: var(--color-surface-container-low);
+  }
+
+  .section-head {
+    max-width: 66ch;
+    margin-bottom: var(--space-10);
+  }
+
+  .section-head h2 {
+    margin-bottom: var(--space-4);
+    font-size: clamp(1.9rem, 3.6vw, 2.75rem);
+  }
+
+  .section-head p {
+    color: var(--color-text-muted);
+    font-size: var(--text-base);
+    line-height: 1.7;
+  }
+
+  .problem-grid,
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-5);
+  }
+
+  .problem-card,
+  .evidence-card {
+    padding: var(--space-6);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg);
+  }
+
+  .card-index {
+    display: block;
+    margin-bottom: var(--space-3);
+    color: var(--color-primary);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .problem-card h3,
+  .evidence-card h3 {
+    margin-bottom: var(--space-2);
+    font-size: var(--text-xl);
+  }
+
+  .problem-card p,
+  .evidence-card p {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    line-height: 1.65;
+  }
+
+  .roles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-4);
+    align-items: start;
+  }
+
+  .role-card-wide {
+    grid-column: span 2;
+  }
+
+  .role-card {
+    --accent: var(--color-primary);
+
+    padding: var(--space-5);
+    border-top: 2px solid var(--accent);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-container-low);
+  }
+
+  .role-card-hub {
+    --accent: var(--color-primary);
+
+    background: var(--color-primary-fixed);
+  }
+
+  .role-card header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+  }
+
+  .role-card h3 {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .role-card header span {
+    flex: none;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .role-card ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: 0;
+    list-style: none;
+  }
+
+  .role-card-wide ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--space-6);
+  }
+
+  .role-card li {
+    display: grid;
+    grid-template-columns: 132px minmax(0, 1fr);
+    gap: var(--space-2);
+    align-items: baseline;
+  }
+
+  .role-name {
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  .role-owns {
+    color: var(--color-text-muted);
+    font-size: 11px;
+    line-height: 1.55;
+  }
+
+  .footnote {
+    max-width: 70ch;
+    margin-top: var(--space-6);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    line-height: 1.65;
+  }
+
+  .loop {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+  }
+
+  .loop li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 220px;
+    gap: var(--space-5);
+    align-items: baseline;
+    padding: var(--space-5) var(--space-6);
+    border-radius: var(--radius-md);
+    background: var(--color-bg);
+    counter-increment: step;
+  }
+
+  .step-body {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: var(--space-2);
+    align-items: baseline;
+  }
+
+  .step-body::before {
+    content: counter(step, decimal-leading-zero);
+    color: var(--color-primary);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+
+  .step-body h3 {
+    grid-column: 2;
+    margin-bottom: var(--space-1);
+    font-size: var(--text-lg);
+  }
+
+  .step-body p {
+    grid-column: 2;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    line-height: 1.6;
+  }
+
+  .step-meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    align-items: flex-start;
+  }
+
+  .step-role,
+  .step-gate {
+    padding: 3px 8px;
+    border-radius: var(--radius-full);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.04em;
+  }
+
+  .step-role {
+    background: var(--color-surface-container-low);
+    color: var(--color-text-muted);
+  }
+
+  .step-gate {
+    background: var(--color-primary-fixed);
+    color: var(--color-primary);
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: var(--radius-md);
+  }
+
+  .data-table {
+    width: 100%;
+    min-width: 680px;
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+  }
+
+  .data-table th:first-child {
+    width: 16%;
+  }
+
+  .data-table th:nth-child(2),
+  .data-table th:nth-child(3) {
+    width: 42%;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 14px var(--space-4);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .data-table thead th {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .data-table tbody tr:nth-child(odd) {
+    background: var(--color-surface-container-low);
+  }
+
+  .section-surface .data-table tbody tr:nth-child(odd) {
+    background: var(--color-bg);
+  }
+
+  .data-table tbody th {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .data-table tbody td {
+    color: var(--color-text-muted);
+    line-height: 1.55;
+  }
+
+  code {
+    padding: 1px 5px;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-container-high);
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+  }
+
+  .rules {
+    margin-top: var(--space-8);
+  }
+
+  .rules h3 {
+    margin-bottom: var(--space-3);
+    font-size: var(--text-lg);
+  }
+
+  .rules ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    max-width: 80ch;
+    padding-left: var(--space-5);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    line-height: 1.65;
+  }
+
+  .callout {
+    max-width: 76ch;
+    margin-top: var(--space-8);
+    padding: var(--space-5) var(--space-6);
+    border-left: 3px solid var(--color-primary);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    background: var(--color-surface-container-low);
+    color: var(--color-text);
+    font-size: var(--text-sm);
+    line-height: 1.65;
+  }
+
+  .section-surface .callout {
+    background: var(--color-bg);
+  }
+
+  .faq-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-8) var(--space-10);
+    max-width: 1000px;
+  }
+
+  .faq-item h3 {
+    margin-bottom: var(--space-2);
+    font-size: var(--text-lg);
+  }
+
+  .faq-item p {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    line-height: 1.65;
+  }
+
+  .closing {
+    padding: var(--space-20) 0;
+    background:
+      radial-gradient(90% 120% at 0% 100%, var(--color-primary-fixed) 0%, transparent 60%),
+      var(--color-bg);
+  }
+
+  .closing h2 {
+    max-width: 20ch;
+    margin-bottom: var(--space-3);
+    font-size: clamp(1.9rem, 3.6vw, 2.75rem);
+  }
+
+  .closing p {
+    max-width: 60ch;
+    margin-bottom: var(--space-6);
+    color: var(--color-text-muted);
+    font-size: var(--text-base);
+    line-height: 1.7;
+  }
+
+  @media (max-width: 1100px) {
+    .roles-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 900px) {
+    .problem-grid,
+    .evidence-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .loop li {
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
+    }
+
+    .step-meta {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-5);
+    }
+
+    .roles-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .role-card-wide {
+      grid-column: span 1;
+    }
+
+    .role-card-wide ul {
+      grid-template-columns: 1fr;
+    }
+
+    .faq-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .role-card li {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+  }
+</style>

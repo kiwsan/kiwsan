@@ -16,6 +16,10 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
         checks and specialist reviewers test it. I decide what to build and approve four
         checkpoints: scope, design, merge and deploy.
       </p>
+      <a class="workforce-link" href="/workforce">
+        Read the case study
+        <span aria-hidden="true">→</span>
+      </a>
     </div>
 
     <div class="workforce-stage">
@@ -207,6 +211,25 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
     font-size: var(--text-sm);
     line-height: 1.6;
     margin: 0;
+  }
+
+  .workforce-link {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-top: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .workforce-link span {
+    transition: transform 0.2s ease;
+  }
+
+  .workforce-link:hover span {
+    transform: translateX(3px);
   }
 
   .workforce-stage {
