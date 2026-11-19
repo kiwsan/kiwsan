@@ -9,7 +9,7 @@ results:
   [
     'AI transformation delivered with the official local OpenAI partner and OpenAI team',
     'AI Clinic with HR upskilling teams across the group',
-    'Drove agent adoption on ChatGPT Business and Enterprise',
+    'Drove teams to choose the right agent on ChatGPT Business and Enterprise',
     'Central AI platform serving group-wide teams',
     'Multi-model access: GPT-5, o4-mini, DeepSeek via one gateway',
     'Agents wired into ERP/OMS/WMS workflows',
@@ -27,4 +27,4 @@ Integrated AI agents with the existing ERP, OMS, and WMS landscape, extending th
 
 Ran the group's AI transformation with the official local OpenAI partner and the OpenAI team, from platform strategy through rollout.
 
-Partnered with HR to run an in-house AI Clinic, giving teams a hands-on place to test agents on ChatGPT Business and Enterprise and adopt the ones that fit their work.
+Partnered with HR to run an in-house AI Clinic, giving teams a hands-on place to test agents on ChatGPT Business and Enterprise and choose the ones that fit their work.
