@@ -116,6 +116,11 @@ jobs:
         with:
           working_directory: ${{ env.TF_DIR }}
           soft_fail: false
+          # Pin the scanner and authenticate the release lookup. Without a
+          # token the action's unauthenticated GitHub API call is rate
+          # limited on shared runners and fails the job.
+          version: v1.28.14
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
   terraform-plan:
     name: Terraform Plan
