@@ -27,7 +27,6 @@ export interface HubGeometry {
   cx: number;
   cy: number;
   radius: number;
-  desks: DeskGeometry[];
   labelY: number;
 }
 
@@ -147,7 +146,6 @@ export const buildWorkforceScene = (): WorkforceScene => ({
     cx: WORKFORCE_HUB.cx,
     cy: WORKFORCE_HUB.cy,
     radius: WORKFORCE_HUB.radius,
-    desks: [deskAt(WORKFORCE_HUB.cx, WORKFORCE_HUB.cy + 4, 38, 18, 7)],
     labelY: WORKFORCE_HUB.cy + WORKFORCE_HUB.radius + 24,
   },
   rails: workforceFunctions.map(railTo),

@@ -74,13 +74,20 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
               cy={scene.hub.cy}
               r={scene.hub.radius - 9}
             />
-            {scene.hub.desks.map((desk) => (
-              <g class="desk hub-desk">
-                <path class="desk-left" d={desk.left} />
-                <path class="desk-right" d={desk.right} />
-                <path class="desk-top" d={desk.top} />
-              </g>
-            ))}
+            <g
+              class="hub-agent"
+              transform={`translate(${scene.hub.cx} ${scene.hub.cy})`}
+              aria-hidden="true"
+            >
+              <rect class="agent-ear" x="-25.5" y="-5.5" width="3.5" height="11" rx="1.75" />
+              <rect class="agent-ear" x="22" y="-5.5" width="3.5" height="11" rx="1.75" />
+              <path class="agent-antenna" d="M0 -16 V-25" />
+              <circle class="agent-tip" cx="0" cy="-27.5" r="2.6" />
+              <rect class="agent-head" x="-22" y="-16" width="44" height="32" rx="10" />
+              <circle class="agent-eye" cx="-8.5" cy="-2" r="3.7" />
+              <circle class="agent-eye" cx="8.5" cy="-2" r="3.7" />
+              <path class="agent-mouth" d="M-7 7.5 H7" />
+            </g>
             <text class="hub-name" x={scene.hub.cx} y={scene.hub.labelY} text-anchor="middle">
               {workforceHub.name}
             </text>
@@ -523,15 +530,32 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
     stroke-dasharray: 2 5;
   }
 
-  .hub-desk .desk-top {
-    fill: var(--color-primary);
-    opacity: 0.9;
+  /* The hub mark is an agent, not a desk: a small robot head drawn in the
+     same accent ink as the floor, with a soft glow so it reads as the
+     always-on planner at the centre. */
+  .hub-agent {
+    filter: drop-shadow(0 0 10px color-mix(in oklab, var(--color-primary) 40%, transparent));
   }
 
-  .hub-desk .desk-left,
-  .hub-desk .desk-right {
-    fill: color-mix(in oklab, var(--color-primary) 62%, #101828);
-    opacity: 0.7;
+  .agent-head {
+    fill: color-mix(in oklab, var(--color-primary) 14%, transparent);
+    stroke: var(--color-primary);
+    stroke-width: 2;
+    stroke-linejoin: round;
+  }
+
+  .agent-ear,
+  .agent-tip,
+  .agent-eye {
+    fill: var(--color-primary);
+  }
+
+  .agent-antenna,
+  .agent-mouth {
+    fill: none;
+    stroke: var(--color-primary);
+    stroke-width: 2;
+    stroke-linecap: round;
   }
 
   .hub-name {
