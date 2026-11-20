@@ -4,6 +4,8 @@
 
 export type WorkforceMode = 'all' | 'subagent';
 
+export type AgentIcon = 'build' | 'design' | 'research' | 'growth' | 'support' | 'security';
+
 export interface WorkforceRole {
   name: string;
   owns: string;
@@ -14,6 +16,7 @@ export interface WorkforceFunction {
   id: 'product' | 'prototype' | 'research' | 'marketing' | 'support' | 'security';
   label: string;
   accent: string;
+  icon: AgentIcon;
   handoff: string;
   roles: WorkforceRole[];
 }
@@ -30,6 +33,7 @@ export const workforceFunctions: WorkforceFunction[] = [
     id: 'product',
     label: 'Product & Eng',
     accent: '#7aa2f7',
+    icon: 'build',
     handoff: 'plan → design → build → review',
     roles: [
       { name: 'pm', owns: 'PRD, acceptance criteria, backlog', mode: 'all' },
@@ -46,6 +50,7 @@ export const workforceFunctions: WorkforceFunction[] = [
     id: 'prototype',
     label: 'Prototype',
     accent: '#bb9af7',
+    icon: 'design',
     handoff: 'user flow → clickable preview',
     roles: [
       { name: 'ux-designer', owns: 'flows, wireframes, states', mode: 'subagent' },
@@ -57,6 +62,7 @@ export const workforceFunctions: WorkforceFunction[] = [
     id: 'research',
     label: 'Research',
     accent: '#7dcfff',
+    icon: 'research',
     handoff: 'market brief → user evidence → metrics',
     roles: [
       { name: 'market-researcher', owns: 'market/competitor/pricing, cited', mode: 'subagent' },
@@ -72,6 +78,7 @@ export const workforceFunctions: WorkforceFunction[] = [
     id: 'marketing',
     label: 'Marketing',
     accent: '#ff9e64',
+    icon: 'growth',
     handoff: 'content draft → growth test',
     roles: [
       { name: 'marketing-lead', owns: 'positioning, channels, budget', mode: 'subagent' },
@@ -84,6 +91,7 @@ export const workforceFunctions: WorkforceFunction[] = [
     id: 'support',
     label: 'Support',
     accent: '#9ece6a',
+    icon: 'support',
     handoff: 'triage → incident timeline',
     roles: [
       { name: 'prod-support', owns: 'first response, triage, timeline', mode: 'subagent' },
@@ -95,6 +103,7 @@ export const workforceFunctions: WorkforceFunction[] = [
     id: 'security',
     label: 'Security',
     accent: '#f7768e',
+    icon: 'security',
     handoff: 'advisory → patch → review',
     roles: [
       { name: 'sec-intel', owns: 'advisories, weekly bulletin', mode: 'subagent' },

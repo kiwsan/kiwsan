@@ -1,10 +1,5 @@
 import { workforceFunctions, type WorkforceFunction } from '../../data/workforce';
 
-export interface AgentSeat {
-  x: number;
-  y: number;
-}
-
 export interface PodGeometry {
   id: WorkforceFunction['id'];
   label: string;
@@ -16,7 +11,7 @@ export interface PodGeometry {
   top: string;
   left: string;
   right: string;
-  agents: AgentSeat[];
+  icon: WorkforceFunction['icon'];
   labelY: number;
 }
 
@@ -56,26 +51,6 @@ const SLOTS: Record<WorkforceFunction['id'], { cx: number; cy: number; w: number
 
 const round = (value: number) => Math.round(value * 10) / 10;
 
-/* A pod's seat count is its role count: every agent gets one seat in the
-   grid. Keep the grid shallow so the heads read as a team, not a heatmap. */
-const seatsFor = (count: number, cx: number, cy: number, width: number): AgentSeat[] => {
-  const cols = Math.min(4, count);
-  const rows = Math.ceil(count / cols);
-  const xStep = width * 0.18;
-  const yStep = width * 0.14;
-  const seats: AgentSeat[] = [];
-
-  for (let i = 0; i < count; i += 1) {
-    const col = i % cols;
-    const row = Math.floor(i / cols);
-    const x = cx + (col - (cols - 1) / 2) * xStep;
-    const y = cy + (row - (rows - 1) / 2) * yStep;
-    seats.push({ x: round(x), y: round(y) });
-  }
-
-  return seats;
-};
-
 const buildPod = (fn: WorkforceFunction): PodGeometry => {
   const slot = SLOTS[fn.id];
   const halfH = slot.w * 0.27;
@@ -92,7 +67,7 @@ const buildPod = (fn: WorkforceFunction): PodGeometry => {
     top: `M${slot.cx} ${round(slot.cy - halfH)} L${round(slot.cx + slot.w / 2)} ${slot.cy} L${slot.cx} ${round(slot.cy + halfH)} L${round(slot.cx - slot.w / 2)} ${slot.cy} Z`,
     left: `M${round(slot.cx - slot.w / 2)} ${slot.cy} L${slot.cx} ${round(slot.cy + halfH)} L${slot.cx} ${round(slot.cy + halfH + thickness)} L${round(slot.cx - slot.w / 2)} ${slot.cy + thickness} Z`,
     right: `M${round(slot.cx + slot.w / 2)} ${slot.cy} L${slot.cx} ${round(slot.cy + halfH)} L${slot.cx} ${round(slot.cy + halfH + thickness)} L${round(slot.cx + slot.w / 2)} ${slot.cy + thickness} Z`,
-    agents: seatsFor(fn.roles.length, slot.cx, slot.cy, slot.w),
+    icon: fn.icon,
     labelY: round(slot.cy + halfH + 22),
   };
 };

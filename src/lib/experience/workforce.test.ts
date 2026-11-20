@@ -16,15 +16,15 @@ describe('workforce data', () => {
 });
 
 describe('buildWorkforceScene', () => {
-  it('draws one pod per function and one agent per role', () => {
+  it('draws one pod per function and one agent per pod', () => {
     const scene = buildWorkforceScene();
 
     expect(scene.viewBox).toBe(WORKFORCE_VIEWBOX);
     expect(scene.pods).toHaveLength(6);
-    expect(scene.pods.reduce((sum, pod) => sum + pod.agents.length, 0)).toBe(24);
+    expect(new Set(scene.pods.map((pod) => pod.icon)).size).toBe(6);
 
     for (const pod of scene.pods) {
-      expect(pod.agents).toHaveLength(pod.count);
+      expect(pod.icon).toBeTruthy();
     }
   });
 
@@ -48,13 +48,6 @@ describe('buildWorkforceScene', () => {
 
       for (const path of [pod.top, pod.left, pod.right]) {
         expect(path).not.toContain('NaN');
-      }
-
-      for (const agent of pod.agents) {
-        expect(agent.x).toBeGreaterThan(minX);
-        expect(agent.x).toBeLessThan(minX + width);
-        expect(agent.y).toBeGreaterThan(minY);
-        expect(agent.y).toBeLessThan(minY + height);
       }
     }
 
