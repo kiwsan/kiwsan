@@ -16,15 +16,15 @@ describe('workforce data', () => {
 });
 
 describe('buildWorkforceScene', () => {
-  it('draws one pod per function and one desk per role', () => {
+  it('draws one pod per function and one agent per role', () => {
     const scene = buildWorkforceScene();
 
     expect(scene.viewBox).toBe(WORKFORCE_VIEWBOX);
     expect(scene.pods).toHaveLength(6);
-    expect(scene.pods.reduce((sum, pod) => sum + pod.desks.length, 0)).toBe(24);
+    expect(scene.pods.reduce((sum, pod) => sum + pod.agents.length, 0)).toBe(24);
 
     for (const pod of scene.pods) {
-      expect(pod.desks).toHaveLength(pod.count);
+      expect(pod.agents).toHaveLength(pod.count);
     }
   });
 
@@ -36,7 +36,7 @@ describe('buildWorkforceScene', () => {
     expect(scene.hub.cy).toBe(minY + height / 2);
   });
 
-  it('keeps every path finite and inside the view box', () => {
+  it('keeps every shape finite and inside the view box', () => {
     const scene = buildWorkforceScene();
     const [minX, minY, width, height] = scene.viewBox.split(' ').map(Number);
 
@@ -50,12 +50,11 @@ describe('buildWorkforceScene', () => {
         expect(path).not.toContain('NaN');
       }
 
-      for (const desk of pod.desks) {
-        for (const path of [desk.top, desk.left, desk.right]) {
-          expect(path).not.toContain('NaN');
-        }
-        expect(Number.isFinite(desk.x)).toBe(true);
-        expect(Number.isFinite(desk.y)).toBe(true);
+      for (const agent of pod.agents) {
+        expect(agent.x).toBeGreaterThan(minX);
+        expect(agent.x).toBeLessThan(minX + width);
+        expect(agent.y).toBeGreaterThan(minY);
+        expect(agent.y).toBeLessThan(minY + height);
       }
     }
 
