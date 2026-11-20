@@ -61,12 +61,14 @@ jobs:
         run: npm ci
         working-directory: ./tests
 
+      # Every engine that the site claims to support runs here. WebKit is the
+      # one that catches CSP and CSS differences first, so it is not optional.
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install --with-deps chromium firefox webkit
         working-directory: ./tests
 
       - name: Run E2E tests
-        run: npm test -- --project=chromium --project=mobile-chrome
+        run: npm test
         working-directory: ./tests
 
       - name: Upload Playwright report

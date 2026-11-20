@@ -37,7 +37,9 @@ npm run test:unit
 npm run test:e2e:chromium
 ```
 
-`test:unit` runs Vitest over the pure logic in `src/lib`. `test:e2e:chromium` starts a preview server on port 4322 and runs the same Chromium and mobile Chrome projects as CI. Use `npm run test:e2e` when Firefox and WebKit are available locally. The E2E config does not reuse an existing server, so a stale dev server cannot produce false results.
+`test:unit` runs Vitest over the pure logic in `src/lib`. `test:e2e:chromium` starts a preview server on port 4322 and runs only Chromium and mobile Chrome, for a quick loop. `npm run test:e2e` runs all four projects: Chromium, Firefox, WebKit, and mobile Chrome. CI runs all four, so a browser regression fails the build. The E2E config does not reuse an existing server, so a stale dev server cannot produce false results.
+
+WebKit applies `upgrade-insecure-requests` to localhost. The dev and preview servers therefore use a reduced copy of the policy without that directive, while `security.config.json` keeps the full policy for CloudFront. Do not add `upgrade-insecure-requests` back to the local header: every stylesheet and script would fail the TLS handshake.
 
 The Playwright suite covers navigation, responsive layout, the chat widget, accessibility, and the office marker scale.
 
@@ -72,7 +74,7 @@ See `terraform/README.md` for the AWS bootstrap and manual deployment steps.
 ## Production configuration
 
 - `security.config.json` is the single source of truth for the Content Security Policy.
-- `astro.config.mjs` uses the same policy for the dev server.
+- `astro.config.mjs` uses the same policy for the dev and preview servers, minus `upgrade-insecure-requests` (the local servers are HTTP).
 - `scripts/apply-cloudfront.mjs` applies the policy, enables gzip and Brotli, and sets 403/404 responses to the 404 page with status 404.
 - CloudFront response headers are managed outside the S3 upload. The script keeps the production policy aligned with the repository.
 
