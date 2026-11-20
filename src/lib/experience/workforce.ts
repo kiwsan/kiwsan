@@ -1,9 +1,6 @@
 import { workforceFunctions, type WorkforceFunction } from '../../data/workforce';
 
-export interface DeskGeometry {
-  top: string;
-  left: string;
-  right: string;
+export interface AgentSeat {
   x: number;
   y: number;
 }
@@ -19,7 +16,7 @@ export interface PodGeometry {
   top: string;
   left: string;
   right: string;
-  desks: DeskGeometry[];
+  agents: AgentSeat[];
   labelY: number;
 }
 
@@ -59,32 +56,24 @@ const SLOTS: Record<WorkforceFunction['id'], { cx: number; cy: number; w: number
 
 const round = (value: number) => Math.round(value * 10) / 10;
 
-const deskAt = (x: number, y: number, w = 20, h = 10, depth = 4): DeskGeometry => {
-  const top = `M${round(x)} ${round(y - h)} L${round(x + w / 2)} ${round(y)} L${round(x)} ${round(y + h)} L${round(x - w / 2)} ${round(y)} Z`;
-  const left = `M${round(x - w / 2)} ${round(y)} L${round(x)} ${round(y + h)} L${round(x)} ${round(y + h + depth)} L${round(x - w / 2)} ${round(y + depth)} Z`;
-  const right = `M${round(x + w / 2)} ${round(y)} L${round(x)} ${round(y + h)} L${round(x)} ${round(y + h + depth)} L${round(x + w / 2)} ${round(y + depth)} Z`;
-
-  return { top, left, right, x: round(x), y: round(y) };
-};
-
-/* A pod's desk count is its role count. Keep the grid shallow so the desks
-   read as furniture, not a heatmap. */
-const desksFor = (count: number, cx: number, cy: number, width: number): DeskGeometry[] => {
+/* A pod's seat count is its role count: every agent gets one seat in the
+   grid. Keep the grid shallow so the heads read as a team, not a heatmap. */
+const seatsFor = (count: number, cx: number, cy: number, width: number): AgentSeat[] => {
   const cols = Math.min(4, count);
   const rows = Math.ceil(count / cols);
   const xStep = width * 0.18;
   const yStep = width * 0.14;
-  const desks: DeskGeometry[] = [];
+  const seats: AgentSeat[] = [];
 
   for (let i = 0; i < count; i += 1) {
     const col = i % cols;
     const row = Math.floor(i / cols);
     const x = cx + (col - (cols - 1) / 2) * xStep;
     const y = cy + (row - (rows - 1) / 2) * yStep;
-    desks.push(deskAt(x, y));
+    seats.push({ x: round(x), y: round(y) });
   }
 
-  return desks;
+  return seats;
 };
 
 const buildPod = (fn: WorkforceFunction): PodGeometry => {
@@ -103,7 +92,7 @@ const buildPod = (fn: WorkforceFunction): PodGeometry => {
     top: `M${slot.cx} ${round(slot.cy - halfH)} L${round(slot.cx + slot.w / 2)} ${slot.cy} L${slot.cx} ${round(slot.cy + halfH)} L${round(slot.cx - slot.w / 2)} ${slot.cy} Z`,
     left: `M${round(slot.cx - slot.w / 2)} ${slot.cy} L${slot.cx} ${round(slot.cy + halfH)} L${slot.cx} ${round(slot.cy + halfH + thickness)} L${round(slot.cx - slot.w / 2)} ${slot.cy + thickness} Z`,
     right: `M${round(slot.cx + slot.w / 2)} ${slot.cy} L${slot.cx} ${round(slot.cy + halfH)} L${slot.cx} ${round(slot.cy + halfH + thickness)} L${round(slot.cx + slot.w / 2)} ${slot.cy + thickness} Z`,
-    desks: desksFor(fn.roles.length, slot.cx, slot.cy, slot.w),
+    agents: seatsFor(fn.roles.length, slot.cx, slot.cy, slot.w),
     labelY: round(slot.cy + halfH + 22),
   };
 };

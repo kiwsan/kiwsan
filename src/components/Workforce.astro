@@ -41,7 +41,7 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
           <title id="workforce-svg-title">The AI workforce floor</title>
           <desc id="workforce-svg-desc">
             A central chief-of-staff hub connected to six team pods: Product and Engineering,
-            Prototype, Research, Marketing, Support and Security. Desk count shows the number of
+            Prototype, Research, Marketing, Support and Security. Agent count shows the number of
             roles in each pod.
           </desc>
 
@@ -49,6 +49,58 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
             <pattern id="workforce-grid" width="24" height="24" patternUnits="userSpaceOnUse">
               <circle class="grid-dot" cx="1" cy="1" r="0.9" />
             </pattern>
+
+            <symbol id="agent-mark" viewBox="-27 -31 54 48">
+              <rect
+                x="-25.5"
+                y="-5.5"
+                width="3.5"
+                height="11"
+                rx="1.75"
+                fill="currentColor"
+                fill-opacity="1"
+                stroke="none"
+              />
+              <rect
+                x="22"
+                y="-5.5"
+                width="3.5"
+                height="11"
+                rx="1.75"
+                fill="currentColor"
+                fill-opacity="1"
+                stroke="none"
+              />
+              <path d="M0 -16 V-25" fill="none" stroke="currentColor" stroke-linecap="round" />
+              <circle
+                cx="0"
+                cy="-27.5"
+                r="2.6"
+                fill="currentColor"
+                fill-opacity="1"
+                stroke="none"
+              />
+              <rect
+                x="-22"
+                y="-16"
+                width="44"
+                height="32"
+                rx="10"
+                fill="currentColor"
+                stroke="currentColor"
+                stroke-linejoin="round"
+              />
+              <circle
+                cx="-8.5"
+                cy="-2"
+                r="3.7"
+                fill="currentColor"
+                fill-opacity="1"
+                stroke="none"
+              />
+              <circle cx="8.5" cy="-2" r="3.7" fill="currentColor" fill-opacity="1" stroke="none" />
+              <path d="M-7 7.5 H7" fill="none" stroke="currentColor" stroke-linecap="round" />
+            </symbol>
           </defs>
 
           <rect class="floor-bg" width="1000" height="640" rx="18" />
@@ -74,20 +126,17 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
               cy={scene.hub.cy}
               r={scene.hub.radius - 9}
             />
-            <g
+            <use
               class="hub-agent"
-              transform={`translate(${scene.hub.cx} ${scene.hub.cy})`}
+              href="#agent-mark"
+              x={scene.hub.cx - 27}
+              y={scene.hub.cy - 24}
+              width="54"
+              height="48"
+              stroke-width="2"
+              fill-opacity="0.14"
               aria-hidden="true"
-            >
-              <rect class="agent-ear" x="-25.5" y="-5.5" width="3.5" height="11" rx="1.75" />
-              <rect class="agent-ear" x="22" y="-5.5" width="3.5" height="11" rx="1.75" />
-              <path class="agent-antenna" d="M0 -16 V-25" />
-              <circle class="agent-tip" cx="0" cy="-27.5" r="2.6" />
-              <rect class="agent-head" x="-22" y="-16" width="44" height="32" rx="10" />
-              <circle class="agent-eye" cx="-8.5" cy="-2" r="3.7" />
-              <circle class="agent-eye" cx="8.5" cy="-2" r="3.7" />
-              <path class="agent-mouth" d="M-7 7.5 H7" />
-            </g>
+            />
             <text class="hub-name" x={scene.hub.cx} y={scene.hub.labelY} text-anchor="middle">
               {workforceHub.name}
             </text>
@@ -101,12 +150,17 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
               <path class="pod-left" d={pod.left} />
               <path class="pod-right" d={pod.right} />
               <path class="pod-top" d={pod.top} />
-              {pod.desks.map((desk) => (
-                <g class="desk">
-                  <path class="desk-left" d={desk.left} />
-                  <path class="desk-right" d={desk.right} />
-                  <path class="desk-top" d={desk.top} />
-                </g>
+              {pod.agents.map((agent) => (
+                <use
+                  class="agent"
+                  href="#agent-mark"
+                  x={agent.x - 11}
+                  y={agent.y - 9.8}
+                  width="22"
+                  height="19.6"
+                  stroke-width="3.4"
+                  fill-opacity="0.3"
+                />
               ))}
               <text class="pod-name" x={pod.cx} y={pod.labelY} text-anchor="middle">
                 {pod.label}
@@ -140,7 +194,18 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
 
         <div class="log-legend">
           <span>
-            <i class="legend-desk"></i> desk = one role
+            <svg class="legend-agent" viewBox="-27 -31 54 48" aria-hidden="true">
+              <use
+                href="#agent-mark"
+                x="-27"
+                y="-31"
+                width="54"
+                height="48"
+                stroke-width="4"
+                fill-opacity="0.32"
+              />
+            </svg>
+            agent = one role
           </span>
           <span>
             <i class="legend-rail"></i> rail = handoff
@@ -200,7 +265,7 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
 
 <script>
   /* The floor assembles once, when it first comes into view: hub, rails, pods,
-     desks, then the status log. The final frame is the existing static scene,
+     agents, then the status log. The final frame is the existing static scene,
      so no-JS, reduced motion, mobile, and the test suite all keep the same
      markup and the same result. */
   const stage = document.querySelector<HTMLElement>('#workforce .workforce-stage');
@@ -255,7 +320,7 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
           const at = 380 + index * 150;
           timeline.add(pod, { opacity: [0, 1], translateY: [10, 0], duration: 440 }, at);
           timeline.add(
-            pod.querySelectorAll('.desk'),
+            pod.querySelectorAll('.agent'),
             { opacity: [0, 1], duration: 260, delay: stagger(24) },
             at + 110
           );
@@ -352,7 +417,7 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
   .workforce-stage[data-motion='armed'] .hub,
   .workforce-stage[data-motion='armed'] .rail,
   .workforce-stage[data-motion='armed'] .pod,
-  .workforce-stage[data-motion='armed'] .pod .desk,
+  .workforce-stage[data-motion='armed'] .pod .agent,
   .workforce-stage[data-motion='armed'] .log-row {
     opacity: 0;
   }
@@ -454,6 +519,8 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
 
   .pod {
     --accent-ink: color-mix(in oklab, var(--accent) 52%, #101828);
+
+    color: var(--accent-ink);
   }
 
   :global([data-theme='dark']) .pod {
@@ -479,17 +546,6 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
 
   .pod-right {
     fill: var(--pod-right);
-  }
-
-  .desk-top {
-    fill: var(--accent-ink);
-    opacity: 0.78;
-  }
-
-  .desk-left,
-  .desk-right {
-    fill: color-mix(in oklab, var(--accent-ink) 58%, #101828);
-    opacity: 0.55;
   }
 
   .pod-name {
@@ -530,32 +586,11 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
     stroke-dasharray: 2 5;
   }
 
-  /* The hub mark is an agent, not a desk: a small robot head drawn in the
-     same accent ink as the floor, with a soft glow so it reads as the
-     always-on planner at the centre. */
+  /* The hub and every seat are agent heads drawn from the shared symbol.
+     currentColor lets each pod keep its own accent. */
   .hub-agent {
+    color: var(--color-primary);
     filter: drop-shadow(0 0 10px color-mix(in oklab, var(--color-primary) 40%, transparent));
-  }
-
-  .agent-head {
-    fill: color-mix(in oklab, var(--color-primary) 14%, transparent);
-    stroke: var(--color-primary);
-    stroke-width: 2;
-    stroke-linejoin: round;
-  }
-
-  .agent-ear,
-  .agent-tip,
-  .agent-eye {
-    fill: var(--color-primary);
-  }
-
-  .agent-antenna,
-  .agent-mouth {
-    fill: none;
-    stroke: var(--color-primary);
-    stroke-width: 2;
-    stroke-linecap: round;
   }
 
   .hub-name {
@@ -693,9 +728,10 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
     height: 8px;
   }
 
-  .legend-desk {
-    background: var(--color-primary);
-    transform: rotate(45deg);
+  .legend-agent {
+    width: 16px;
+    height: 14px;
+    color: var(--color-primary);
   }
 
   .legend-rail {
