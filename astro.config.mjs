@@ -5,6 +5,18 @@ import fs from 'fs';
 import path from 'path';
 import security from './security.config.json';
 
+// CloudFront serves production over HTTPS, so the policy keeps
+// `upgrade-insecure-requests`. The dev and preview servers run on plain HTTP,
+// and WebKit applies that upgrade to localhost too: every stylesheet and script
+// then fails the TLS handshake and the page renders unstyled. Strip the
+// directive for the local servers only; security.config.json still feeds the
+// production policy.
+const localCsp = security.csp
+  .split(';')
+  .map((directive) => directive.trim())
+  .filter((directive) => directive && directive.toLowerCase() !== 'upgrade-insecure-requests')
+  .join('; ');
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://kiwsan.com',
@@ -33,7 +45,7 @@ export default defineConfig({
   },
   server: {
     headers: {
-      'Content-Security-Policy': security.csp,
+      'Content-Security-Policy': localCsp,
     },
   },
 });

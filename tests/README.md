@@ -52,7 +52,9 @@ tests/
 
 ## Browsers
 
-The local suite runs on Chromium, Firefox, WebKit, and Mobile Chrome. The live suite runs on Chromium.
+The local suite runs on Chromium, Firefox, WebKit, and Mobile Chrome, and CI runs all four projects. The live suite runs on Chromium.
+
+If WebKit fails everything on a local preview, check that the preview server is not sending `upgrade-insecure-requests`: WebKit upgrades localhost to HTTPS and then cannot load any asset. `astro.config.mjs` removes that directive from the local CSP for this reason.
 
 ## Writing tests
 
