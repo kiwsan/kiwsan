@@ -1,7 +1,7 @@
 import { expect, test } from './fixtures';
 
 test.describe('Workforce floor', () => {
-  test('shows six pods and 25 desks on desktop', async ({ homePage }) => {
+  test('shows six pods, 24 desks, and an agent hub on desktop', async ({ homePage }) => {
     const width = homePage.page.viewportSize()?.width ?? 0;
     test.skip(width <= 900, 'mobile uses the card layout');
 
@@ -11,7 +11,8 @@ test.describe('Workforce floor', () => {
     await expect(section).toBeVisible();
     await expect(section.getByRole('heading', { name: /25-role AI team/ })).toBeVisible();
     await expect(section.locator('svg .pod')).toHaveCount(6);
-    await expect(section.locator('svg .desk')).toHaveCount(25);
+    await expect(section.locator('svg .desk')).toHaveCount(24);
+    await expect(section.locator('svg .hub-agent')).toHaveCount(1);
     await expect(section.locator('.workforce-stage')).toBeVisible();
     await expect(section.locator('.pod-cards')).toBeHidden();
   });

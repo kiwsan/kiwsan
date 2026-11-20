@@ -21,12 +21,19 @@ describe('buildWorkforceScene', () => {
 
     expect(scene.viewBox).toBe(WORKFORCE_VIEWBOX);
     expect(scene.pods).toHaveLength(6);
-    expect(scene.hub.desks).toHaveLength(1);
     expect(scene.pods.reduce((sum, pod) => sum + pod.desks.length, 0)).toBe(24);
 
     for (const pod of scene.pods) {
       expect(pod.desks).toHaveLength(pod.count);
     }
+  });
+
+  it('centres the hub in the view box', () => {
+    const scene = buildWorkforceScene();
+    const [minX, minY, width, height] = scene.viewBox.split(' ').map(Number);
+
+    expect(scene.hub.cx).toBe(minX + width / 2);
+    expect(scene.hub.cy).toBe(minY + height / 2);
   });
 
   it('keeps every path finite and inside the view box', () => {
