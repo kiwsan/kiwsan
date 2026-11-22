@@ -23,17 +23,17 @@ export class HomePage extends BasePage {
 
   // Metrics
   readonly metricsSection: Locator;
-  readonly metricCards: Locator;
+  readonly metricItems: Locator;
 
   // Work Experience
   readonly experienceSection: Locator;
   readonly experienceHeading: Locator;
-  readonly workCards: Locator;
+  readonly workRuns: Locator;
 
   // Projects
   readonly projectsSection: Locator;
   readonly projectsHeading: Locator;
-  readonly projectCards: Locator;
+  readonly projectEntries: Locator;
 
   // Tech Stack
   readonly techStackSection: Locator;
@@ -83,17 +83,17 @@ export class HomePage extends BasePage {
 
     // Metrics
     this.metricsSection = page.locator('section.metrics');
-    this.metricCards = page.locator('.metric-card');
+    this.metricItems = page.locator('.metric');
 
     // Work Experience
     this.experienceSection = page.locator('#experience');
     this.experienceHeading = page.locator('#experience h2');
-    this.workCards = page.locator('.work-card');
+    this.workRuns = page.locator('.run');
 
     // Projects
     this.projectsSection = page.locator('#projects');
     this.projectsHeading = page.locator('#projects h2');
-    this.projectCards = page.locator('.project-card');
+    this.projectEntries = page.locator('.project-entry');
 
     // Tech Stack
     this.techStackSection = page.locator('section.tech-stack');
