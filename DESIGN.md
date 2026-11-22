@@ -1,9 +1,11 @@
 # Design contract: the Working Record
 
-- Status: approved at G2, 2026-11-21; 1.1 soft-surface amendment 2026-11-22.
-  Replaces the "Precision Architect" brief.
+- Status: approved at G2, 2026-11-21; 1.1 soft-surface and 1.2 neutral-palette
+  amendments 2026-11-22. Replaces the "Precision Architect" brief.
 - 1.1 (operator request, 2026-11-22): round the grouped surfaces and controls and
   widen the section rhythm. No gradient, glass, pill, or hover lift is added.
+- 1.2 (operator request, 2026-11-22): the page is white and the plate is a
+  neutral grey; the warm paper tint is gone. The blue signal stays.
 - Applies to: `/` and `/workforce`; every component in `src/components/`, the
   layout, and the workforce page.
 - Decision: `ADR-20261121-kiwsan-site-unslop` §3, Direction A. That ADR is the
@@ -67,25 +69,26 @@ accent is banned.
 
 | Role        | Light                 | Dark                     | Use                                                    | Never                                     |
 | ----------- | --------------------- | ------------------------ | ------------------------------------------------------ | ----------------------------------------- |
-| `page`      | `#F2EFE7`             | `#15171C`                | every page and section background                      | a card fill, a gradient stop              |
-| `plate`     | `#E8E3D6`             | `#1E2127`                | drawing and data fields: floor, ledger, stats, tables, callouts | a full page or section background         |
-| `ink`       | `#15171C`             | `#F2EFE7`                | body text, titles, solid controls                      | a large decorative fill                   |
-| `ink-muted` | `#5E5A52`             | `#A9A396`                | captions, secondary detail, disabled labels            | primary prose, a link at rest             |
-| `rule`      | `rgba(21,23,28,0.18)` | `rgba(242,239,231,0.20)` | every 1px separation, table rows, inline label borders | a filled surface                          |
-| `signal`    | `#1E3A8A`             | `#8FA8E8`                | links, focus ring, current run, active gate            | decoration, a second accent, a background |
+| `page`      | `#FFFFFF`             | `#101114`                | every page and section background                      | a card fill, a gradient stop              |
+| `plate`     | `#F4F5F7`             | `#181A1E`                | drawing and data fields: floor, ledger, stats, tables, callouts | a full page or section background         |
+| `ink`       | `#15171A`             | `#F5F6F7`                | body text, titles, solid controls                      | a large decorative fill                   |
+| `ink-muted` | `#5F646C`             | `#A6ABB3`                | captions, secondary detail, disabled labels            | primary prose, a link at rest             |
+| `rule`      | `rgba(21,23,26,0.10)` | `rgba(245,246,247,0.14)` | every 1px separation, table rows, inline label borders | a filled surface                          |
+| `signal`    | `#1E3A8A`             | `#93B4F5`                | links, focus ring, current run, active gate            | decoration, a second accent, a background |
 
 - The light values for `page`, `ink`, `ink-muted`, `signal`, and `rule` are the
-  paper/ink register already in the repository, in
+  neutral white/ink register already in the repository, in
   `scripts/social-cards.mjs:17-24` (`paper`, `ink`, `muted`, `cobalt`, `hair`).
   The card's red is not carried: `signal` is the only saturated colour.
-- `plate` is one step from `page`, not an independent colour. It exists so a
-  drawing or a table head can sit on the page without a card or a shadow.
+- `plate` is the neutral grey step from `page`, not an independent colour. It
+  exists so a drawing or a table head can sit on the page without a card or a
+  shadow.
 - Dark is the inversion of the same six roles, not a second palette. Do not
   import a code-editor set of blues, purples, and greens.
-- Measured pairs (WCAG contrast, computed 2026-11-21): `ink`/`page` 15.60 both
-  themes; `ink-muted`/`page` 5.97 light and 7.14 dark; `signal`/`page` 9.01
-  light and 7.63 dark. T-002 re-runs axe; a value change that fails a pair is a
-  token defect, not a component defect.
+- Measured pairs (WCAG contrast, computed 2026-11-22): `ink`/`page` 17.96 light
+  and 17.45 dark; `ink-muted`/`page` 5.96 light and 8.18 dark; `signal`/`page`
+  10.36 light and 9.07 dark. T-002 re-runs axe; a value change that fails a pair
+  is a token defect, not a component defect.
 - Token names: `--color-page`, `--color-plate`, `--color-ink`,
   `--color-ink-muted`, `--color-rule`, `--color-signal`. The old
   `--color-bg`/`--color-primary`/`--color-accent` names are retired in T-002.

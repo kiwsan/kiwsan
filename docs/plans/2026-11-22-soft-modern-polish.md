@@ -66,6 +66,14 @@ surface language changes.
 - Live suite 5/5 against `https://kiwsan.com` after the deploy; read-only.
 - Screenshots at the three widths and two themes; the record read-through.
 
+## Palette (1.2)
+
+The operator asked for white and neutral grey instead of the warm paper. The
+six roles now read: page `#FFFFFF`/`#101114`, plate `#F4F5F7`/`#181A1E`, ink
+`#15171A`/`#F5F6F7`, muted `#5F646C`/`#A6ABB3`, rule
+`rgba(21,23,26,0.10)`/`rgba(245,246,247,0.14)`, signal `#1E3A8A`/`#93B4F5`.
+Favicon, manifest, social cards, `theme-color`, and the OG version (`v=5`) follow.
+
 ## Deviations
 
 - Grouped content panels (why, evidence, roles, FAQ, pod records) use the page
