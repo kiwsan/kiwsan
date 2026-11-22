@@ -54,19 +54,20 @@ test.describe('Homepage Tests', () => {
     await expect(firstRun.locator('.results li').first()).toBeAttached();
   });
 
-  test('should display projects section with cards', async ({ homePage }) => {
+  test('should display project entries', async ({ homePage }) => {
     await homePage.scrollToSection('#projects');
     await expect(homePage.projectsSection).toBeAttached();
     await expect(homePage.projectsHeading).toContainText('Featured Projects');
-    const projectCount = await homePage.projectCards.count();
+    const projectCount = await homePage.projectEntries.count();
     expect(projectCount).toBeGreaterThanOrEqual(1);
   });
 
-  test('should display project cards with expected structure', async ({ homePage }) => {
+  test('should display project entries with expected structure', async ({ homePage }) => {
     await homePage.scrollToSection('#projects');
-    const firstCard = homePage.projectCards.first();
-    await expect(firstCard.locator('h3')).toBeAttached();
-    await expect(firstCard.locator('.tech-tag').first()).toBeAttached();
+    const firstEntry = homePage.projectEntries.first();
+    await expect(firstEntry.locator('h3')).toBeAttached();
+    await expect(firstEntry.locator('.tech-tag').first()).toBeAttached();
+    await expect(firstEntry.locator('.results li').first()).toBeAttached();
   });
 
   test('should display tech stack section with skill categories', async ({ homePage }) => {

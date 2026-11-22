@@ -33,7 +33,7 @@ export class HomePage extends BasePage {
   // Projects
   readonly projectsSection: Locator;
   readonly projectsHeading: Locator;
-  readonly projectCards: Locator;
+  readonly projectEntries: Locator;
 
   // Tech Stack
   readonly techStackSection: Locator;
@@ -93,7 +93,7 @@ export class HomePage extends BasePage {
     // Projects
     this.projectsSection = page.locator('#projects');
     this.projectsHeading = page.locator('#projects h2');
-    this.projectCards = page.locator('.project-card');
+    this.projectEntries = page.locator('.project-entry');
 
     // Tech Stack
     this.techStackSection = page.locator('section.tech-stack');
