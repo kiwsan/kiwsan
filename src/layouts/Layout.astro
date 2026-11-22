@@ -27,7 +27,7 @@ const {
 
 const site = Astro.site ?? new URL(SITE.url);
 const canonical = new URL(Astro.url.pathname, site).toString();
-const ogImageVersion = '3';
+const ogImageVersion = '4';
 const ogImage = new URL(`/images/og-image.png?v=${ogImageVersion}`, site).toString();
 const robots = noindex
   ? 'noindex, nofollow'
@@ -43,7 +43,8 @@ const robots = noindex
       content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"
     />
     <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#00288e" />
+    <meta name="theme-color" content="#f2efe7" />
+    <meta name="theme-color" content="#15171c" media="(prefers-color-scheme: dark)" />
 
     <!-- Performance & preconnect -->
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
@@ -78,7 +79,7 @@ const robots = noindex
     <meta property="og:image:height" content="630" />
     <meta
       property="og:image:alt"
-      content={`${SITE.name}, AI Manager and Full Stack Engineer, beside an ink axonometric office campus on a cobalt field`}
+      content={`${SITE.name}, AI Manager and Full Stack Engineer, beside an ink axonometric office campus on a cobalt disk over a paper field`}
     />
 
     <!-- Twitter Card -->
@@ -90,7 +91,7 @@ const robots = noindex
     <meta name="twitter:image" content={ogImage} />
     <meta
       name="twitter:image:alt"
-      content={`${SITE.name}, AI Manager and Full Stack Engineer, beside an ink axonometric office campus on a cobalt field`}
+      content={`${SITE.name}, AI Manager and Full Stack Engineer, beside an ink axonometric office campus on a cobalt disk over a paper field`}
     />
 
     {!noindex && <link rel="canonical" href={canonical} />}
