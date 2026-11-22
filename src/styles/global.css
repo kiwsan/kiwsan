@@ -24,7 +24,7 @@ html {
   --color-plate: #e8e3d6;
   --color-ink: #15171c;
   --color-ink-muted: #5e5a52;
-  --color-rule: rgba(21, 23, 28, 0.18);
+  --color-rule: rgba(21, 23, 28, 0.14);
   --color-signal: #1e3a8a;
 
   /* Reading family, title family, and identifiers only. */
@@ -53,10 +53,11 @@ html {
   --space-20: 5rem;
   --space-24: 6rem;
 
-  /* Radius: plates 0, controls 2px, inline labels 3px. */
-  --radius-plate: 0;
-  --radius-control: 2px;
-  --radius-inline: 3px;
+  /* 1.1 radius scale: surfaces 12, controls 8, inline labels 6. */
+  --radius-surface: 12px;
+  --radius-control: 8px;
+  --radius-inline: 6px;
+  --radius-plate: var(--radius-surface);
 
   /* One motion budget, on colour and underline only. */
   --motion-fast: 120ms;
@@ -70,7 +71,7 @@ html {
   --color-plate: #1e2127;
   --color-ink: #f2efe7;
   --color-ink-muted: #a9a396;
-  --color-rule: rgba(242, 239, 231, 0.2);
+  --color-rule: rgba(242, 239, 231, 0.18);
   --color-signal: #8fa8e8;
 }
 
@@ -82,7 +83,7 @@ html {
     --color-plate: #1e2127;
     --color-ink: #f2efe7;
     --color-ink-muted: #a9a396;
-    --color-rule: rgba(242, 239, 231, 0.2);
+    --color-rule: rgba(242, 239, 231, 0.18);
     --color-signal: #8fa8e8;
   }
 }

@@ -135,7 +135,7 @@ const runs = workExperience.map((work, index) => {
 
 <style>
   .experience {
-    padding: var(--space-16) 0;
+    padding: clamp(4rem, 8vw, 6rem) 0;
     border-top: 1px solid var(--color-rule);
   }
 
@@ -191,6 +191,10 @@ const runs = workExperience.map((work, index) => {
     width: 100%;
     max-width: 9rem;
     height: auto;
+    padding: var(--space-1);
+    background: var(--color-plate);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-control);
   }
 
   .run-period,
@@ -349,7 +353,7 @@ const runs = workExperience.map((work, index) => {
 
   @media (max-width: 768px) {
     .experience {
-      padding: var(--space-12) 0;
+      padding: clamp(3rem, 9vw, 4rem) 0;
     }
 
     .field {

@@ -493,7 +493,7 @@ const loop = [
 
 <style>
   .hero {
-    padding: var(--space-12) 0 var(--space-16);
+    padding: clamp(3.5rem, 7vw, 5rem) 0 clamp(4rem, 8vw, 6rem);
   }
 
   .nowrap {
@@ -529,10 +529,11 @@ const loop = [
     grid-template-columns: repeat(4, minmax(0, 1fr));
     max-width: 44rem;
     margin: var(--space-8) 0 var(--space-8);
-    padding: 0;
+    padding: 0 var(--space-4);
     list-style: none;
-    border-top: 1px solid var(--color-rule);
-    border-bottom: 1px solid var(--color-rule);
+    background: var(--color-plate);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-surface);
   }
 
   .stats li {
@@ -628,7 +629,7 @@ const loop = [
 
   .section {
     counter-increment: case-section;
-    padding: var(--space-16) 0;
+    padding: clamp(4rem, 8vw, 6rem) 0;
     border-top: 1px solid var(--color-rule);
   }
 
@@ -638,7 +639,7 @@ const loop = [
 
   .section-head {
     max-width: 66ch;
-    margin-bottom: var(--space-8);
+    margin-bottom: clamp(2rem, 4vw, 3rem);
   }
 
   .section-head h2 {
@@ -656,13 +657,15 @@ const loop = [
   .evidence-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--space-8);
+    gap: var(--space-5);
   }
 
   .problem-card,
   .evidence-card {
-    padding-top: var(--space-4);
-    border-top: 1px solid var(--color-rule);
+    padding: var(--space-5);
+    background: var(--color-page);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-surface);
   }
 
   .card-index {
@@ -702,12 +705,14 @@ const loop = [
   }
 
   .role-card {
-    padding-top: var(--space-4);
-    border-top: 1px solid var(--color-rule);
+    padding: var(--space-5);
+    background: var(--color-page);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-surface);
   }
 
   .role-card-hub {
-    border-top-color: var(--color-ink);
+    border-color: var(--color-ink-muted);
   }
 
   .role-card header {
@@ -854,6 +859,7 @@ const loop = [
   .table-wrap {
     overflow-x: auto;
     border: 1px solid var(--color-rule);
+    border-radius: var(--radius-surface);
   }
 
   .data-table {
@@ -938,8 +944,11 @@ const loop = [
   .callout {
     max-width: 76ch;
     margin-top: var(--space-8);
-    padding: var(--space-4) 0 var(--space-4) var(--space-5);
+    padding: var(--space-4) var(--space-5);
+    background: var(--color-plate);
+    border: 1px solid var(--color-rule);
     border-left: 2px solid var(--color-signal);
+    border-radius: var(--radius-surface);
     color: var(--color-ink);
     font-size: var(--text-small);
     line-height: 1.6;
@@ -953,8 +962,10 @@ const loop = [
   }
 
   .faq-item {
-    padding-top: var(--space-3);
-    border-top: 1px solid var(--color-rule);
+    padding: var(--space-5);
+    background: var(--color-page);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-surface);
   }
 
   .faq-item h3 {
@@ -971,7 +982,7 @@ const loop = [
   }
 
   .closing {
-    padding: var(--space-16) 0;
+    padding: clamp(4rem, 8vw, 6rem) 0;
     border-top: 1px solid var(--color-rule);
   }
 

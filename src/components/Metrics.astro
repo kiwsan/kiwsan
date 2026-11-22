@@ -18,13 +18,16 @@ import metrics from '../data/metrics.json';
 
 <style>
   .metrics {
-    padding: var(--space-10) 0;
-    border-top: 1px solid var(--color-rule);
+    padding: clamp(2rem, 4vw, 3rem) 0;
   }
 
   .metrics-ledger {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
+    padding: clamp(1.25rem, 3vw, 2rem);
+    background: var(--color-plate);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-surface);
   }
 
   .metric {
@@ -85,7 +88,7 @@ import metrics from '../data/metrics.json';
 
   @media (max-width: 480px) {
     .metrics {
-      padding: var(--space-8) 0;
+      padding: 2rem 0;
     }
 
     .metrics-ledger {
