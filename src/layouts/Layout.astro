@@ -27,7 +27,7 @@ const {
 
 const site = Astro.site ?? new URL(SITE.url);
 const canonical = new URL(Astro.url.pathname, site).toString();
-const ogImageVersion = '5';
+const ogImageVersion = '3';
 const ogImage = new URL(`/images/og-image.png?v=${ogImageVersion}`, site).toString();
 const robots = noindex
   ? 'noindex, nofollow'
@@ -43,13 +43,23 @@ const robots = noindex
       content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"
     />
     <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#ffffff" />
-    <meta name="theme-color" content="#101114" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#00288e" />
 
     <!-- Performance & preconnect -->
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
     <link rel="dns-prefetch" href="https://www.linkedin.com" />
     <link rel="dns-prefetch" href="https://github.com" />
+
+    <!-- Deferred non-critical CSS -->
+    <link
+      rel="preload"
+      href="/_deferred.css"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link rel="stylesheet" href="/_deferred.css" />
+    </noscript>
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/favicon-180.png" />
@@ -79,7 +89,7 @@ const robots = noindex
     <meta property="og:image:height" content="630" />
     <meta
       property="og:image:alt"
-      content={`${SITE.name}, AI Manager and Full Stack Engineer, beside an ink axonometric office campus on a cobalt disk over a white field`}
+      content={`${SITE.name}, AI Manager and Full Stack Engineer, beside an ink axonometric office campus on a cobalt field`}
     />
 
     <!-- Twitter Card -->
@@ -91,7 +101,7 @@ const robots = noindex
     <meta name="twitter:image" content={ogImage} />
     <meta
       name="twitter:image:alt"
-      content={`${SITE.name}, AI Manager and Full Stack Engineer, beside an ink axonometric office campus on a cobalt disk over a white field`}
+      content={`${SITE.name}, AI Manager and Full Stack Engineer, beside an ink axonometric office campus on a cobalt field`}
     />
 
     {!noindex && <link rel="canonical" href={canonical} />}
@@ -137,6 +147,7 @@ const robots = noindex
     <a class="skip-link" href="#main-content">
       Skip to content
     </a>
+    <div class="grain-overlay" aria-hidden="true"></div>
     <slot />
     <ChatWidget />
     <script>
@@ -150,6 +161,18 @@ const robots = noindex
         root.setAttribute('data-theme', next);
         localStorage.setItem('theme', next);
       });
+
+      // Scroll animations
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) entry.target.classList.add('visible');
+          });
+        },
+        { threshold: 0.1 }
+      );
+
+      document.querySelectorAll('section, .fade-in-item').forEach((el) => observer.observe(el));
     </script>
   </body>
 </html>

@@ -73,9 +73,9 @@ const buildVersion = import.meta.env.PUBLIC_BUILD_VERSION || 'dev';
 <style>
   .footer {
     padding: var(--space-8) 0;
-    background: var(--color-page);
-    color: var(--color-ink);
-    border-top: 1px solid var(--color-rule);
+    background: #1c1e20;
+    color: #ffffff;
+    margin-top: 0;
   }
 
   .footer-content {
@@ -83,18 +83,16 @@ const buildVersion = import.meta.env.PUBLIC_BUILD_VERSION || 'dev';
     justify-content: space-between;
     align-items: center;
     gap: var(--space-4);
-    padding-top: var(--space-6);
-    border-top: 1px solid var(--color-rule);
   }
 
   .footer-content p {
-    font-size: var(--text-small);
-    color: var(--color-ink-muted);
+    font-size: var(--text-sm);
+    color: #cbd2dd;
   }
 
   .build-version {
-    font-size: var(--text-small) !important;
-    color: var(--color-ink-muted);
+    font-size: var(--text-xs) !important;
+    color: #cbd2dd;
   }
 
   .footer-links {
@@ -103,22 +101,13 @@ const buildVersion = import.meta.env.PUBLIC_BUILD_VERSION || 'dev';
   }
 
   .footer-links a {
-    font-size: var(--text-small);
-    color: var(--color-ink);
-    text-decoration: none;
-    transition: color var(--motion-fast) var(--ease-out);
+    font-size: var(--text-sm);
+    color: #cbd2dd;
+    transition: color 0.3s ease;
   }
 
   .footer-links a:hover {
-    color: var(--color-signal);
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.18em;
-  }
-
-  .footer-links a:active {
-    text-decoration-thickness: 2px;
-    text-underline-offset: 0.1em;
+    color: #ffffff;
   }
 
   .footer-referrals {
@@ -128,12 +117,11 @@ const buildVersion = import.meta.env.PUBLIC_BUILD_VERSION || 'dev';
     flex-wrap: wrap;
     margin-bottom: var(--space-6);
     padding-bottom: var(--space-6);
-    border-bottom: 1px solid var(--color-rule);
   }
 
   .footer-referrals p {
-    font-size: var(--text-small);
-    color: var(--color-ink-muted);
+    font-size: var(--text-xs);
+    color: #cbd2dd;
     width: 100%;
     margin: 0;
   }
@@ -142,35 +130,14 @@ const buildVersion = import.meta.env.PUBLIC_BUILD_VERSION || 'dev';
     margin-top: var(--space-2);
   }
 
-  .footer-referrals a {
-    display: inline-flex;
-    padding-bottom: 2px;
-    border-bottom: 1px solid transparent;
-    text-decoration: none;
-  }
-
-  .footer-referrals a:hover,
-  .footer-referrals a:active {
-    padding-bottom: 1px;
-    border-bottom: 2px solid var(--color-signal);
-  }
-
   .footer-referrals img {
-    width: auto;
-    height: 40px;
-    border-radius: var(--radius-inline);
+    width: 110px;
+    height: auto;
   }
 
   .footer-referrals .bmc-button img {
     height: 34px;
     max-width: 100%;
-  }
-
-  @media (min-width: 769px) {
-    /* Keep the last row clear of the fixed 56px chat control at the right. */
-    .footer-content {
-      padding-right: calc(56px + var(--space-6));
-    }
   }
 
   @media (max-width: 768px) {

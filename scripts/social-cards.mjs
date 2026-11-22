@@ -15,11 +15,12 @@ const manrope = font(join(fontDir, 'manrope', 'files', 'manrope-latin-wght-norma
 const inter = font(join(fontDir, 'inter', 'files', 'inter-latin-wght-normal.woff2'));
 
 const C = {
-  paper: '#FFFFFF',
-  ink: '#15171A',
-  muted: '#5F646C',
+  paper: '#F2EFE7',
+  ink: '#15171C',
+  muted: '#5E5A52',
   cobalt: '#1E3A8A',
-  hair: 'rgba(21,23,26,0.10)',
+  red: '#C24B32',
+  hair: 'rgba(21,23,28,0.18)',
 };
 
 const cube = (cx, cy, w, h, v) => ({
@@ -115,7 +116,7 @@ const illustration = () => {
   const padDashed = 'M446,336 L610,400 L446,464 L282,400 Z';
 
   return `
-    <svg class="scene" viewBox="0 0 700 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Line drawing of an isometric office campus on a paper field">
+    <svg class="scene" viewBox="0 0 700 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Line drawing of an isometric office campus on a cobalt field">
       <defs>
         <pattern id="paperGrid" width="20" height="20" patternUnits="userSpaceOnUse">
           <path d="M20 0H0V20" fill="none" stroke="${C.ink}" stroke-opacity="0.055" stroke-width="0.5"/>
@@ -147,7 +148,17 @@ const illustration = () => {
       ${right}
       ${center}
 
+      <g font-family="Menlo, Monaco, monospace" fill="${C.ink}">
+        <text x="36" y="38" font-size="8.5" letter-spacing="0.12em" opacity="0.62">AXONOMETRIC / 01</text>
+        <text x="36" y="492" font-size="8.5" letter-spacing="0.12em" opacity="0.62">CAREER FLOOR</text>
+        <text x="610" y="492" font-size="8.5" letter-spacing="0.12em" opacity="0.62">FIG. 01</text>
+        <text x="666" y="404" font-size="8" letter-spacing="0.08em" opacity="0.5">ELEV.</text>
+      </g>
 
+      <g stroke="${C.red}" stroke-width="1.2" fill="none">
+        <path d="M648 56 L662 56 M655 49 L655 63"/>
+        <rect x="652" y="446" width="6" height="6" fill="${C.red}" stroke="none"/>
+      </g>
     </svg>`;
 };
 
@@ -173,35 +184,41 @@ const css = `
     position: relative; width: 100%; height: 100%; overflow: hidden;
     background: ${C.paper};
   }
+  .grain {
+    position: absolute; inset: 0; pointer-events: none; opacity: 0.045;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
   .topbar, .copy, .visual, .bottombar { position: absolute; z-index: 2; }
   .topbar { top: 42px; left: 56px; right: 56px; display: flex; align-items: center; justify-content: space-between; }
   .brand { display: flex; align-items: center; gap: 11px; }
   .mark { width: 30px; height: 30px; }
   .brand span {
-    font-family: 'Inter', sans-serif; font-size: 12px; color: ${C.ink};
+    font-family: Menlo, Monaco, monospace; font-size: 10px; letter-spacing: 0.16em; color: ${C.ink};
   }
   .topmeta {
-    font-family: 'Inter', sans-serif; font-size: 12px; color: ${C.muted};
+    font-family: Menlo, Monaco, monospace; font-size: 9px; letter-spacing: 0.12em; color: ${C.muted};
     display: flex; align-items: center; gap: 16px;
   }
+  .topmeta i { width: 5px; height: 5px; background: ${C.red}; display: inline-block; }
   .rule-top {
     position: absolute; left: 56px; right: 56px; top: 92px; height: 1px; background: ${C.hair}; z-index: 2;
   }
   .copy { left: 56px; }
   .eyebrow {
-    font-family: 'Inter', sans-serif; font-size: 12px; color: ${C.muted};
-    margin: 0 0 18px;
+    font-family: Menlo, Monaco, monospace; text-transform: uppercase; color: ${C.cobalt};
+    letter-spacing: 0.14em; margin: 0 0 18px;
   }
   h1 {
-    font-family: 'Manrope', sans-serif; font-weight: 700; margin: 0; color: ${C.ink};
-    letter-spacing: -0.02em; line-height: 1;
+    font-family: 'Manrope', sans-serif; font-weight: 800; margin: 0; color: ${C.ink};
+    letter-spacing: -0.055em; line-height: 0.88;
   }
   h1 .k { color: ${C.cobalt}; }
   .lede { color: ${C.muted}; margin: 22px 0 0; line-height: 1.5; }
   .lede strong { color: ${C.ink}; font-weight: 500; }
   .cred-rule { width: 42px; height: 1px; background: ${C.ink}; opacity: 0.55; margin-top: 28px; }
   .credentials {
-    font-family: 'Inter', sans-serif; font-size: 12px; color: ${C.muted};
+    font-family: Menlo, Monaco, monospace; color: ${C.muted}; letter-spacing: 0.03em;
     margin: 12px 0 0; white-space: nowrap;
   }
   .credentials b { color: ${C.ink}; font-weight: 400; }
@@ -211,33 +228,38 @@ const css = `
   .rule-bottom {
     position: absolute; left: 0; right: 0; top: -18px; height: 1px; background: ${C.hair};
   }
-  .domain { font-family: 'Inter', sans-serif; font-size: 12px; color: ${C.ink}; }
-  .meta { font-family: 'Inter', sans-serif; font-size: 12px; color: ${C.muted}; text-align: right; }
+  .domain { font-family: Menlo, Monaco, monospace; color: ${C.ink}; letter-spacing: 0.08em; }
+  .meta { font-family: Menlo, Monaco, monospace; color: ${C.muted}; letter-spacing: 0.08em; text-align: right; }
 
   body.landscape .copy { top: 158px; width: 500px; }
+  body.landscape .eyebrow { font-size: 10.5px; }
   body.landscape h1 { font-size: 78px; }
   body.landscape .lede { font-size: 17.5px; max-width: 460px; }
+  body.landscape .credentials { font-size: 9.5px; }
   body.landscape .visual { right: 26px; top: 84px; width: 610px; }
   body.landscape .bottombar { bottom: 34px; }
   body.landscape .domain { font-size: 12px; }
+  body.landscape .meta { font-size: 9px; }
 
   body.square .copy { top: 138px; width: 1040px; }
   body.square .eyebrow { font-size: 14px; }
   body.square h1 { font-size: 102px; }
   body.square .lede { font-size: 22px; max-width: 900px; }
+  body.square .credentials { font-size: 12px; }
   body.square .visual { left: 170px; top: 450px; width: 860px; }
   body.square .bottombar { bottom: 42px; }
   body.square .domain { font-size: 16px; }
-  body.square .meta { font-size: 12px; }
+  body.square .meta { font-size: 11px; }
 
   body.portrait .copy { top: 124px; width: 920px; }
   body.portrait .eyebrow { font-size: 13px; }
   body.portrait h1 { font-size: 94px; }
   body.portrait .lede { font-size: 21px; max-width: 780px; }
+  body.portrait .credentials { font-size: 11px; }
   body.portrait .visual { left: 90px; top: 530px; width: 900px; }
   body.portrait .bottombar { bottom: 44px; }
   body.portrait .domain { font-size: 15px; }
-  body.portrait .meta { font-size: 12px; }
+  body.portrait .meta { font-size: 10px; }
 
   body.story .topbar { top: 66px; left: 80px; right: 80px; }
   body.story .rule-top { left: 80px; right: 80px; top: 118px; }
@@ -249,19 +271,19 @@ const css = `
   body.story .visual { left: 50px; top: 620px; width: 980px; }
   body.story .bottombar { bottom: 74px; left: 80px; right: 80px; }
   body.story .domain { font-size: 19px; }
-  body.story .meta { font-size: 12px; }
+  body.story .meta { font-size: 11px; }
   body.story .story-stats {
     position: absolute; z-index: 2; left: 80px; right: 80px; top: 1500px;
     display: flex; align-items: flex-end; justify-content: space-between;
     border-top: 1px solid ${C.hair}; padding-top: 24px;
   }
   body.story .story-stats strong {
-    display: block; font-family: 'Manrope', sans-serif; font-weight: 700;
+    display: block; font-family: 'Manrope', sans-serif; font-weight: 800;
     font-size: 42px; color: ${C.ink}; letter-spacing: -0.045em; line-height: 1;
   }
   body.story .story-stats span {
-    display: block; font-family: 'Inter', sans-serif; font-size: 12px;
-    color: ${C.muted}; margin-top: 8px;
+    display: block; font-family: Menlo, Monaco, monospace; font-size: 9px;
+    color: ${C.muted}; letter-spacing: 0.12em; margin-top: 8px;
   }
 `;
 
@@ -282,9 +304,9 @@ const copy = (story = false) => `
   ${
     story
       ? `<div class="story-stats">
-          <div><strong>1M+</strong><span>Orders / year</span></div>
-          <div><strong>10+</strong><span>Years engineering</span></div>
-          <div><strong>AI</strong><span>Platform &amp; agents</span></div>
+          <div><strong>1M+</strong><span>ORDERS / YEAR</span></div>
+          <div><strong>10+</strong><span>YEARS ENGINEERING</span></div>
+          <div><strong>AI</strong><span>PLATFORM &amp; AGENTS</span></div>
         </div>`
       : ''
   }`;
@@ -294,9 +316,10 @@ const card = (layout) => `<!doctype html>
 <head><meta charset="utf-8"><style>${css}</style></head>
 <body class="${layout}">
   <div class="card">
+    <div class="grain"></div>
     <header class="topbar">
-      <div class="brand">${mark}<span>kiwsan.com</span></div>
-      <div class="topmeta"><span>Portfolio / 2026</span><span>Bangkok / Remote</span></div>
+      <div class="brand">${mark}<span>KIWSAN.COM</span></div>
+      <div class="topmeta"><span>PORTFOLIO / 2026</span><i></i><span>BANGKOK / REMOTE</span></div>
     </header>
     <div class="rule-top"></div>
     <section class="copy">${copy(layout === 'story')}</section>
@@ -304,7 +327,7 @@ const card = (layout) => `<!doctype html>
     <footer class="bottombar">
       <span class="rule-bottom"></span>
       <span class="domain">kiwsan.com</span>
-      <span class="meta">AI platform / E-commerce / Cloud</span>
+      <span class="meta">AI PLATFORM / E-COMMERCE / CLOUD</span>
     </footer>
   </div>
 </body>

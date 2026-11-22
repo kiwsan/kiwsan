@@ -41,10 +41,10 @@ test.describe('Workforce floor', () => {
   });
 });
 
-test.describe('Workforce floor rendering', () => {
+test.describe('Workforce assembly', () => {
   test.use({ reducedMotion: 'no-preference' });
 
-  test('renders the floor without an assembly animation', async ({ page }) => {
+  test('plays once when the floor enters view', async ({ page }) => {
     const width = page.viewportSize()?.width ?? 0;
     test.skip(width <= 900, 'mobile uses the card layout');
 
@@ -52,7 +52,7 @@ test.describe('Workforce floor rendering', () => {
     await page.locator('#workforce').scrollIntoViewIfNeeded();
 
     const stage = page.locator('.workforce-stage');
-    await expect(stage).not.toHaveAttribute('data-motion');
+    await expect(stage).not.toHaveAttribute('data-motion', 'armed', { timeout: 5000 });
     await expect(page.locator('.pod').first()).toHaveCSS('opacity', '1');
     await expect(page.locator('.rail').first()).toHaveCSS('opacity', '0.4');
   });

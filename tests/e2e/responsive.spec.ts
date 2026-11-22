@@ -28,12 +28,8 @@ test.describe('Responsive Design Tests', () => {
     test('should stack hero content vertically', async ({ homePage }) => {
       await homePage.page.setViewportSize({ width: 375, height: 667 });
       const heroContent = homePage.page.locator('.hero-content');
-      const display = await heroContent.evaluate((el) => getComputedStyle(el).display);
-      expect(display).toBe('grid');
-      const columns = await heroContent.evaluate(
-        (el) => getComputedStyle(el).gridTemplateColumns.split(' ').length
-      );
-      expect(columns).toBe(1);
+      const style = await heroContent.evaluate((el) => getComputedStyle(el).flexDirection);
+      expect(style).toBe('column');
     });
 
     test('should stack CTA buttons vertically on small screens', async ({ homePage }) => {
@@ -43,14 +39,13 @@ test.describe('Responsive Design Tests', () => {
       expect(style).toBe('column');
     });
 
-    test('should display the metrics ledger in one column', async ({ homePage }) => {
+    test('should display metrics in 2-column grid', async ({ homePage }) => {
       await homePage.page.setViewportSize({ width: 375, height: 667 });
       await homePage.scrollToSection('.metrics');
-      const grid = homePage.page.locator('.metrics-ledger');
-      const columns = await grid.evaluate(
-        (el) => getComputedStyle(el).gridTemplateColumns.split(' ').length
-      );
-      expect(columns).toBe(1);
+      const grid = homePage.page.locator('.metrics-grid');
+      const columns = await grid.evaluate((el) => getComputedStyle(el).gridTemplateColumns);
+      const colCount = columns.split(' ').length;
+      expect(colCount).toBe(2);
     });
 
     test('should display chat toggle button', async ({ homePage }) => {
@@ -90,13 +85,11 @@ test.describe('Responsive Design Tests', () => {
       await expect(homePage.menuToggle).not.toBeVisible();
     });
 
-    test('should display hero content in two columns', async ({ homePage }) => {
+    test('should display hero content in row layout', async ({ homePage }) => {
       await homePage.page.setViewportSize({ width: 1920, height: 1080 });
       const heroContent = homePage.page.locator('.hero-content');
-      const columns = await heroContent.evaluate(
-        (el) => getComputedStyle(el).gridTemplateColumns.split(' ').length
-      );
-      expect(columns).toBe(2);
+      const style = await heroContent.evaluate((el) => getComputedStyle(el).flexDirection);
+      expect(style).toBe('row');
     });
 
     test('should display hero illustration', async ({ homePage }) => {
