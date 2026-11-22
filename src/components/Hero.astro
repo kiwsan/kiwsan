@@ -591,29 +591,10 @@
     color: var(--color-primary);
   }
 
-  /* Animations */
+  /* The entrance animation retired with the deferred stylesheet; content is
+     present on load and nothing is hidden. */
   .animate-fade-in-up {
-    animation: fadeInUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    opacity: 0;
-  }
-
-  .stagger-1 {
-    animation-delay: 0.1s;
-  }
-  .stagger-2 {
-    animation-delay: 0.25s;
-  }
-  .stagger-2-5 {
-    animation-delay: 0.35s;
-  }
-  .stagger-3 {
-    animation-delay: 0.45s;
-  }
-  .stagger-4 {
-    animation-delay: 0.55s;
-  }
-  .stagger-5 {
-    animation-delay: 0.7s;
+    opacity: 1;
   }
 
   @keyframes float {
@@ -725,10 +706,6 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .animate-fade-in-up {
-      animation: none;
-      opacity: 1;
-    }
     .hero-figure {
       animation: none;
     }
@@ -743,14 +720,6 @@
     }
     .hi-node {
       animation: none;
-    }
-    .stagger-1,
-    .stagger-2,
-    .stagger-2-5,
-    .stagger-3,
-    .stagger-4,
-    .stagger-5 {
-      opacity: 1;
     }
   }
 </style>

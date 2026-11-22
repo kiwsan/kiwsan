@@ -50,17 +50,6 @@ const robots = noindex
     <link rel="dns-prefetch" href="https://www.linkedin.com" />
     <link rel="dns-prefetch" href="https://github.com" />
 
-    <!-- Deferred non-critical CSS -->
-    <link
-      rel="preload"
-      href="/_deferred.css"
-      as="style"
-      onload="this.onload=null;this.rel='stylesheet'"
-    />
-    <noscript>
-      <link rel="stylesheet" href="/_deferred.css" />
-    </noscript>
-
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/favicon-180.png" />
     <link rel="manifest" href="/site.webmanifest" />
@@ -147,7 +136,6 @@ const robots = noindex
     <a class="skip-link" href="#main-content">
       Skip to content
     </a>
-    <div class="grain-overlay" aria-hidden="true"></div>
     <slot />
     <ChatWidget />
     <script>
@@ -161,18 +149,6 @@ const robots = noindex
         root.setAttribute('data-theme', next);
         localStorage.setItem('theme', next);
       });
-
-      // Scroll animations
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) entry.target.classList.add('visible');
-          });
-        },
-        { threshold: 0.1 }
-      );
-
-      document.querySelectorAll('section, .fade-in-item').forEach((el) => observer.observe(el));
     </script>
   </body>
 </html>
