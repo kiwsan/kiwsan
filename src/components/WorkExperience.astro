@@ -1,7 +1,7 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { BASE_Y, GROUND_Y, buildOfficeScene } from '../lib/experience/office';
-import { officeLabel, railPeriod } from '../lib/experience/labels';
+import { GROUND_Y, buildOfficeScene } from '../lib/experience/office';
+import { officeLabel } from '../lib/experience/labels';
 
 type WorkEntry = CollectionEntry<'projects'> & {
   data: { type: 'work' };
@@ -10,10 +10,6 @@ type WorkEntry = CollectionEntry<'projects'> & {
 const workExperience = (await getCollection('projects'))
   .filter((p): p is WorkEntry => p.data.type === 'work')
   .sort((a, b) => a.data.order - b.data.order);
-
-/* Tokyo Night rotation: one color per run so each job reads as its own
-   office at a glance. */
-const accents = ['#7aa2f7', '#bb9af7', '#f7768e', '#7dcfff', '#9ece6a', '#e0af68', '#ff9e64'];
 
 const runs = workExperience.map((work, index) => {
   const name = officeLabel(work.data.company);
@@ -24,28 +20,17 @@ const runs = workExperience.map((work, index) => {
     company: work.data.company,
     name: name || work.data.company,
     period: work.data.period,
-    railPeriod: railPeriod(work.data.period),
     datetime: /^\d{4}/.test(work.data.period) ? work.data.period.slice(0, 4) : work.data.period,
     challenge: work.data.challenge,
     solution: work.data.solution,
     tech: work.data.tech,
     results: work.data.results,
-    command: `career log --org "${work.data.company}" --role "${work.data.title}"`,
-    accent: accents[index % accents.length],
     runNo: String(index + 1).padStart(2, '0'),
     total: String(workExperience.length).padStart(2, '0'),
     office: buildOfficeScene(work.data.companySize),
   };
 });
-
-const onlineCount = String(workExperience.length).padStart(2, '0');
-const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/\d{4}/)?.[0] ?? '';
 ---
-
-<script is:inline>
-  // Runs during parse, before first paint, so the reveal gate is never missed.
-  document.documentElement.dataset.trace = 'pending';
-</script>
 
 <section id="experience" class="experience" aria-labelledby="experience-title">
   <div class="container">
@@ -57,350 +42,95 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
       </p>
     </div>
 
-    <div class="office-stage">
-      <div class="scene-meta" aria-hidden="true">
-        <span class="meta-line">career floor</span>
-        <span class="meta-chip">
-          <i class="meta-dot"></i>
-          {onlineCount} roles · {firstYear} — now
-        </span>
-      </div>
-
-      <div class="timeline">
-        <div class="timeline-spine" aria-hidden="true"></div>
-        <div class="timeline-packet" aria-hidden="true"></div>
-
-        {runs.map((run) => (
-          <div class="tl-row" data-zone={run.zone} style={`--accent:${run.accent}`}>
-            <div class="tl-rail">
-              <span class="tl-period">{run.railPeriod}</span>
-
-              <svg class="tl-skyline" viewBox="0 0 200 150" aria-hidden="true">
-                <defs>
-                  <pattern
-                    id={`bp-grid-${run.zone}`}
-                    width="10"
-                    height="10"
-                    patternUnits="userSpaceOnUse"
-                  >
-                    <circle class="bp-dot" cx="1" cy="1" r="0.8" />
-                  </pattern>
-                </defs>
-                <rect class="skyline-bg" width="200" height="150" />
-                <rect
-                  class="bp-grid"
-                  x="40"
-                  y="48"
-                  width="120"
-                  height="92"
-                  rx="4"
-                  fill={`url(#bp-grid-${run.zone})`}
-                />
-                <g class="bp-cross">
-                  <path d="M100 48 L100 56 M96 52 L104 52" />
-                  <path d="M44 64 L44 72 M40 68 L48 68" />
-                  <path d="M156 64 L156 72 M152 68 L160 68" />
-                  <path d="M100 132 L100 140 M96 136 L104 136" />
+    <div class="runs">
+      {runs.map((run) => (
+        <article class="run" aria-labelledby={`run-role-${run.zone}`}>
+          <div class="run-rail">
+            <span class="run-index">
+              <b>{run.runNo}</b> / {run.total}
+            </span>
+            <svg class="run-skyline" viewBox="0 0 200 150" aria-hidden="true">
+              {run.office.towers.map((tower) => (
+                <g class="tower">
+                  <path class="tower-left" d={tower.body.left} />
+                  <path class="tower-right" d={tower.body.right} />
+                  <path class="tower-top" d={tower.body.top} />
+                  <path class="tower-win" d={tower.windows.left.panes} />
+                  <path class="tower-win" d={tower.windows.right.panes} />
+                  <path class="tower-win tower-win-lit" d={tower.windows.left.lit} />
+                  <path class="tower-win tower-win-lit" d={tower.windows.right.lit} />
+                  {tower.setback && (
+                    <g class="tower-setback">
+                      <path class="tower-left" d={tower.setback.left} />
+                      <path class="tower-right" d={tower.setback.right} />
+                      <path class="tower-top" d={tower.setback.top} />
+                    </g>
+                  )}
+                  {tower.antenna && (
+                    <g class="antenna">
+                      <path
+                        d={`M${tower.antenna.x} ${tower.antenna.base} L${tower.antenna.x} ${tower.antenna.tip}`}
+                      />
+                      <circle cx={tower.antenna.x} cy={tower.antenna.tip} r="1.6" />
+                    </g>
+                  )}
                 </g>
-                <path
-                  class="accent-stroke bp-dim"
-                  d="M36 20 L164 20 M36 16 L36 24 M164 16 L164 24"
-                />
-                <text class="bp-dim-label" x="100" y="14" text-anchor="middle">
-                  {run.office.sizeLabel}
-                </text>
-                <path
-                  class="accent-stroke bp-dim"
-                  d={`M178 ${run.office.peakTop} L178 ${BASE_Y} M174 ${run.office.peakTop} L182 ${run.office.peakTop} M174 ${BASE_Y} L182 ${BASE_Y}`}
-                />
-                <text class="bp-dim-label" x="184" y={(run.office.peakTop + BASE_Y) / 2 + 2}>
-                  {run.office.floors}F
-                </text>
-                <path class="accent-stroke bp-floor" d={`M28 ${GROUND_Y} L172 ${GROUND_Y}`} />
-                <path
-                  class="accent-stroke bp-tick"
-                  d={`M50 ${GROUND_Y - 4} L50 ${GROUND_Y + 4} M80 ${GROUND_Y - 4} L80 ${GROUND_Y + 4} M110 ${GROUND_Y - 4} L110 ${GROUND_Y + 4} M140 ${GROUND_Y - 4} L140 ${GROUND_Y + 4}`}
-                />
-                <path class="pad-left" d={run.office.pad.left} />
-                <path class="pad-right" d={run.office.pad.right} />
-                <path class="pad-top accent-fill" d={run.office.pad.top} />
-                {run.office.towers.map((tower) => (
-                  <g class="tower">
-                    <path class="tower-left" d={tower.body.left} />
-                    <path class="tower-right" d={tower.body.right} />
-                    <path class="tower-top" d={tower.body.top} />
-                    <path class="tower-win" d={tower.windows.left.panes} />
-                    <path class="tower-win" d={tower.windows.right.panes} />
-                    <path class="tower-win-lit" d={tower.windows.left.lit} />
-                    <path class="tower-win-lit" d={tower.windows.right.lit} />
-                    {tower.setback && (
-                      <g class="tower-setback">
-                        <path class="tower-left" d={tower.setback.left} />
-                        <path class="tower-right" d={tower.setback.right} />
-                        <path class="tower-top" d={tower.setback.top} />
-                      </g>
-                    )}
-                    {tower.antenna && (
-                      <g class="antenna">
-                        <path
-                          d={`M${tower.antenna.x} ${tower.antenna.base} L${tower.antenna.x} ${tower.antenna.tip}`}
-                        />
-                        <circle cx={tower.antenna.x} cy={tower.antenna.tip} r="1.6" />
-                      </g>
-                    )}
-                  </g>
-                ))}
-              </svg>
+              ))}
+              <path class="run-ground" d={`M28 ${GROUND_Y} L172 ${GROUND_Y}`} />
+            </svg>
+            <span class="run-office">{run.name}</span>
+          </div>
 
-              <span class="tl-node" aria-hidden="true"></span>
-
-              <span class="tl-pill office-pill">
-                <span class="office-name">{run.name}</span>
-                <span class="office-period">{run.period}</span>
-              </span>
+          <div class="run-body">
+            <div class="field">
+              <span class="field-label">role</span>
+              <h3 id={`run-role-${run.zone}`}>{run.title}</h3>
             </div>
-
-            <article
-              class="trace-block work-card"
-              data-zone={run.zone}
-              style={`--accent:${run.accent}`}
-              aria-labelledby={`run-role-${run.zone}`}
-            >
-              <div
-                class="trace-line trace-cmd"
-                style="--i:0"
-                role="group"
-                aria-label={`$ ${run.command}`}
-              >
-                <span class="prompt" aria-hidden="true">
-                  $
-                </span>
-                <span class="cmd" aria-hidden="true" data-cmd data-full={run.command}>
-                  {run.command}
-                </span>
-                <span class="cursor" aria-hidden="true"></span>
-                <span class="run-no" aria-hidden="true">
-                  <svg class="tower-glyph" viewBox="0 0 12 10" width="12" height="10">
-                    <polygon points="6,0 11,3 6,6 1,3" fill="currentColor" opacity="0.9" />
-                    <polygon points="1,3 6,6 6,9 1,6" fill="currentColor" opacity="0.45" />
-                    <polygon points="11,3 6,6 6,9 11,6" fill="currentColor" opacity="0.28" />
-                  </svg>
-                  <b>{run.runNo}</b>/{run.total}
-                </span>
-              </div>
-
-              <div class="trace-line trace-kv" style="--i:1">
-                <span class="k">role</span>
-                <h3 id={`run-role-${run.zone}`}>{run.title}</h3>
-              </div>
-
-              <div class="trace-line trace-kv" style="--i:2">
-                <span class="k">org</span>
-                <span class="company">{run.company}</span>
-              </div>
-
-              <div class="trace-line trace-kv" style="--i:3">
-                <span class="k">period</span>
-                <time class="period" datetime={run.datetime}>
-                  {run.period}
-                </time>
-              </div>
-
-              <div class="trace-line trace-kv" style="--i:4">
-                <span class="k">task</span>
-                <p class="prose">{run.challenge}</p>
-              </div>
-
-              <div class="trace-line trace-kv" style="--i:5">
-                <span class="k">impl</span>
-                <p class="prose">{run.solution}</p>
-              </div>
-
-              <div class="trace-line trace-tool" style="--i:6">
-                <span class="arrow" aria-hidden="true">
-                  ▸
-                </span>
-                <span class="tool-label">tool_call({run.tech.length})</span>
-              </div>
-
-              <div class="trace-line trace-chips" style="--i:7">
+            <div class="field">
+              <span class="field-label">org</span>
+              <span class="field-value">{run.company}</span>
+            </div>
+            <div class="field">
+              <span class="field-label">period</span>
+              <time class="field-value" datetime={run.datetime}>
+                {run.period}
+              </time>
+            </div>
+            <div class="field">
+              <span class="field-label">task</span>
+              <p class="field-value">{run.challenge}</p>
+            </div>
+            <div class="field">
+              <span class="field-label">impl</span>
+              <p class="field-value">{run.solution}</p>
+            </div>
+            <div class="field">
+              <span class="field-label" aria-hidden="true"></span>
+              <div class="tools">
                 {run.tech.map((tech) => (
-                  <span class="tech-tag">{tech}</span>
+                  <span class="tool">{tech}</span>
                 ))}
               </div>
-
+            </div>
+            <div class="field">
+              <span class="field-label" aria-hidden="true"></span>
               <ul class="results">
-                {run.results.map((result, i) => (
-                  <li class="trace-line" style={`--i:${8 + i}`}>
-                    <span class="ok" aria-hidden="true">
-                      ✔
-                    </span>
-                    <span>{result}</span>
-                  </li>
+                {run.results.map((result) => (
+                  <li>{result}</li>
                 ))}
               </ul>
-            </article>
+            </div>
           </div>
-        ))}
-      </div>
+        </article>
+      ))}
     </div>
   </div>
 </section>
 
-<script>
-  const stage = document.querySelector<HTMLElement>('#experience .office-stage');
-
-  if (stage) {
-    const root = document.documentElement;
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const cards = Array.from(stage.querySelectorAll<HTMLElement>('.work-card'));
-    const timeline = stage.querySelector<HTMLElement>('.timeline');
-    const spine = stage.querySelector<HTMLElement>('.timeline-spine');
-    const lastNode = stage.querySelector<HTMLElement>('.tl-row:last-child .tl-node');
-    const timers = new Map<HTMLElement, number>();
-    let observer: IntersectionObserver | null = null;
-
-    /* Trim the spine to the last node (CSS stretches it to the floor when
-       this never runs, e.g. with JS off). */
-    const sizeSpine = () => {
-      if (!timeline || !spine || !lastNode) return;
-      const box = timeline.getBoundingClientRect();
-      const node = lastNode.getBoundingClientRect();
-      if (box.height === 0 || node.height === 0) return;
-      timeline.style.setProperty(
-        '--spine-h',
-        `${Math.max(0, node.top + node.height / 2 - box.top - 8)}px`
-      );
-    };
-
-    sizeSpine();
-    window.addEventListener('resize', sizeSpine);
-    document.fonts?.ready.then(sizeSpine);
-
-    if (typeof ResizeObserver !== 'undefined' && timeline) {
-      new ResizeObserver(sizeSpine).observe(timeline);
-    }
-
-    const commandOf = (card: HTMLElement) => card.querySelector<HTMLElement>('[data-cmd]');
-
-    /* Type once per card, capped at 620ms however long the command is. */
-    const typeCommand = (card: HTMLElement) => {
-      const cmd = commandOf(card);
-      const text = cmd?.dataset.full ?? '';
-
-      if (!cmd || text.length === 0) {
-        card.classList.add('is-done');
-        return;
-      }
-
-      cmd.textContent = '';
-      card.classList.remove('is-done');
-
-      const step = Math.max(6, Math.min(16, 620 / text.length));
-      let shown = 0;
-
-      const timer = window.setInterval(() => {
-        shown += 1;
-        cmd.textContent = text.slice(0, shown);
-        if (shown >= text.length) {
-          clearInterval(timer);
-          timers.delete(card);
-          card.classList.add('is-done');
-        }
-      }, step);
-      timers.set(card, timer);
-    };
-
-    /* Finish any typing in flight so a card never gets left half-written. */
-    const settle = (card: HTMLElement) => {
-      const timer = timers.get(card);
-      if (timer !== undefined) {
-        clearInterval(timer);
-        timers.delete(card);
-      }
-      const cmd = commandOf(card);
-      if (cmd) cmd.textContent = cmd.dataset.full ?? '';
-      card.classList.add('is-done');
-    };
-
-    const reveal = (card: HTMLElement) => {
-      if (card.dataset.revealed === 'true') return;
-      card.dataset.revealed = 'true';
-      card.classList.add('is-live');
-      typeCommand(card);
-    };
-
-    /* No motion budget or no observer: everything is already live. */
-    const revealAll = () => {
-      for (const card of cards) {
-        card.classList.add('is-live');
-        settle(card);
-      }
-      root.dataset.trace = 'done';
-    };
-
-    /* If a visitor jumps past runs, mark the ones above the landing card as
-       already read so their text never stays hidden. Runs below the landing
-       card keep waiting for their own intersection. */
-    const passThrough = (landed: HTMLElement) => {
-      const index = cards.indexOf(landed);
-      if (index < 1) return;
-
-      for (let i = 0; i < index; i += 1) {
-        const card = cards[i];
-        if (card.dataset.revealed === 'true') continue;
-        card.dataset.revealed = 'true';
-        card.classList.add('is-live');
-        settle(card);
-      }
-    };
-
-    if (
-      reducedMotion.matches ||
-      typeof IntersectionObserver === 'undefined' ||
-      cards.length === 0
-    ) {
-      revealAll();
-    } else {
-      observer = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            if (!entry.isIntersecting) continue;
-            const card = entry.target as HTMLElement;
-            observer?.unobserve(card);
-            passThrough(card);
-            reveal(card);
-          }
-        },
-        { rootMargin: '0px 0px -18% 0px', threshold: 0.05 }
-      );
-
-      for (const card of cards) observer.observe(card);
-
-      window.addEventListener('pagehide', () => {
-        for (const card of cards) settle(card);
-      });
-    }
-
-    reducedMotion.addEventListener('change', (event) => {
-      if (!event.matches) return;
-      observer?.disconnect();
-      observer = null;
-      revealAll();
-    });
-
-    document.addEventListener('astro:before-swap', () => {
-      observer?.disconnect();
-      observer = null;
-      timers.forEach((timer) => clearInterval(timer));
-      timers.clear();
-    });
-  }
-</script>
-
 <style>
   .experience {
     padding: var(--space-16) 0;
+    border-top: 1px solid var(--color-rule);
   }
 
   .experience-head {
@@ -409,748 +139,219 @@ const firstYear = workExperience[workExperience.length - 1]?.data.period.match(/
   }
 
   h2 {
-    font-size: var(--text-4xl);
     margin-bottom: var(--space-3);
+    font-size: var(--text-section);
   }
 
   .trace-caption {
-    color: var(--color-text-muted);
-    font-size: var(--text-sm);
-    line-height: 1.6;
-    margin: 0;
+    max-width: 62ch;
+    font-size: var(--text-small);
+    line-height: 1.5;
+    color: var(--color-ink-muted);
   }
 
-  /* One floor holds the whole run history: rail on the left, trace on the
-     right, both scrolling down the career. Light turns the floor into paper
-     and the trace into raised sheets; dark keeps the Tokyo Night terminal. */
-  .office-stage {
-    --t-bg: #f2f4f6;
-    /* Text follows the main theme tokens (light + dark + no-JS) so the
-       stage can never drift out of sync with the rest of the page. */
-    --t-fg: var(--color-text);
-    --t-dim: var(--color-on-secondary-container);
-    --t-muted: var(--color-text-muted);
-    --t-purple: #6d3fc0;
-    --t-green: #256b2b;
-    --t-chip: #e6ebf2;
-    --t-card: #ffffff;
-    --t-raised: #ffffff;
-    --t-grid: color-mix(in srgb, var(--color-text-muted) 22%, transparent);
-    --tower-top: #fbfcfe;
-    --tower-left: #d5deea;
-    --tower-right: #c2cedf;
-    --t-stage-shadow: 0 28px 64px -32px rgba(16, 24, 40, 0.18);
-    --t-raised-shadow: 0 8px 24px -12px rgba(16, 24, 40, 0.18);
-    --t-spine: linear-gradient(
-      180deg,
-      #3d5a9e 0%,
-      #6b5b9e 52%,
-      rgba(160, 90, 106, 0.55) 88%,
-      rgba(160, 90, 106, 0) 100%
-    );
-    --t-spine-opacity: 0.6;
-    --t-packet: #3d5a9e;
-    --t-packet-shadow: 0 0 10px 2px rgba(61, 90, 158, 0.35), 0 0 26px 6px rgba(61, 90, 158, 0.12);
-    --t-node-weight: 88%;
-    --t-node-ring: 30%;
-    --t-node-glow: 40%;
-    --t-pill-shadow-strength: 35%;
-    --t-dot-glow: 35%;
-
-    padding: clamp(20px, 3vw, 36px);
-    border-radius: 16px;
-    background: var(--t-bg);
-    box-shadow: var(--t-stage-shadow);
-    color: var(--t-fg);
-    font-family: var(--font-mono);
-    font-size: 13px;
-    line-height: 1.75;
+  .runs {
+    border-top: 1px solid var(--color-rule);
   }
 
-  :global([data-theme='dark']) .office-stage {
-    --t-bg: #15161f;
-    --t-purple: #bb9af7;
-    --t-green: #9ece6a;
-    --t-chip: #1d202f;
-    --t-card: #191c28;
-    --t-raised: #1d202f;
-    --tower-top: #262c3e;
-    --tower-left: #1b2030;
-    --tower-right: #161a26;
-    --t-stage-shadow: 0 24px 64px -24px rgba(0, 0, 0, 0.45);
-    --t-raised-shadow: 0 8px 24px -12px rgba(0, 0, 0, 0.5);
-    --t-spine: linear-gradient(
-      180deg,
-      #7aa2f7 0%,
-      #bb9af7 52%,
-      rgba(247, 118, 142, 0.55) 88%,
-      rgba(247, 118, 142, 0) 100%
-    );
-    --t-spine-opacity: 0.35;
-    --t-packet: #7aa2f7;
-    --t-packet-shadow:
-      0 0 10px 2px rgba(122, 162, 247, 0.5), 0 0 26px 6px rgba(122, 162, 247, 0.18);
-    --t-node-weight: 65%;
-    --t-node-ring: 26%;
-    --t-node-glow: 55%;
-    --t-pill-shadow-strength: 65%;
-    --t-dot-glow: 80%;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :global(:root:not([data-theme='light'])) .office-stage {
-      --t-bg: #15161f;
-      --t-purple: #bb9af7;
-      --t-green: #9ece6a;
-      --t-chip: #1d202f;
-      --t-card: #191c28;
-      --t-raised: #1d202f;
-      --tower-top: #262c3e;
-      --tower-left: #1b2030;
-      --tower-right: #161a26;
-      --t-stage-shadow: 0 24px 64px -24px rgba(0, 0, 0, 0.45);
-      --t-raised-shadow: 0 8px 24px -12px rgba(0, 0, 0, 0.5);
-      --t-spine: linear-gradient(
-        180deg,
-        #7aa2f7 0%,
-        #bb9af7 52%,
-        rgba(247, 118, 142, 0.55) 88%,
-        rgba(247, 118, 142, 0) 100%
-      );
-      --t-spine-opacity: 0.35;
-      --t-packet: #7aa2f7;
-      --t-packet-shadow:
-        0 0 10px 2px rgba(122, 162, 247, 0.5), 0 0 26px 6px rgba(122, 162, 247, 0.18);
-      --t-node-weight: 65%;
-      --t-node-ring: 26%;
-      --t-node-glow: 55%;
-      --t-pill-shadow-strength: 65%;
-      --t-dot-glow: 80%;
-    }
-  }
-
-  .scene-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: clamp(24px, 3vw, 36px);
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--t-dim);
-  }
-
-  .meta-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 4px 10px;
-    border-radius: 999px;
-    background: var(--t-raised);
-    color: var(--t-green);
-    box-shadow: var(--t-raised-shadow);
-  }
-
-  .meta-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 999px;
-    background: var(--t-green);
-    box-shadow: 0 0 8px color-mix(in srgb, var(--t-green) var(--t-dot-glow), transparent);
-    animation: meta-pulse 2.4s ease-in-out infinite;
-  }
-
-  @keyframes meta-pulse {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.35;
-    }
-  }
-
-  /* The spine lives in the left rail column and runs from the first node to
-     the end of the floor, fading out under the last card. */
-  .timeline {
-    --spine-x: 110px;
-
-    position: relative;
+  .run {
     display: grid;
-    gap: 48px;
+    grid-template-columns: 9rem minmax(0, 1fr);
+    gap: var(--space-8);
+    padding: var(--space-8) 0;
+    border-bottom: 1px solid var(--color-rule);
   }
 
-  .timeline-spine {
-    position: absolute;
-    top: 8px;
-    bottom: 0;
-    height: var(--spine-h, auto);
-    left: calc(var(--spine-x) - 1px);
-    width: 2px;
-    border-radius: 2px;
-    background: var(--t-spine);
-    opacity: var(--t-spine-opacity);
-    pointer-events: none;
-  }
-
-  /* One run at a time travels the rail, so the floor keeps a pulse even
-     when the visitor stops scrolling. */
-  .timeline-packet {
-    position: absolute;
-    top: 8px;
-    left: calc(var(--spine-x) - 5px);
-    width: 10px;
-    height: 10px;
-    border-radius: 999px;
-    background: var(--t-packet);
-    box-shadow: var(--t-packet-shadow);
-    animation: timeline-packet 11s linear infinite both;
-    pointer-events: none;
-  }
-
-  @keyframes timeline-packet {
-    0% {
-      top: 8px;
-      opacity: 0;
-    }
-    8% {
-      opacity: 1;
-    }
-    90% {
-      opacity: 1;
-    }
-    100% {
-      top: calc(var(--spine-h, 100%) - 4px);
-      opacity: 0;
-    }
-  }
-
-  .tl-row {
-    --accent-ink: color-mix(in oklab, var(--accent) 50%, #101828);
-
-    position: relative;
-    display: grid;
-    grid-template-columns: 220px minmax(0, 1fr);
-    column-gap: 40px;
-    align-items: start;
-  }
-
-  /* Dark keeps the original Tokyo Night accents untouched. */
-  :global([data-theme='dark']) .tl-row {
-    --accent-ink: var(--accent);
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :global(:root:not([data-theme='light'])) .tl-row {
-      --accent-ink: var(--accent);
-    }
-  }
-
-  .tl-rail {
-    position: relative;
+  .run-rail {
     display: flex;
     flex-direction: column;
+    gap: var(--space-3);
     min-width: 0;
   }
 
-  .tl-period {
-    max-width: 100px;
-    font-size: 10.5px;
-    line-height: 1.6;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
-    color: var(--t-dim);
+  .run-index {
+    font-size: var(--text-small);
+    font-variant-numeric: tabular-nums;
+    color: var(--color-ink-muted);
   }
 
-  .tl-skyline {
+  .run-index b {
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+
+  .run-skyline {
     display: block;
-    width: 200px;
-    max-width: 100%;
+    width: 100%;
+    max-width: 9rem;
     height: auto;
-    margin: 2px auto 0;
+  }
+
+  .run-office {
+    font-size: var(--text-small);
+    line-height: 1.4;
+    color: var(--color-ink-muted);
+  }
+
+  .run-body {
+    min-width: 0;
+  }
+
+  .field {
+    display: grid;
+    grid-template-columns: 84px minmax(0, 1fr);
+    gap: var(--space-4);
+    align-items: baseline;
+    padding: var(--space-1) 0;
+  }
+
+  .field-label {
+    font-size: var(--text-small);
+    color: var(--color-ink-muted);
+    text-transform: capitalize;
+  }
+
+  .field h3 {
+    font-family: var(--font-body);
+    font-size: var(--text-lede);
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .field-value {
+    max-width: 62ch;
+    font-size: var(--text-body);
+    line-height: 1.6;
+  }
+
+  .tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .tool {
+    padding: var(--space-1) var(--space-2);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-inline);
+    font-size: var(--text-small);
+    color: var(--color-ink-muted);
+  }
+
+  .results {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    list-style: none;
+  }
+
+  .results li {
+    position: relative;
+    max-width: 62ch;
+    padding-left: 1rem;
+    font-size: var(--text-body);
+    line-height: 1.6;
+  }
+
+  .results li::before {
+    content: '';
+    position: absolute;
+    top: 0.75em;
+    left: 0;
+    width: 0.5rem;
+    height: 1px;
+    background: var(--color-ink-muted);
   }
 
   .tower-left {
-    fill: var(--tower-left);
-    stroke: var(--accent-ink);
-    stroke-opacity: 0.12;
+    fill: var(--color-plate);
+    stroke: var(--color-ink);
     stroke-width: 0.6;
   }
 
   .tower-right {
-    fill: var(--tower-right);
-    stroke: var(--accent-ink);
-    stroke-opacity: 0.12;
+    fill: color-mix(in srgb, var(--color-ink) 8%, var(--color-page));
+    stroke: var(--color-ink);
     stroke-width: 0.6;
   }
 
   .tower-top {
-    fill: var(--tower-top);
-    stroke: var(--accent-ink);
-    stroke-opacity: 0.38;
+    fill: var(--color-page);
+    stroke: var(--color-ink);
     stroke-width: 0.8;
   }
 
   .tower-win {
-    fill: var(--accent-ink);
+    fill: var(--color-ink-muted);
     opacity: 0.28;
   }
 
   .tower-win-lit {
-    fill: var(--accent-ink);
-    opacity: 0.62;
-  }
-
-  .tower-setback .tower-top {
-    stroke-opacity: 0.55;
-  }
-
-  .pad-left {
-    fill: var(--tower-left);
+    fill: var(--color-ink);
     opacity: 0.6;
   }
 
-  .pad-right {
-    fill: var(--tower-right);
-    opacity: 0.75;
-  }
-
-  .pad-top {
-    opacity: 0.06;
-  }
-
   .antenna path {
-    stroke: var(--accent-ink);
-    stroke-width: 1.2;
     fill: none;
+    stroke: var(--color-ink);
+    stroke-width: 1.2;
   }
 
   .antenna circle {
-    fill: var(--accent-ink);
+    fill: var(--color-ink);
   }
 
-  /* Blueprint layer: plotting-grid dots, corner crosshairs, dimension lines
-     and a ground line — all drawn in the run's accent ink at low opacity so
-     the tower cluster stays the hero. */
-  .bp-dot {
-    fill: var(--t-grid);
+  .run-ground {
+    fill: none;
+    stroke: var(--color-rule);
+    stroke-width: 1;
   }
 
-  .skyline-bg {
-    fill: var(--t-bg);
-  }
+  @media (max-width: 1023px) {
+    .run {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-4);
+      padding: var(--space-6) 0;
+    }
 
-  .bp-cross {
-    stroke-opacity: 0.55;
-  }
+    .run-rail {
+      flex-direction: row;
+      align-items: center;
+      gap: var(--space-4);
+    }
 
-  .bp-dim {
-    stroke-opacity: 0.45;
-  }
+    .run-skyline {
+      order: 2;
+      width: 7rem;
+      max-width: 7rem;
+    }
 
-  .bp-floor {
-    stroke-opacity: 0.22;
-  }
-
-  .bp-tick {
-    stroke-opacity: 0.35;
-  }
-
-  .bp-dim-label {
-    fill: var(--t-dim);
-    font-family: var(--font-mono);
-    font-size: 7px;
-    letter-spacing: 0.08em;
-  }
-
-  .accent-fill {
-    fill: var(--accent-ink);
-  }
-
-  .accent-stroke {
-    stroke: var(--accent-ink);
-  }
-
-  /* Node: sits on the spine at the run card's top edge. */
-  .tl-node {
-    position: absolute;
-    top: 2px;
-    left: calc(var(--spine-x) - 6px);
-    width: 12px;
-    height: 12px;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--accent-ink) var(--t-node-weight), var(--t-bg));
-    box-shadow:
-      0 0 0 2px color-mix(in srgb, var(--accent-ink) var(--t-node-ring), transparent),
-      0 0 16px -2px color-mix(in srgb, var(--accent-ink) var(--t-node-glow), transparent);
-    z-index: 3;
-  }
-
-  /* Pill under the office: tonal plate, accent glow, no hit target anymore. */
-  .tl-pill {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1px;
-    width: fit-content;
-    margin: 4px auto 0;
-    padding: 3px 10px;
-    border-radius: 999px;
-    background: var(--t-raised);
-    text-align: center;
-    box-shadow: 0 10px 22px -14px
-      color-mix(in srgb, var(--accent-ink) var(--t-pill-shadow-strength), transparent);
-  }
-
-  .office-name {
-    font-size: 9px;
-    line-height: 1.35;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-    white-space: nowrap;
-    color: var(--accent-ink);
-  }
-
-  .office-period {
-    font-size: 7.5px;
-    line-height: 1.3;
-    letter-spacing: 0.02em;
-    white-space: nowrap;
-    color: var(--t-dim);
-  }
-
-  /* Each run is its own raised sheet: tonal lift on the floor, an accent rail
-     in the run's rotation color, and a numbered chip so jobs never blur. */
-  .trace-block {
-    display: block;
-    position: relative;
-    background: var(--t-card);
-    border-left: 3px solid var(--accent-ink);
-    border-radius: 0 12px 12px 0;
-    padding: 16px 22px;
-  }
-
-  .trace-line {
-    display: block;
-  }
-
-  .trace-cmd {
-    color: var(--t-fg);
-    overflow-wrap: anywhere;
-    display: flex;
-    align-items: baseline;
-    column-gap: 0.75ch;
-    min-height: 1.75em;
-  }
-
-  .cmd {
-    white-space: pre-wrap;
-    min-width: 0;
-    flex: 1;
-  }
-
-  .run-no {
-    flex: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--t-dim);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .tower-glyph {
-    color: var(--accent-ink);
-  }
-
-  .run-no b {
-    color: var(--accent-ink);
-    font-weight: 600;
-  }
-
-  .prompt {
-    color: var(--accent-ink);
-    margin-right: 0;
-    flex: none;
-  }
-
-  .cursor {
-    display: none;
-    width: 0.6ch;
-    height: 1.05em;
-    margin-left: 2px;
-    vertical-align: -0.15em;
-    background: var(--t-fg);
-    animation: trace-blink 0.9s steps(2, start) infinite;
-  }
-
-  :global([data-trace='pending']) .work-card.is-live:not(.is-done) .cursor {
-    display: inline-block;
-  }
-
-  @keyframes trace-blink {
-    50% {
-      opacity: 0;
+    .run-office {
+      order: 3;
     }
   }
 
-  .trace-kv {
-    display: grid;
-    grid-template-columns: 84px minmax(0, 1fr);
-    column-gap: 18px;
-    align-items: baseline;
-  }
-
-  .k {
-    color: var(--t-dim);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-
-  h3 {
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 1.6;
-    letter-spacing: 0;
-    color: var(--accent-ink);
-  }
-
-  .prose {
-    margin: 0;
-    max-width: 68ch;
-    color: var(--t-muted);
-  }
-
-  .trace-tool {
-    display: flex;
-    align-items: baseline;
-    gap: 0.75ch;
-    margin-top: 4px;
-  }
-
-  .arrow {
-    color: var(--t-purple);
-  }
-
-  .tool-label {
-    color: var(--t-dim);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-
-  .trace-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    padding-left: 2ch;
-  }
-
-  .tech-tag {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 6px;
-    background: var(--t-chip);
-    color: var(--t-muted);
-    font-family: var(--font-mono);
-    font-size: 11px;
-    line-height: 1.6;
-    transition:
-      transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-      color 0.2s ease;
-  }
-
-  .tech-tag:hover {
-    transform: translateY(-2px);
-    color: var(--t-purple);
-  }
-
-  .results {
-    list-style: none;
-    margin: 6px 0 0;
-    padding: 0 0 0 2ch;
-  }
-
-  .results li {
-    display: flex;
-    align-items: baseline;
-    gap: 0.75ch;
-    color: var(--t-muted);
-  }
-
-  .ok {
-    color: var(--t-green);
-  }
-
-  /* Reveal gate: only while the inline script says 'pending'. No JS leaves the
-     attribute unset, so the whole trace stays visible. Each card opens on its
-     own intersection, so cards further down keep waiting their turn. */
-  :global([data-trace='pending']) .trace-line {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-
-  :global([data-trace='pending']) .work-card.is-live .trace-line {
-    opacity: 1;
-    transform: none;
-    transition:
-      opacity 0.45s ease,
-      transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-    transition-delay: calc(120ms + var(--i) * 70ms);
-  }
-
-  @keyframes trace-pop {
-    from {
-      transform: scale(0.86);
-    }
-    to {
-      transform: scale(1);
-    }
-  }
-
-  :global([data-trace='pending']) .work-card.is-live .results li {
-    animation: trace-pop 0.36s cubic-bezier(0.16, 1, 0.3, 1) both;
-    animation-delay: calc(120ms + var(--i) * 70ms);
-  }
-
-  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-    .tl-skyline {
-      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .tl-row:hover .tl-skyline {
-      transform: translateY(-2px);
-    }
-
-    .tower-win,
-    .tower-win-lit {
-      transition: opacity 0.3s ease;
-    }
-
-    .tl-row:hover .tower-win {
-      opacity: 0.42;
-    }
-
-    .tl-row:hover .tower-win-lit {
-      opacity: 0.9;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .tech-tag:hover {
-      transform: none;
-    }
-
-    .timeline-packet,
-    .meta-dot {
-      animation: none;
-    }
-
-    .timeline-packet {
-      display: none;
-    }
-
-    .tl-skyline {
-      transition: none;
-    }
-
-    .tl-row:hover .tl-skyline {
-      transform: none;
-    }
-
-    /* Belt and suspenders: even if the script never runs, reduced motion
-       users see the full trace. */
-    :global([data-trace='pending']) .trace-line {
-      opacity: 1;
-      transform: none;
-    }
-  }
-
-  @media (max-width: 900px) {
+  @media (max-width: 768px) {
     .experience {
       padding: var(--space-12) 0;
     }
 
-    /* Portrait rail: the spine hugs the stage edge, the office stacks above
-       its own card. */
-    .timeline {
-      --spine-x: 6px;
-      gap: 40px;
-    }
-
-    .tl-row {
+    .field {
       grid-template-columns: minmax(0, 1fr);
-      gap: 20px;
+      gap: var(--space-1);
     }
 
-    .tl-rail {
-      padding-left: 26px;
-      align-items: center;
+    .field-label {
+      margin-top: var(--space-2);
     }
 
-    .tl-period {
-      max-width: none;
-      text-align: center;
+    .field-label:empty {
+      margin-top: 0;
     }
 
-    .tl-skyline {
-      width: 100%;
-      margin: 4px auto 0;
-    }
-
-    .tl-node {
-      top: 0;
-    }
-
-    .tl-pill {
-      margin: 6px auto 0;
-    }
-
-    .work-card {
-      margin-left: 26px;
-    }
-  }
-
-  @media (max-width: 640px) {
-    h2 {
-      font-size: var(--text-3xl);
-    }
-
-    .office-stage {
-      font-size: 12px;
-      padding: 20px 18px;
-    }
-
-    .tl-pill {
-      padding: 2px 8px;
-    }
-
-    .office-name {
-      font-size: 8.5px;
-    }
-
-    .office-period {
-      font-size: 7.5px;
-    }
-
-    .trace-block {
-      padding: 14px 16px;
-      border-left-width: 2px;
-    }
-
-    .trace-kv {
-      grid-template-columns: 62px minmax(0, 1fr);
-      column-gap: 12px;
-    }
-
-    h3 {
-      font-size: 13px;
+    .run-skyline {
+      width: 6rem;
+      max-width: 6rem;
     }
   }
 </style>

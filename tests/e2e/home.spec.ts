@@ -28,28 +28,30 @@ test.describe('Homepage Tests', () => {
     expect(tagCount).toBeGreaterThanOrEqual(3);
   });
 
-  test('should display metrics section with cards', async ({ homePage }) => {
+  test('should display the metrics ledger', async ({ homePage }) => {
     await homePage.scrollToSection('.metrics');
     await expect(homePage.metricsSection).toBeAttached();
-    const cardCount = await homePage.metricCards.count();
-    expect(cardCount).toBeGreaterThanOrEqual(2);
+    await expect(homePage.metricItems).toHaveCount(4);
+    await expect(homePage.metricItems.first().locator('.metric-value')).toBeAttached();
   });
 
-  test('should display work experience section with cards', async ({ homePage }) => {
+  test('should display the work experience ledger', async ({ homePage }) => {
     await homePage.scrollToSection('#experience');
     await expect(homePage.experienceSection).toBeAttached();
     await expect(homePage.experienceHeading).toContainText('Work Experience');
-    const workCount = await homePage.workCards.count();
-    expect(workCount).toBeGreaterThanOrEqual(1);
+    const runCount = await homePage.workRuns.count();
+    expect(runCount).toBeGreaterThanOrEqual(1);
   });
 
-  test('should display work cards with expected structure', async ({ homePage }) => {
+  test('should display run rows with expected structure', async ({ homePage }) => {
     await homePage.scrollToSection('#experience');
-    const firstCard = homePage.workCards.first();
-    await expect(firstCard.locator('h3')).toBeAttached();
-    await expect(firstCard.locator('.company')).toBeAttached();
-    await expect(firstCard.locator('.period')).toBeAttached();
-    await expect(firstCard.locator('.tech-tag').first()).toBeAttached();
+    const firstRun = homePage.workRuns.first();
+    await expect(firstRun.locator('h3')).toBeAttached();
+    await expect(firstRun.locator('.field-label').first()).toHaveText('role');
+    await expect(firstRun.locator('.field-value').first()).toBeAttached();
+    await expect(firstRun.locator('time')).toBeAttached();
+    await expect(firstRun.locator('.tool').first()).toBeAttached();
+    await expect(firstRun.locator('.results li').first()).toBeAttached();
   });
 
   test('should display projects section with cards', async ({ homePage }) => {
