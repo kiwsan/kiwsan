@@ -15,11 +15,11 @@ const manrope = font(join(fontDir, 'manrope', 'files', 'manrope-latin-wght-norma
 const inter = font(join(fontDir, 'inter', 'files', 'inter-latin-wght-normal.woff2'));
 
 const C = {
-  paper: '#F2EFE7',
-  ink: '#15171C',
-  muted: '#5E5A52',
+  paper: '#FFFFFF',
+  ink: '#15171A',
+  muted: '#5F646C',
   cobalt: '#1E3A8A',
-  hair: 'rgba(21,23,28,0.18)',
+  hair: 'rgba(21,23,26,0.10)',
 };
 
 const cube = (cx, cy, w, h, v) => ({

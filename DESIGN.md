@@ -1,6 +1,11 @@
 # Design contract: the Working Record
 
-- Status: approved at G2, 2026-11-21. Replaces the "Precision Architect" brief.
+- Status: approved at G2, 2026-11-21; 1.1 soft-surface and 1.2 neutral-palette
+  amendments 2026-11-22. Replaces the "Precision Architect" brief.
+- 1.1 (operator request, 2026-11-22): round the grouped surfaces and controls and
+  widen the section rhythm. No gradient, glass, pill, or hover lift is added.
+- 1.2 (operator request, 2026-11-22): the page is white and the plate is a
+  neutral grey; the warm paper tint is gone. The blue signal stays.
 - Applies to: `/` and `/workforce`; every component in `src/components/`, the
   layout, and the workforce page.
 - Decision: `ADR-20261121-kiwsan-site-unslop` §3, Direction A. That ADR is the
@@ -64,25 +69,26 @@ accent is banned.
 
 | Role        | Light                 | Dark                     | Use                                                    | Never                                     |
 | ----------- | --------------------- | ------------------------ | ------------------------------------------------------ | ----------------------------------------- |
-| `page`      | `#F2EFE7`             | `#15171C`                | every page and section background                      | a card fill, a gradient stop              |
-| `plate`     | `#E8E3D6`             | `#1E2127`                | drawing fields, table headers, disabled controls       | a full page or section background         |
-| `ink`       | `#15171C`             | `#F2EFE7`                | body text, titles, solid controls                      | a large decorative fill                   |
-| `ink-muted` | `#5E5A52`             | `#A9A396`                | captions, secondary detail, disabled labels            | primary prose, a link at rest             |
-| `rule`      | `rgba(21,23,28,0.18)` | `rgba(242,239,231,0.20)` | every 1px separation, table rows, inline label borders | a filled surface                          |
-| `signal`    | `#1E3A8A`             | `#8FA8E8`                | links, focus ring, current run, active gate            | decoration, a second accent, a background |
+| `page`      | `#FFFFFF`             | `#101114`                | every page and section background                      | a card fill, a gradient stop              |
+| `plate`     | `#F4F5F7`             | `#181A1E`                | drawing and data fields: floor, ledger, stats, tables, callouts | a full page or section background         |
+| `ink`       | `#15171A`             | `#F5F6F7`                | body text, titles, solid controls                      | a large decorative fill                   |
+| `ink-muted` | `#5F646C`             | `#A6ABB3`                | captions, secondary detail, disabled labels            | primary prose, a link at rest             |
+| `rule`      | `rgba(21,23,26,0.10)` | `rgba(245,246,247,0.14)` | every 1px separation, table rows, inline label borders | a filled surface                          |
+| `signal`    | `#1E3A8A`             | `#93B4F5`                | links, focus ring, current run, active gate            | decoration, a second accent, a background |
 
 - The light values for `page`, `ink`, `ink-muted`, `signal`, and `rule` are the
-  paper/ink register already in the repository, in
+  neutral white/ink register already in the repository, in
   `scripts/social-cards.mjs:17-24` (`paper`, `ink`, `muted`, `cobalt`, `hair`).
   The card's red is not carried: `signal` is the only saturated colour.
-- `plate` is one step from `page`, not an independent colour. It exists so a
-  drawing or a table head can sit on the page without a card or a shadow.
+- `plate` is the neutral grey step from `page`, not an independent colour. It
+  exists so a drawing or a table head can sit on the page without a card or a
+  shadow.
 - Dark is the inversion of the same six roles, not a second palette. Do not
   import a code-editor set of blues, purples, and greens.
-- Measured pairs (WCAG contrast, computed 2026-11-21): `ink`/`page` 15.60 both
-  themes; `ink-muted`/`page` 5.97 light and 7.14 dark; `signal`/`page` 9.01
-  light and 7.63 dark. T-002 re-runs axe; a value change that fails a pair is a
-  token defect, not a component defect.
+- Measured pairs (WCAG contrast, computed 2026-11-22): `ink`/`page` 17.96 light
+  and 17.45 dark; `ink-muted`/`page` 5.96 light and 8.18 dark; `signal`/`page`
+  10.36 light and 9.07 dark. T-002 re-runs axe; a value change that fails a pair
+  is a token defect, not a component defect.
 - Token names: `--color-page`, `--color-plate`, `--color-ink`,
   `--color-ink-muted`, `--color-rule`, `--color-signal`. The old
   `--color-bg`/`--color-primary`/`--color-accent` names are retired in T-002.
@@ -93,12 +99,12 @@ accent is banned.
   Section rhythm uses `--space-24` (6rem) at desktop, `--space-16` (4rem) at
   768, `--space-12` (3rem) at 320. A one-off spacing value is a token change,
   not a page style.
-- **Radius.** Three values only: `0` on plates, images, tables, and sections;
-  `2px` on controls (buttons, toggles, fields, tags-as-links); `3px` on a
-  non-interactive inline label. No `8px`, no `16px`, no `9999px`. A control,
-  tag, or inline label is never a circle or a pill; a drawing mark inside a
-  plate (a node, a dot) and the assistant's loading dots may be round. Icon
-  buttons are 2px-radius blocks, not circles.
+- **Radius.** Three values: `12px` on grouped surfaces, plates, images, and
+  tables (`--radius-surface`); `8px` on controls — buttons, toggles, fields,
+  tags-as-links (`--radius-control`); `6px` on a non-interactive inline label
+  (`--radius-inline`). No `9999px`, no pill. A control, tag, or inline label is
+  never a circle; a drawing node or the assistant's loading dots may be round.
+  Icon buttons are control-radius blocks, not circles.
 - **Border.** 1px `rule` everywhere a separation is needed. The focus ring is
   2px `--color-signal` at 3px offset, defined once in `global.css`. A 1px border
   is not banned; it is the only way a boundary is drawn.
@@ -158,12 +164,14 @@ Rules:
 - **Measure.** Prose is held to 62–68ch. A record's label column is 84px at
   desktop and stacks below the value under 768px.
 - **Section rhythm.** Each section opens with a 1px `rule`, then the marker, the
-  title, and at most one lede. The rule does the separating; a background shift
+  title, and at most one lede. Section padding is `clamp(4rem, 8vw, 6rem)` at
+  desktop and `clamp(3rem, 9vw, 4rem)` at 320, so the rule is not the only
+  thing separating sections. The rule does the separating; a background shift
   or a card does not.
 - **Asymmetry.** Allowed only when the margin holds data (a rail, a number, a
   date). There is no asymmetry for its own sake.
 - **Plates.** A drawing gets a full-width field on `plate`, a 1px `rule`, a
-  caption below it, and no card, shadow, or rounded corner. Radius 0.
+  caption below it, the surface radius, and no card or shadow.
 - **Tables.** Hairline rows, a header at `small` in sentence case, no zebra, no
   radius, no shadow. A table that can overflow sits in a
   `role="region" tabindex="0"` scroll container with a visible focus ring; the
@@ -224,33 +232,33 @@ omission.
 | --------------------------------------- | ----------------------------------------------------------- | ------------------------------------ | --------------------------- | ----------------------------- | ---------------------------------- |
 | `Header` logo link                      | ink mark, no underline                                      | mark in `signal`                     | 2px signal ring             | mark in `signal`, no movement | n/a                                |
 | `Header` nav link                       | ink label, no underline                                     | `signal`, 1px underline              | 2px signal ring             | 2px underline, 1px offset     | n/a                                |
-| `Header` menu toggle                    | 2px-radius ink icon block                                   | `signal` icon                        | 2px signal ring             | `plate` fill, 2px rule        | n/a                                |
-| `Header` theme toggle                   | 2px-radius ink icon block                                   | `signal` icon                        | 2px signal ring             | `plate` fill, 2px rule        | n/a                                |
-| `Hero` primary CTA                      | ink fill, page label, 2px radius                            | page fill, 1px ink rule, ink label   | 2px signal ring             | hover fill + 2px inset rule   | n/a                                |
+| `Header` menu toggle                    | control-radius ink icon block                                   | `signal` icon                        | 2px signal ring             | `plate` fill, 2px rule        | n/a                                |
+| `Header` theme toggle                   | control-radius ink icon block                                   | `signal` icon                        | 2px signal ring             | `plate` fill, 2px rule        | n/a                                |
+| `Hero` primary CTA                      | ink fill, page label, control radius                            | page fill, 1px ink rule, ink label   | 2px signal ring             | hover fill + 2px inset rule   | n/a                                |
 | `Hero` secondary CTA                    | page fill, 1px ink rule, ink label                          | ink fill, page label                 | 2px signal ring             | hover fill + 2px inset rule   | n/a                                |
 | `Hero` tag list                         | comma-separated text, no fill                               | n/a: not interactive                 | n/a                         | n/a                           | n/a                                |
 | `Hero` highlighted phrase               | ink text; plain, not a control                              | n/a                                  | n/a                         | n/a                           | n/a                                |
 | `Metrics` ledger row                    | body-size figures, tabular, rule between                    | n/a: not interactive                 | n/a                         | n/a                           | n/a                                |
 | `WorkExperience` run ledger             | rail date and `01 / 06`, label column, rules                | n/a: not interactive                 | n/a                         | n/a                           | n/a                                |
-| `WorkExperience` tool tag               | 1px rule, 3px radius, `ink-muted`, `small`                  | n/a: not interactive                 | n/a                         | n/a                           | n/a                                |
+| `WorkExperience` tool tag               | 1px rule, inline radius, `ink-muted`, `small`                  | n/a: not interactive                 | n/a                         | n/a                           | n/a                                |
 | `Workforce` case-study link             | ink label, 1px underline                                    | `signal`, 2px underline              | 2px signal ring             | 2px underline, 1px offset     | n/a                                |
 | `Workforce` floor                       | plate field, ink drawing, accessible via `<title>`/`<desc>` | n/a: not interactive                 | n/a (SVG is not focusable)  | n/a                           | n/a                                |
 | `Workforce` shift-log row               | rule between rows; current run in `signal`                  | n/a: not interactive                 | n/a                         | n/a                           | n/a                                |
-| `Workforce` pod card                    | rule-bounded record, 0 radius                               | n/a: not interactive                 | n/a                         | n/a                           | n/a                                |
+| `Workforce` pod card                    | rule-bounded record, surface radius                               | n/a: not interactive                 | n/a                         | n/a                           | n/a                                |
 | `Projects` project                      | record entry with fixed fields, rule between                | n/a: the entry is not a control      | n/a                         | n/a                           | n/a                                |
 | `Projects` project link                 | ink label, 1px underline                                    | `signal`, 2px underline              | 2px signal ring             | 2px underline, 1px offset     | n/a                                |
-| `Projects` tech tag                     | 1px rule, 3px radius, `ink-muted`                           | n/a: not interactive                 | n/a                         | n/a                           | n/a                                |
-| `TechStack` skill tag                   | 1px rule, 3px radius, `ink-muted`                           | n/a: not interactive                 | n/a                         | n/a                           | n/a                                |
+| `Projects` tech tag                     | 1px rule, inline radius, `ink-muted`                           | n/a: not interactive                 | n/a                         | n/a                           | n/a                                |
+| `TechStack` skill tag                   | 1px rule, inline radius, `ink-muted`                           | n/a: not interactive                 | n/a                         | n/a                           | n/a                                |
 | `Contact` link item                     | ink label, 1px underline                                    | `signal`, 2px underline              | 2px signal ring             | 2px underline, 1px offset     | n/a                                |
 | `Contact` credential link               | ink label, badge image at text height                       | `signal`, 2px underline              | 2px signal ring             | 2px underline, 1px offset     | n/a                                |
-| `Contact` CTA primary                   | ink fill, page label, 2px radius                            | page fill, 1px ink rule              | 2px signal ring             | hover fill + 2px inset rule   | n/a                                |
+| `Contact` CTA primary                   | ink fill, page label, control radius                            | page fill, 1px ink rule              | 2px signal ring             | hover fill + 2px inset rule   | n/a                                |
 | `Contact` copy button                   | outlined control, ink label                                 | ink fill, page label                 | 2px signal ring             | hover fill + 2px inset rule   | n/a                                |
 | `Footer` referral and BMC links         | supplied badge artwork at fixed height                      | 1px rule under the badge becomes 2px | 2px signal ring             | 2px rule                      | n/a                                |
 | `Footer` text link                      | ink label, no underline                                     | `signal`, 1px underline              | 2px signal ring             | 2px underline, 1px offset     | n/a                                |
-| `ChatWidget` toggle (56px; 48px at 320) | ink fill, page icon, 2px radius                             | page fill, 1px ink rule              | 2px signal ring             | hover fill + 2px inset rule   | n/a                                |
-| `ChatWidget` close                      | ink icon, 2px radius                                        | `signal` icon                        | 2px signal ring             | `plate` fill, 2px rule        | n/a                                |
+| `ChatWidget` toggle (56px; 48px at 320) | ink fill, page icon, control radius                             | page fill, 1px ink rule              | 2px signal ring             | hover fill + 2px inset rule   | n/a                                |
+| `ChatWidget` close                      | ink icon, control radius                                        | `signal` icon                        | 2px signal ring             | `plate` fill, 2px rule        | n/a                                |
 | `ChatWidget` input                      | page fill, 1px rule, ink text                               | 1px `ink-muted` rule                 | 2px signal ring             | n/a                           | plate fill, rule, `ink-muted` text |
-| `ChatWidget` send                       | ink fill, page icon, 2px radius                             | page fill, 1px ink rule              | 2px signal ring             | hover fill + 2px inset rule   | plate fill, rule, `ink-muted` icon |
+| `ChatWidget` send                       | ink fill, page icon, control radius                             | page fill, 1px ink rule              | 2px signal ring             | hover fill + 2px inset rule   | plate fill, rule, `ink-muted` icon |
 | `ChatWidget` suggestion                 | page fill, 1px rule, ink label, small                       | ink fill, page label                 | 2px signal ring             | hover fill + 2px inset rule   | n/a                                |
 | `Layout` skip link                      | page fill, ink label, 1px rule                              | n/a: appears on focus only           | 2px signal ring, top offset | n/a                           | n/a                                |
 
@@ -271,7 +279,7 @@ Component rules that the matrix depends on:
 - `Projects` is a list of record entries with a fixed field order (title,
   company, period, challenge, solution, tech, results, link), a rule between
   entries, and no hover lift, image zoom, or card. A screenshot keeps its aspect
-  ratio, has radius 0, and sits on `rule`.
+  ratio, has the surface radius, and sits on `rule`.
 - `TechStack` is a list of inline labels, grouped as today. The group cannot use
   a different fill or a second accent; the current-focus group is marked by
   position and a rule, not colour.
@@ -281,7 +289,7 @@ Component rules that the matrix depends on:
   copyright, build version, and text links. No dark band, no white text on a
   near-black fill (that is a second palette).
 - `ChatWidget` keeps its behaviour, model, and data. Only its surface changes:
-  a plate window with a 1px rule, 2px radius, the E1 shadow, no filled header
+  a plate window with a 1px rule, the surface radius, the E1 shadow, no filled header
   bar, an ink close icon, and the same input and send states. Its loading
   indicator is a state, not decoration.
 
@@ -407,7 +415,7 @@ builder. It is a review with evidence, not a build that exited 0.
   `test:e2e`; they are not replaced by screenshots.
 - **Scans.** `AC2`'s CSS scan: no raw colour, literal `font-family`, or literal
   `border-radius` outside `global.css`; the only allowed radius values are 0,
-  2px, and 3px, through tokens. `AC4`'s diff: no text change except §6.3.
+  6px, 8px, and 12px, through tokens. `AC4`'s diff: no text change except §6.3.
 - **Failure.** If the gate fails, fix it inside the branch. If it fails twice on
   the same section, stop and re-scope that section; do not merge a half-system.
   No gate, no merge, and the merge is not the deploy.
