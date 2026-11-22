@@ -6,7 +6,7 @@ test.describe('Office marker scale', () => {
   }) => {
     await homePage.scrollToSection('#experience');
 
-    const rows = homePage.page.locator('.run');
+    const rows = homePage.page.locator('.tl-row');
     const towers = (index: number) => rows.nth(index).locator('.tower');
 
     await expect(towers(0)).toHaveCount(3); // MC Group, AI Manager

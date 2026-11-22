@@ -2,109 +2,142 @@
 import metrics from '../data/metrics.json';
 ---
 
-<section class="metrics" aria-label="Metrics">
+<section class="metrics">
   <div class="container">
-    <div class="metrics-ledger">
-      {metrics.map((metric) => (
-        <div class="metric">
-          <div class="metric-value">{metric.value}</div>
-          <div class="metric-label">{metric.label}</div>
-          <p class="metric-description">{metric.description}</p>
+    <div class="metrics-grid">
+      {metrics.map((metric, i) => (
+        <div class={`metric-card animate-fade-in-up stagger-${i + 1}`}>
+          <div class="value" data-target={metric.value}>
+            {metric.value}
+          </div>
+          <div class="label">{metric.label}</div>
+          <div class="description">{metric.description}</div>
         </div>
       ))}
     </div>
   </div>
 </section>
 
+<script>
+  function animateValue(el: HTMLElement, target: string) {
+    const num = parseInt(target.replace(/[^0-9]/g, ''), 10);
+    const suffix = target.replace(/^\d+/, '');
+    const duration = 2000;
+    const start = performance.now();
+
+    function step(now: number) {
+      const progress = Math.min((now - start) / duration, 1);
+      el.textContent = String(Math.floor(progress * num)) + suffix;
+      if (progress < 1) requestAnimationFrame(step);
+      else el.textContent = target;
+    }
+
+    requestAnimationFrame(step);
+  }
+
+  document.querySelectorAll('.value').forEach((el) => {
+    const target = el.getAttribute('data-target');
+    if (!target || !/^\d+[^\d]*$/.test(target)) return;
+    const suffix = target.replace(/^\d+/, '');
+    el.textContent = '0' + suffix;
+    setTimeout(() => animateValue(el as HTMLElement, target), 300);
+  });
+</script>
+
 <style>
   .metrics {
-    padding: clamp(2rem, 4vw, 3rem) 0;
+    padding: var(--space-12) 0;
+    background: var(--color-surface-container-low);
+    min-height: 40vh;
+    display: flex;
+    align-items: center;
   }
 
-  .metrics-ledger {
+  .metrics-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    padding: clamp(1.25rem, 3vw, 2rem);
-    background: var(--color-plate);
-    border: 1px solid var(--color-rule);
-    border-radius: var(--radius-surface);
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-8);
   }
 
-  .metric {
-    padding: 0 var(--space-5);
-    border-left: 1px solid var(--color-rule);
+  .metric-card {
+    text-align: center;
+    padding: var(--space-8) var(--space-4);
+    background: var(--color-bg);
+    border-radius: var(--radius-xl);
+    transition:
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.35s ease;
   }
 
-  .metric:nth-child(4n + 1) {
-    padding-left: 0;
-    border-left: 0;
+  .metric-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(25, 28, 30, 0.05);
   }
 
-  .metric-value {
-    font-size: var(--text-body);
-    font-weight: 600;
+  .value {
+    font-family: var(--font-display);
+    font-size: var(--text-display-sm);
+    font-weight: 800;
+    color: var(--color-primary);
+    margin-bottom: var(--space-2);
     font-variant-numeric: tabular-nums;
-    color: var(--color-ink);
+    letter-spacing: -0.03em;
+    line-height: 1;
   }
 
-  .metric-label {
-    margin-top: var(--space-1);
-    font-size: var(--text-small);
-    font-weight: 500;
-    color: var(--color-ink);
+  .label {
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text);
+    margin-bottom: var(--space-2);
   }
 
-  .metric-description {
-    margin-top: var(--space-1);
-    font-size: var(--text-small);
-    line-height: 1.5;
-    color: var(--color-ink-muted);
+  .description {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    line-height: 1.6;
   }
 
   @media (max-width: 768px) {
-    .metrics-ledger {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      row-gap: var(--space-5);
+    .metrics {
+      min-height: auto;
+      padding: var(--space-10) 0;
     }
-
-    .metric {
-      padding: 0 var(--space-4);
-      border-left: 0;
+    .metrics-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-4);
     }
-
-    .metric:nth-child(even) {
-      border-left: 1px solid var(--color-rule);
+    .metric-card {
+      padding: var(--space-5);
     }
-
-    .metric:nth-child(n + 3) {
-      padding-top: var(--space-5);
-      border-top: 1px solid var(--color-rule);
-    }
-
-    .metric:nth-child(3) {
-      padding-left: 0;
+    .value {
+      font-size: var(--text-3xl);
     }
   }
 
   @media (max-width: 480px) {
     .metrics {
-      padding: 2rem 0;
+      padding: var(--space-8) 0;
     }
-
-    .metrics-ledger {
-      grid-template-columns: minmax(0, 1fr);
-      row-gap: 0;
+    .metrics-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-3);
     }
-
-    .metric {
-      padding: var(--space-4) 0;
-      border-left: 0;
-      border-top: 1px solid var(--color-rule);
+    .metric-card {
+      padding: var(--space-4);
     }
-
-    .metric:first-child {
-      padding-top: 0;
-      border-top: 0;
+    .value {
+      font-size: var(--text-2xl);
+    }
+    .label {
+      font-size: var(--text-xs);
+    }
+    .description {
+      font-size: var(--text-xs);
+      display: none;
     }
   }
 </style>

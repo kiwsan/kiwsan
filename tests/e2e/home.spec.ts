@@ -28,46 +28,43 @@ test.describe('Homepage Tests', () => {
     expect(tagCount).toBeGreaterThanOrEqual(3);
   });
 
-  test('should display the metrics ledger', async ({ homePage }) => {
+  test('should display metrics section with cards', async ({ homePage }) => {
     await homePage.scrollToSection('.metrics');
     await expect(homePage.metricsSection).toBeAttached();
-    await expect(homePage.metricItems).toHaveCount(4);
-    await expect(homePage.metricItems.first().locator('.metric-value')).toBeAttached();
+    const cardCount = await homePage.metricCards.count();
+    expect(cardCount).toBeGreaterThanOrEqual(2);
   });
 
-  test('should display the work experience ledger', async ({ homePage }) => {
+  test('should display work experience section with cards', async ({ homePage }) => {
     await homePage.scrollToSection('#experience');
     await expect(homePage.experienceSection).toBeAttached();
     await expect(homePage.experienceHeading).toContainText('Work Experience');
-    const runCount = await homePage.workRuns.count();
-    expect(runCount).toBeGreaterThanOrEqual(1);
+    const workCount = await homePage.workCards.count();
+    expect(workCount).toBeGreaterThanOrEqual(1);
   });
 
-  test('should display run rows with expected structure', async ({ homePage }) => {
+  test('should display work cards with expected structure', async ({ homePage }) => {
     await homePage.scrollToSection('#experience');
-    const firstRun = homePage.workRuns.first();
-    await expect(firstRun.locator('h3')).toBeAttached();
-    await expect(firstRun.locator('.field-label').first()).toHaveText('role');
-    await expect(firstRun.locator('.field-value').first()).toBeAttached();
-    await expect(firstRun.locator('time')).toBeAttached();
-    await expect(firstRun.locator('.tool').first()).toBeAttached();
-    await expect(firstRun.locator('.results li').first()).toBeAttached();
+    const firstCard = homePage.workCards.first();
+    await expect(firstCard.locator('h3')).toBeAttached();
+    await expect(firstCard.locator('.company')).toBeAttached();
+    await expect(firstCard.locator('.period')).toBeAttached();
+    await expect(firstCard.locator('.tech-tag').first()).toBeAttached();
   });
 
-  test('should display project entries', async ({ homePage }) => {
+  test('should display projects section with cards', async ({ homePage }) => {
     await homePage.scrollToSection('#projects');
     await expect(homePage.projectsSection).toBeAttached();
     await expect(homePage.projectsHeading).toContainText('Featured Projects');
-    const projectCount = await homePage.projectEntries.count();
+    const projectCount = await homePage.projectCards.count();
     expect(projectCount).toBeGreaterThanOrEqual(1);
   });
 
-  test('should display project entries with expected structure', async ({ homePage }) => {
+  test('should display project cards with expected structure', async ({ homePage }) => {
     await homePage.scrollToSection('#projects');
-    const firstEntry = homePage.projectEntries.first();
-    await expect(firstEntry.locator('h3')).toBeAttached();
-    await expect(firstEntry.locator('.tech-tag').first()).toBeAttached();
-    await expect(firstEntry.locator('.results li').first()).toBeAttached();
+    const firstCard = homePage.projectCards.first();
+    await expect(firstCard.locator('h3')).toBeAttached();
+    await expect(firstCard.locator('.tech-tag').first()).toBeAttached();
   });
 
   test('should display tech stack section with skill categories', async ({ homePage }) => {

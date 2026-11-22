@@ -43,7 +43,7 @@ test('serves the core content and manifest', async ({ page }) => {
   await expect(page.locator('link[rel="manifest"]')).toHaveCount(1);
   await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveCount(1);
   await expect(page.locator('#experience h2')).toContainText('Work Experience');
-  expect(await page.locator('.run').count()).toBeGreaterThanOrEqual(6);
+  expect(await page.locator('.work-card').count()).toBeGreaterThanOrEqual(6);
 });
 
 test('compresses HTML and sets cache headers', async ({ page, request }) => {

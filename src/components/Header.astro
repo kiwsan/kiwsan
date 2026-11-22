@@ -7,6 +7,9 @@ const { basePath = '' } = Astro.props;
 ---
 
 <header class="header">
+  <!-- Background -->
+  <div class="header-bg"></div>
+
   <div class="container">
     <a href="/" class="logo" aria-label="Home">
       <svg
@@ -19,7 +22,7 @@ const { basePath = '' } = Astro.props;
         <!-- flow lines -->
         <path
           d="M5 28C13 6 27 6 35 28"
-          stroke="currentColor"
+          stroke="#191c1e"
           stroke-width="3"
           fill="none"
           stroke-linecap="round"
@@ -27,23 +30,22 @@ const { basePath = '' } = Astro.props;
 
         <path
           d="M5 12C13 34 27 34 35 12"
-          stroke="currentColor"
+          stroke="#191c1e"
           stroke-width="3"
           fill="none"
           stroke-linecap="round"
         />
 
         <!-- endpoints -->
-        <circle cx="5" cy="28" r="1.2" fill="currentColor" />
-        <circle cx="35" cy="28" r="1.2" fill="currentColor" />
-        <circle cx="5" cy="12" r="1.2" fill="currentColor" />
-        <circle cx="35" cy="12" r="1.2" fill="currentColor" />
+        <circle cx="5" cy="28" r="1.2" fill="#191c1e" />
+        <circle cx="35" cy="28" r="1.2" fill="#191c1e" />
+        <circle cx="5" cy="12" r="1.2" fill="#191c1e" />
+        <circle cx="35" cy="12" r="1.2" fill="#191c1e" />
       </svg>
     </a>
     <button
       class="menu-toggle"
       id="menu-toggle"
-      type="button"
       aria-label="Open menu"
       aria-expanded="false"
       aria-controls="nav"
@@ -61,7 +63,6 @@ const { basePath = '' } = Astro.props;
           fill="none"
           stroke="currentColor"
           stroke-width="2"
-          aria-hidden="true"
         >
           <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
           <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
@@ -76,7 +77,6 @@ const { basePath = '' } = Astro.props;
           fill="none"
           stroke="currentColor"
           stroke-width="2"
-          aria-hidden="true"
         >
           <circle cx="12" cy="7" r="3" />
           <circle cx="5" cy="17" r="2" />
@@ -93,7 +93,6 @@ const { basePath = '' } = Astro.props;
           fill="none"
           stroke="currentColor"
           stroke-width="2"
-          aria-hidden="true"
         >
           <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
         </svg>
@@ -107,7 +106,6 @@ const { basePath = '' } = Astro.props;
           fill="none"
           stroke="currentColor"
           stroke-width="2"
-          aria-hidden="true"
         >
           <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
           <polyline points="22,6 12,13 2,6" />
@@ -117,7 +115,6 @@ const { basePath = '' } = Astro.props;
       <button
         class="theme-toggle"
         id="theme-toggle"
-        type="button"
         aria-label="Toggle dark mode"
         title="Toggle dark mode"
       >
@@ -165,11 +162,20 @@ const { basePath = '' } = Astro.props;
     left: 0;
     right: 0;
     z-index: 50;
-    background: var(--color-page);
-    border-bottom: 1px solid var(--color-rule);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .header-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgba(255, 255, 255, 0.8);
+    transition: background-color 0.3s ease;
   }
 
   .header .container {
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -180,19 +186,54 @@ const { basePath = '' } = Astro.props;
   .logo {
     display: inline-flex;
     align-items: center;
-    color: var(--color-ink);
-    text-decoration: none;
-    transition: color var(--motion-fast) var(--ease-out);
-  }
-
-  .logo:hover {
-    color: var(--color-signal);
   }
 
   .logo-svg {
     display: block;
     width: 36px;
     height: 36px;
+    border-radius: 10px;
+    transition:
+      opacity 0.18s ease,
+      transform 0.18s ease;
+  }
+
+  /* :global() keeps the theme attribute on <html>; Astro's default scoping would
+     add the component's data-astro-cid to it, so the rule could never match. */
+  :global([data-theme='dark']) .header-bg {
+    background: rgba(26, 27, 38, 0.8);
+  }
+
+  :global([data-theme='dark']) .logo-svg path {
+    stroke: #ffffff;
+  }
+
+  :global([data-theme='dark']) .logo-svg circle {
+    fill: #ffffff;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .header-bg {
+      background: rgba(26, 27, 38, 0.8);
+    }
+    :global(:root:not([data-theme='light'])) .logo-svg path {
+      stroke: #ffffff;
+    }
+    :global(:root:not([data-theme='light'])) .logo-svg circle {
+      fill: #ffffff;
+    }
+  }
+
+  .logo:hover .logo-svg {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 480px) {
+    .logo-svg {
+      width: 32px;
+      height: 32px;
+    }
   }
 
   .nav {
@@ -202,58 +243,48 @@ const { basePath = '' } = Astro.props;
   }
 
   .nav a {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-muted);
     display: flex;
     align-items: center;
     gap: var(--space-2);
-    font-size: var(--text-small);
-    font-weight: 500;
-    color: var(--color-ink);
-    text-decoration: none;
-    transition: color var(--motion-fast) var(--ease-out);
-  }
-
-  .nav a:hover {
-    color: var(--color-signal);
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.18em;
-  }
-
-  .nav a:active {
-    text-decoration-thickness: 2px;
-    text-underline-offset: 0.1em;
   }
 
   .nav a svg {
     flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+
+  .nav a:hover svg {
+    transform: translateY(-2px);
+  }
+
+  .nav a:hover {
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 768px) {
+    .nav {
+      gap: var(--space-4);
+    }
   }
 
   .menu-toggle {
     display: none;
     flex-direction: column;
     gap: 4px;
-    padding: var(--space-2);
-    background: var(--color-page);
-    color: var(--color-ink);
-    border: 1px solid var(--color-rule);
-    border-radius: var(--radius-control);
+    background: none;
+    border: none;
     cursor: pointer;
-  }
-
-  .menu-toggle:hover {
-    color: var(--color-signal);
-  }
-
-  .menu-toggle:active {
-    background: var(--color-plate);
-    box-shadow: inset 0 0 0 1px var(--color-ink);
+    padding: 4px;
   }
 
   .menu-toggle span {
-    display: block;
     width: 24px;
     height: 2px;
-    background: currentColor;
+    background: var(--color-text);
+    transition: all 0.3s;
   }
 
   .menu-toggle.active span:nth-child(1) {
@@ -268,90 +299,59 @@ const { basePath = '' } = Astro.props;
     transform: rotate(-45deg) translate(6px, -6px);
   }
 
-  .theme-toggle {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    padding: 0;
-    background: var(--color-page);
-    color: var(--color-ink);
-    border: 1px solid var(--color-rule);
-    border-radius: var(--radius-control);
-    cursor: pointer;
-    transition: color var(--motion-fast) var(--ease-out);
-  }
-
-  .theme-toggle:hover {
-    color: var(--color-signal);
-  }
-
-  .theme-toggle:active {
-    background: var(--color-plate);
-    box-shadow: inset 0 0 0 1px var(--color-ink);
-  }
-
-  .theme-toggle .icon-moon {
-    display: none;
-  }
-
-  .theme-toggle .icon-sun {
-    display: block;
-  }
-
-  :global([data-theme='dark']) .theme-toggle .icon-moon {
-    display: block;
-  }
-
-  :global([data-theme='dark']) .theme-toggle .icon-sun {
-    display: none;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :global(:root:not([data-theme='light'])) .theme-toggle .icon-moon {
-      display: block;
-    }
-    :global(:root:not([data-theme='light'])) .theme-toggle .icon-sun {
-      display: none;
-    }
-  }
-
   @media (max-width: 768px) {
-    .nav {
-      position: fixed;
-      top: 60px;
-      left: 0;
-      right: 0;
-      display: none;
-      flex-direction: column;
-      align-items: stretch;
-      gap: var(--space-1);
-      padding: var(--space-4) var(--space-5);
-      background: var(--color-page);
-      border-top: 1px solid var(--color-rule);
-      border-radius: 0 0 var(--radius-control) var(--radius-control);
-    }
-
-    .nav.active {
-      display: flex;
-    }
-
     .menu-toggle {
       display: flex;
       z-index: 60;
     }
 
+    .nav {
+      position: fixed;
+      top: 60px;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: stretch;
+      background: var(--color-bg);
+      padding: var(--space-4) var(--space-5);
+      gap: var(--space-1);
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      visibility: hidden;
+      transition:
+        max-height 0.35s ease,
+        opacity 0.25s ease,
+        visibility 0s linear 0.35s;
+      box-shadow: 0 8px 32px rgba(25, 28, 30, 0.08);
+      border-top: 1px solid var(--color-border);
+    }
+
+    .nav.active {
+      max-height: 400px;
+      opacity: 1;
+      visibility: visible;
+      transition:
+        max-height 0.35s ease,
+        opacity 0.25s ease,
+        visibility 0s linear 0s;
+    }
+
     .nav a {
+      font-size: var(--text-base);
+      font-weight: 500;
       padding: var(--space-3) var(--space-4);
-      font-size: var(--text-body);
-      border-radius: var(--radius-control);
+      border-radius: var(--radius-md);
+      transition: all 0.2s ease;
+    }
+
+    .nav a:hover {
+      background: var(--color-surface);
     }
 
     .theme-toggle {
-      align-self: flex-start;
       margin-top: var(--space-3);
-      margin-left: var(--space-4);
+      align-self: center;
     }
   }
 
@@ -359,20 +359,6 @@ const { basePath = '' } = Astro.props;
     .header .container {
       padding-top: var(--space-3);
       padding-bottom: var(--space-3);
-    }
-
-    .logo-svg {
-      width: 32px;
-      height: 32px;
-    }
-
-    .nav {
-      top: 52px;
-    }
-
-    .theme-toggle {
-      width: 32px;
-      height: 32px;
     }
   }
 </style>
