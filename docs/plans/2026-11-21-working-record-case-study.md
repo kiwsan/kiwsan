@@ -65,3 +65,6 @@ exception here.
   ruled line, not a hero stat.
 - The gates and tiers tables keep their 680px minimum and scroll inside their
   region at 320; no page-level horizontal scroll.
+- A generated `01 /` section index was added after the gate found it missing
+  from the contract's section-header pattern. It is a CSS counter, not copy.
+- Inline `code` is set at `1em`, not `0.9em`, so identifiers stay at 13px.

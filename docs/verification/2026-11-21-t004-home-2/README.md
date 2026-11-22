@@ -7,7 +7,7 @@ hidden for the capture so they do not paint over a tall element.
 
 | Files | What they show |
 | --- | --- |
-| `workforce-{light,dark}-{320,768,1280}.png` | the floor plate on ink at 1280, the pod records at 768 and 320, the active pod and shift-log row in `signal`, no department accents |
+| `workforce-{light,dark}-{320,768,1280}.png` | the floor plate on ink at 1280 and 768, the pod records at 320, the active pod and shift-log row in `signal`, no department accents |
 | `projects-{light,dark}-1280.png` | record entries, fixed field order, rules between entries, plate screenshots, inline tags, no hover state |
 | `techstack-{light,dark}-1280.png` | inline labels, group rules, the current-focus group marked by a stronger rule |
 | `contact-{light,dark}-1280.png` | underlined links, ink block and 1px outline controls, a rule-bounded direct-contact panel |

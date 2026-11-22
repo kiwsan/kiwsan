@@ -249,8 +249,8 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
       </aside>
     </div>
 
-    <div class="pod-cards" aria-label="Workforce functions">
-      <article class="pod-card hub-card">
+    <div class="pod-cards" role="list" aria-label="Workforce functions">
+      <article class="pod-card hub-card" role="listitem">
         <div class="pod-card-head">
           <h3>{workforceHub.label}</h3>
           <span class="pod-card-count">1 role</span>
@@ -260,7 +260,7 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
       </article>
 
       {workforceFunctions.map((fn) => (
-        <article class="pod-card">
+        <article class="pod-card" role="listitem">
           <div class="pod-card-head">
             <h3>{fn.label}</h3>
             <span class="pod-card-count">{fn.roles.length} roles</span>
@@ -389,14 +389,14 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
   .hub-name {
     fill: var(--color-ink);
     font-family: var(--font-body);
-    font-size: 14px;
+    font-size: 18px;
     font-weight: 600;
   }
 
   .hub-count {
     fill: var(--color-ink-muted);
     font-family: var(--font-body);
-    font-size: 12px;
+    font-size: 18px;
   }
 
   .pod-top {
@@ -421,14 +421,15 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
   .pod-name {
     fill: var(--color-ink);
     font-family: var(--font-body);
-    font-size: 14px;
+    font-size: 18px;
     font-weight: 600;
   }
 
   .pod-count {
     fill: var(--color-ink-muted);
     font-family: var(--font-body);
-    font-size: 12px;
+    font-size: 18px;
+    font-weight: 400;
   }
 
   /* The current pod is the only use of signal in the drawing. */
@@ -458,7 +459,7 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
 
   .log-head h3 {
     font-family: var(--font-body);
-    font-size: 14px;
+    font-size: 18px;
     font-weight: 600;
     color: var(--color-ink);
   }
@@ -622,7 +623,7 @@ const gates = ['scope', 'design', 'merge', 'deploy'];
     }
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 767px) {
     .workforce {
       padding: var(--space-12) 0;
     }

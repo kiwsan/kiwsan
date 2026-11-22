@@ -71,13 +71,15 @@ No content collection, data, style token, asset, or dependency changes.
   `.project-card` to `.project-entry`; `office.spec.ts` moves from `.tl-row` to
   `.run`; the workforce assembly test becomes a static-floor test, because the
   assembly was removed with the contract's motion budget.
-- The floor's static fallback stays at 900px, the existing breakpoint. At 768
-  and 320 the pod records carry the function, handoff, and roles; the drawing
-  only renders where its labels stay legible.
+- The floor's fallback is at 768px, not the old 900px, after the gate found
+  the contract mismatch. The drawing is shown at 768 and up; below 768 the pod
+  records carry the function, handoff, and roles.
 - The floor's painted background rect and the hub halo are removed. The plate
   field, the dot grid, the rails, and the agents stay.
-- The drawing labels are 14px names and 12px counts in the 1000-unit viewBox;
-  at the 1280 plate width they render at about 11 and 9.5 CSS px. They are
-  drawing annotations, not page text.
+- The drawing labels are 18px in the 1000-unit viewBox. At the narrowest
+  visible plate (768px) they render at 12.5 CSS px, and at 1280 at 13.6, so
+  every visible label meets the 12px floor.
+- The pod record fallback is a `role="list"` with `role="listitem"` children,
+  so the group label is not on a generic div.
 - The contact screenshot needed a wait for the lazy credential badge; no code
   change.

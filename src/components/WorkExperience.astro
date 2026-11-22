@@ -1,7 +1,7 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { GROUND_Y, buildOfficeScene } from '../lib/experience/office';
-import { officeLabel } from '../lib/experience/labels';
+import { officeLabel, railPeriod } from '../lib/experience/labels';
 
 type WorkEntry = CollectionEntry<'projects'> & {
   data: { type: 'work' };
@@ -20,6 +20,7 @@ const runs = workExperience.map((work, index) => {
     company: work.data.company,
     name: name || work.data.company,
     period: work.data.period,
+    railPeriod: railPeriod(work.data.period),
     datetime: /^\d{4}/.test(work.data.period) ? work.data.period.slice(0, 4) : work.data.period,
     challenge: work.data.challenge,
     solution: work.data.solution,
@@ -49,6 +50,7 @@ const runs = workExperience.map((work, index) => {
             <span class="run-index">
               <b>{run.runNo}</b> / {run.total}
             </span>
+            <span class="run-period">{run.railPeriod}</span>
             <svg class="run-skyline" viewBox="0 0 200 150" aria-hidden="true">
               {run.office.towers.map((tower) => (
                 <g class="tower">
@@ -79,6 +81,10 @@ const runs = workExperience.map((work, index) => {
               <path class="run-ground" d={`M28 ${GROUND_Y} L172 ${GROUND_Y}`} />
             </svg>
             <span class="run-office">{run.name}</span>
+            <span class="run-office-period">{run.period}</span>
+            <span class="run-scale">
+              {run.office.sizeLabel} · {run.office.floors}F
+            </span>
           </div>
 
           <div class="run-body">
@@ -187,10 +193,23 @@ const runs = workExperience.map((work, index) => {
     height: auto;
   }
 
-  .run-office {
+  .run-period,
+  .run-office,
+  .run-office-period,
+  .run-scale {
     font-size: var(--text-small);
     line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+
+  .run-period,
+  .run-office-period,
+  .run-scale {
     color: var(--color-ink-muted);
+  }
+
+  .run-office {
+    color: var(--color-ink);
   }
 
   .run-body {
@@ -316,18 +335,15 @@ const runs = workExperience.map((work, index) => {
 
     .run-rail {
       flex-direction: row;
-      align-items: center;
-      gap: var(--space-4);
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: var(--space-2) var(--space-4);
     }
 
     .run-skyline {
-      order: 2;
-      width: 7rem;
-      max-width: 7rem;
-    }
-
-    .run-office {
-      order: 3;
+      align-self: flex-start;
+      width: 6rem;
+      max-width: 6rem;
     }
   }
 
@@ -347,11 +363,6 @@ const runs = workExperience.map((work, index) => {
 
     .field-label:empty {
       margin-top: 0;
-    }
-
-    .run-skyline {
-      width: 6rem;
-      max-width: 6rem;
     }
   }
 </style>

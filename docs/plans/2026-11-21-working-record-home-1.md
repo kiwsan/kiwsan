@@ -69,9 +69,8 @@ No other component, content, data, style, asset, test, or dependency changes.
   selectors and a flex hero, so they could not pass against the record system.
   The replacements assert the ledger counts, the run-row structure, and the
   stacked/two-column layouts.
-- The per-run skyline drops its dimension labels and crosshairs. Those were
-  7px mono annotations on a thumbnail, below the contract's 12px floor and
-  unreadable at every width; the towers, setbacks, antennas, and ground line
-  stay, so the drawing is unchanged as a shape.
-- The period is rendered once, in the record's field column, instead of twice
-  (the old short rail copy duplicated it). The value is unchanged.
+- The per-run skyline keeps its shape but its size and floors values moved
+  from 7px annotations on the thumbnail to the rail at 13px, after the gate
+  found the values had been removed. The rail also restores the short period
+  and the office period from the old pill, so every visible binding is back.
+  The field period stays; the original page showed the period in both places.

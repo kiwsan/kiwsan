@@ -61,43 +61,6 @@ html {
   /* One motion budget, on colour and underline only. */
   --motion-fast: 120ms;
   --ease-out: cubic-bezier(0.2, 0, 0.2, 1);
-
-  /* Migration aliases. Map the old names onto the six roles so page sections
-     that T-003-T-005 have not rebuilt yet keep rendering, and keep axe passing.
-     No shared component uses these; the block is removed before the gate. */
-  --color-bg: var(--color-page);
-  --color-text: var(--color-ink);
-  --color-text-muted: var(--color-ink-muted);
-  --color-accent: var(--color-signal);
-  --color-primary: var(--color-ink);
-  --color-secondary: var(--color-ink-muted);
-  --color-border: var(--color-rule);
-  --color-surface: var(--color-plate);
-  --color-surface-container-low: var(--color-plate);
-  --color-surface-container-high: var(--color-plate);
-  --color-primary-container: var(--color-ink);
-  --color-primary-fixed: var(--color-plate);
-  --color-secondary-container: var(--color-plate);
-  --color-on-secondary-container: var(--color-ink-muted);
-  --font-sans: var(--font-body);
-  --font-display: var(--font-title);
-  --text-xs: var(--text-small);
-  --text-sm: var(--text-small);
-  --text-base: var(--text-body);
-  --text-lg: var(--text-lede);
-  --text-xl: var(--text-section);
-  --text-2xl: var(--text-section);
-  --text-3xl: var(--text-section);
-  --text-4xl: var(--text-section);
-  --text-5xl: var(--text-title);
-  --text-display-sm: var(--text-title);
-  --text-display-md: var(--text-title);
-  --text-display-lg: var(--text-title);
-  --radius-sm: var(--radius-control);
-  --radius-md: var(--radius-control);
-  --radius-lg: var(--radius-control);
-  --radius-xl: var(--radius-control);
-  --radius-full: var(--radius-control);
 }
 
 [data-theme='dark'] {
